@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Thoughts | The Nebula House</title>
+  <meta name="description" content="Read personal essays and reflections by Kelechi, founder of The Nebula House.">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar__inner">
+      <div class="navbar__logo"><a href="index.html"><img src="assets/images/room-icon.png" alt="The Nebula House" class="navbar__logo-img"></a></div>
+      <div class="navbar__links">
+        <a href="index.html" class="navbar__link">Home</a>
+        <a href="about.html" class="navbar__link">About</a>
+        <div class="navbar__dropdown">
+          <span class="navbar__link navbar__dropdown-trigger">Our Rooms <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+          <div class="navbar__dropdown-menu">
+            <a href="the-chapter-room.html" class="navbar__dropdown-item">The Chapter Room</a>
+            <a href="my-thoughts.html" class="navbar__dropdown-item">My Thoughts</a>
+            <a href="the-writers-room.html" class="navbar__dropdown-item">The Writer's Room</a>
+            <a href="the-publishing-room.html" class="navbar__dropdown-item">The Publishing Room</a>
+            <a href="the-opinion-yard.html" class="navbar__dropdown-item">The Opinion Yard</a>
+            <a href="the-nebula-academy.html" class="navbar__dropdown-item">The Nebula Academy</a>
+          </div>
+        </div>
+      </div>
+      <div class="navbar__toggle" id="menuToggle"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html" class="mobile-menu__link">Home</a>
+    <a href="about.html" class="mobile-menu__link">About</a>
+    <div class="mobile-menu__divider"></div>
+    <a href="the-chapter-room.html" class="mobile-menu__link">The Chapter Room</a>
+    <a href="my-thoughts.html" class="mobile-menu__link">My Thoughts</a>
+    <a href="the-writers-room.html" class="mobile-menu__link">The Writer's Room</a>
+    <a href="the-publishing-room.html" class="mobile-menu__link">The Publishing Room</a>
+    <a href="the-opinion-yard.html" class="mobile-menu__link">The Opinion Yard</a>
+    <a href="the-nebula-academy.html" class="mobile-menu__link">The Nebula Academy</a>
+  </div>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero hero--medium" id="hero">
+    <div class="hero__bg"><div class="hero__stars"></div></div>
+    <div class="hero__content">
+      <p class="hero__tagline">Personal Essays</p>
+      <h1 class="hero__title">My Thoughts</h1>
+      <p class="hero__subtitle">Personal essays and reflections from Kelechi, founder of The Nebula House. Musings on creativity, identity, writing, and the journey of building something meaningful.</p>
+    </div>
+  </section>
+
+  <!-- ===== FEATURED POST ===== -->
+  <section class="section" id="featured-post">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="section-header__label">Latest</p>
+        <h2 class="section-header__title">Latest Post</h2>
+        <div class="section-header__line"></div>
+      </div>
+
+      <a href="#" class="post-card post-card--featured reveal">
+        <div>
+          <h3 class="post-card__title">NO Man Left Behind.</h3>
+          <p class="post-card__author">by Kelechi Oji</p>
+        </div>
+        <div style="display: flex; align-items: center;">
+          <span class="btn"><span>Read Post</span> <span class="arrow">→</span></span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== RECENT POSTS ===== -->
+  <section class="section section--dark" id="recent-posts">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="section-header__label">Archive</p>
+        <h2 class="section-header__title">Recent Posts</h2>
+        <div class="section-header__line"></div>
+      </div>
+
+      <div class="posts-grid stagger-children">
+        <a href="#" class="post-card reveal">
+          <h3 class="post-card__title">NO Man Left Behind.</h3>
+          <p class="post-card__author">by Kelechi Oji</p>
+          <p class="post-card__excerpt">A reflection on responsibility, solidarity, and the cost of looking away.</p>
+        </a>
+
+        <a href="#" class="post-card reveal">
+          <h3 class="post-card__title">What Do You Really Want?</h3>
+          <p class="post-card__author">by Kelechi Oji</p>
+          <p class="post-card__excerpt">On desire, clarity, and the courage to ask honest questions of yourself.</p>
+        </a>
+
+        <a href="#" class="post-card reveal">
+          <h3 class="post-card__title">Brothers in Christ, Draw your Swords</h3>
+          <p class="post-card__author">by Kelechi Oji</p>
+          <p class="post-card__excerpt">A call to spiritual and intellectual vigilance in an age of passivity.</p>
+        </a>
+      </div>
+
+      <div style="text-align: center; margin-top: var(--space-3xl);" class="reveal">
+        <a href="#" class="btn"><span>View All Posts</span> <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SUBSCRIBE CTA ===== -->
+  <section class="newsletter" id="subscribe-cta">
+    <div class="container">
+      <div class="reveal">
+        <h2 class="newsletter__title">Want To Hear More of Kelechi's Thoughts?</h2>
+        <p class="newsletter__desc">Subscribe to receive personal essays, reflections, and updates.</p>
+        <form class="newsletter__form" id="newsletterForm">
+          <input type="email" class="newsletter__input" placeholder="Enter your email" required>
+          <button type="submit" class="newsletter__submit">Subscribe</button>
+        </form>
+        <p class="newsletter__success">Thank you for subscribing! New thoughts coming soon.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer" id="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <a href="index.html"><img src="assets/images/room-icon.png" alt="The Nebula House" class="footer__logo-img"></a>
+          <p class="footer__brand-tagline">From Imagination to Infinity.</p>
+          <p class="footer__brand-tagline">A digital literary ecosystem.</p>
+        </div>
+        <div class="footer__rooms">
+          <h4 class="footer__heading">Rooms</h4>
+          <a href="the-chapter-room.html" class="footer__link">The Chapter Room</a>
+          <a href="the-writers-room.html" class="footer__link">The Writer's Room</a>
+          <a href="the-nebula-academy.html" class="footer__link">The Nebula Academy</a>
+          <a href="the-publishing-room.html" class="footer__link">The Publishing Room</a>
+          <a href="the-opinion-yard.html" class="footer__link">The Opinion Yard</a>
+          <a href="my-thoughts.html" class="footer__link">My Thoughts</a>
+        </div>
+        <div class="footer__connect">
+          <h4 class="footer__heading">Connect</h4>
+          <a href="mailto:kelechioji@thenebulahouse.com" class="footer__link">Email</a>
+          <a href="https://www.instagram.com/the_nebula_house" target="_blank" rel="noopener" class="footer__link">Instagram</a>
+          <a href="https://youtube.com/@kelechi_oji" target="_blank" rel="noopener" class="footer__link">YouTube</a>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>© 2026 The Nebula House. All Rights Reserved.</p>
+        <div class="footer__social">
+          <a href="https://www.instagram.com/the_nebula_house" target="_blank" rel="noopener">Instagram</a>
+          <a href="https://youtube.com/@kelechi_oji" target="_blank" rel="noopener">YouTube</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/pages.js"></script>
+</body>
+</html>

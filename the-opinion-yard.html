@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Opinion Yard | The Nebula House</title>
+  <meta name="description" content="Dive into The Opinion Yard on The Nebula House for commentary and open reflections on culture, society, and modern ideas.">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="navbar scrolled" id="navbar">
+    <div class="navbar__inner">
+      <div class="navbar__logo"><a href="index.html"><img src="assets/images/room-icon.png" alt="The Nebula House" class="navbar__logo-img"></a></div>
+      <div class="navbar__links">
+        <a href="index.html" class="navbar__link">Home</a>
+        <a href="about.html" class="navbar__link">About</a>
+        <div class="navbar__dropdown">
+          <span class="navbar__link navbar__dropdown-trigger">Our Rooms <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+          <div class="navbar__dropdown-menu">
+            <a href="the-chapter-room.html" class="navbar__dropdown-item">The Chapter Room</a>
+            <a href="my-thoughts.html" class="navbar__dropdown-item">My Thoughts</a>
+            <a href="the-writers-room.html" class="navbar__dropdown-item">The Writer's Room</a>
+            <a href="the-publishing-room.html" class="navbar__dropdown-item">The Publishing Room</a>
+            <a href="the-opinion-yard.html" class="navbar__dropdown-item">The Opinion Yard</a>
+            <a href="the-nebula-academy.html" class="navbar__dropdown-item">The Nebula Academy</a>
+          </div>
+        </div>
+      </div>
+      <div class="navbar__toggle" id="menuToggle"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html" class="mobile-menu__link">Home</a>
+    <a href="about.html" class="mobile-menu__link">About</a>
+    <div class="mobile-menu__divider"></div>
+    <a href="the-chapter-room.html" class="mobile-menu__link">The Chapter Room</a>
+    <a href="my-thoughts.html" class="mobile-menu__link">My Thoughts</a>
+    <a href="the-writers-room.html" class="mobile-menu__link">The Writer's Room</a>
+    <a href="the-publishing-room.html" class="mobile-menu__link">The Publishing Room</a>
+    <a href="the-opinion-yard.html" class="mobile-menu__link">The Opinion Yard</a>
+    <a href="the-nebula-academy.html" class="mobile-menu__link">The Nebula Academy</a>
+  </div>
+
+  <!-- ===== COMING SOON ===== -->
+  <section class="coming-soon">
+    <canvas class="coming-soon__canvas"></canvas>
+    <div class="coming-soon__content">
+      <p class="coming-soon__label">The Opinion Yard</p>
+      <h1 class="coming-soon__title">Coming Soon</h1>
+      <p class="coming-soon__subtitle">Essays, critiques, and open thought pieces on culture, society, and ideas.</p>
+      <h2 style="font-size: var(--text-lg); font-weight: var(--font-weight-light); color: var(--text-secondary); margin-bottom: var(--space-xl);">Get on the List</h2>
+      <form class="coming-soon__form">
+        <input type="email" class="coming-soon__input" placeholder="Enter your email" required>
+        <button type="submit" class="coming-soon__submit">Notify Me</button>
+      </form>
+      <p class="newsletter__success">You're on the list! We'll notify you when we go live.</p>
+    </div>
+  </section>
+
+  <script src="js/main.js"></script>
+  <script src="js/pages.js"></script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Nebula House | A Home for Writers, Readers & Thinkers</title>
+  <meta name="description" content="The Nebula House is a digital literary platform for stories, ideas, philosophy, writing, and creative learning through essays, discussions, and courses.">
+  <meta property="og:title" content="The Nebula House | A Home for Writers, Readers & Thinkers">
+  <meta property="og:description" content="A digital literary ecosystem for storytelling, thought leadership, and creativity.">
+  <meta property="og:type" content="website">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar__inner">
+      <div class="navbar__logo">
+        <a href="index.html"><img src="assets/images/room-icon.png" alt="The Nebula House" class="navbar__logo-img"></a>
+      </div>
+
+      <div class="navbar__links">
+        <a href="index.html" class="navbar__link">Home</a>
+        <a href="about.html" class="navbar__link">About</a>
+        <div class="navbar__dropdown">
+          <span class="navbar__link navbar__dropdown-trigger">
+            Our Rooms
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </span>
+          <div class="navbar__dropdown-menu">
+            <a href="the-chapter-room.html" class="navbar__dropdown-item">The Chapter Room</a>
+            <a href="my-thoughts.html" class="navbar__dropdown-item">My Thoughts</a>
+            <a href="the-writers-room.html" class="navbar__dropdown-item">The Writer's Room</a>
+            <a href="the-publishing-room.html" class="navbar__dropdown-item">The Publishing Room</a>
+            <a href="the-opinion-yard.html" class="navbar__dropdown-item">The Opinion Yard</a>
+            <a href="the-nebula-academy.html" class="navbar__dropdown-item">The Nebula Academy</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="navbar__toggle" id="menuToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== MOBILE MENU ===== -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html" class="mobile-menu__link">Home</a>
+    <a href="about.html" class="mobile-menu__link">About</a>
+    <div class="mobile-menu__divider"></div>
+    <a href="the-chapter-room.html" class="mobile-menu__link">The Chapter Room</a>
+    <a href="my-thoughts.html" class="mobile-menu__link">My Thoughts</a>
+    <a href="the-writers-room.html" class="mobile-menu__link">The Writer's Room</a>
+    <a href="the-publishing-room.html" class="mobile-menu__link">The Publishing Room</a>
+    <a href="the-opinion-yard.html" class="mobile-menu__link">The Opinion Yard</a>
+    <a href="the-nebula-academy.html" class="mobile-menu__link">The Nebula Academy</a>
+  </div>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero hero--library" id="hero">
+    <div class="hero__bg">
+      <div class="hero__stars"></div>
+    </div>
+    <div class="hero__content">
+      <p class="hero__tagline">A Home for Writers, Readers &amp; Thinkers</p>
+      <h1 class="hero__title">From Imagination to Infinity</h1>
+      <p class="hero__subtitle">A digital literary ecosystem for storytelling, thought leadership, and creativity.</p>
+    </div>
+    <div class="hero__scroll">
+      <span class="hero__scroll-text">Scroll</span>
+      <div class="hero__scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ===== WELCOME ===== -->
+  <section class="section" id="welcome">
+    <div class="container container--narrow">
+      <div class="section-header reveal">
+        <h2 class="section-header__title">Welcome to Our House</h2>
+        <div class="section-header__line"></div>
+      </div>
+      <div class="about-story reveal" style="text-align: center;">
+        <p>The Nebula House is more than a website—it's a conceptual home where each room represents a unique space for exploration, learning, and connection. We celebrate diverse voices and perspectives through literature, philosophy, and creative expression.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== EXPLORE OUR ROOMS ===== -->
+  <section class="section section--dark" id="rooms">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="section-header__label">Enter a Room</p>
+        <h2 class="section-header__title">Explore Our Rooms</h2>
+        <div class="section-header__line"></div>
+      </div>
+
+      <div class="rooms-grid stagger-children">
+
+        <a href="the-chapter-room.html" class="room-card reveal" id="room-chapter">
+          <span class="room-card__icon">📖</span>
+          <h3 class="room-card__title">The Chapter Room</h3>
+          <p class="room-card__desc">Join our book club for curated reads, discussions, and literary exploration.</p>
+          <span class="room-card__cta">Enter Room <span class="arrow">→</span></span>
+        </a>
+
+        <a href="the-opinion-yard.html" class="room-card reveal" id="room-opinion">
+          <span class="room-card__icon">💬</span>
+          <h3 class="room-card__title">The Opinion Yard</h3>
+          <p class="room-card__desc">Essays, critiques, and open thought pieces on culture, society, and ideas.</p>
+          <span class="room-card__cta">Enter Room <span class="arrow">→</span></span>
+        </a>
+
+        <a href="the-writers-room.html" class="room-card reveal" id="room-writers">
+          <span class="room-card__icon">✍️</span>
+          <h3 class="room-card__title">The Writer's Room</h3>
+          <p class="room-card__desc">Writing prompts, craft essays, and a vibrant community for emerging writers.</p>
+          <span class="room-card__cta">Enter Room <span class="arrow">→</span></span>
+        </a>
+
+        <a href="the-nebula-academy.html" class="room-card reveal" id="room-academy">
+          <span class="room-card__icon">🎓</span>
+          <h3 class="room-card__title">The Nebula Academy</h3>
+          <p class="room-card__desc">Philosophical and intellectual learning through curated courses and terms.</p>
+          <span class="room-card__cta">Enter Room <span class="arrow">→</span></span>
+        </a>
+
+        <a href="the-publishing-room.html" class="room-card reveal" id="room-publishing">
+          <span class="room-card__icon">📚</span>
+          <h3 class="room-card__title">The Publishing Room</h3>
+          <p class="room-card__desc">Resources, guidance, and opportunities for aspiring published authors.</p>
+          <span class="room-card__cta">Enter Room <span class="arrow">→</span></span>
+        </a>
+
+        <a href="my-thoughts.html" class="room-card reveal" id="room-thoughts">
+          <span class="room-card__icon">💭</span>
+          <h3 class="room-card__title">My Thoughts</h3>
+          <p class="room-card__desc">Personal essays and reflections from the creator of The Nebula House.</p>
+          <span class="room-card__cta">Enter Room <span class="arrow">→</span></span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== LATEST READ ===== -->
+  <section class="section" id="latest-read">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="section-header__label">Currently Reading</p>
+        <h2 class="section-header__title">Latest Read</h2>
+        <div class="section-header__line"></div>
+      </div>
+
+      <div class="featured-book reveal">
+        <div class="featured-book__cover">
+          <div class="book-3d">
+            <div class="book-3d__spine"></div>
+            <div class="book-3d__front">
+              <img src="assets/images/notes-from-underground.jpg" alt="Notes From Underground by Fyodor Dostoevsky">
+            </div>
+            <div class="book-3d__pages"></div>
+          </div>
+        </div>
+        <div class="featured-book__info">
+          <p class="featured-book__badge">Book #2</p>
+          <h3 class="featured-book__title">Notes From Underground</h3>
+          <p class="featured-book__author">by Fyodor Dostoevsky</p>
+          <p class="featured-book__desc">A dark, introspective novella that explores the mind of a bitter, isolated man in conflict with society and himself. Through sharp irony and psychological depth, it questions rationality, free will, and the contradictions of human nature.</p>
+          <a href="#" class="btn">
+            <span>Read More</span>
+            <span class="arrow">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== NEWSLETTER ===== -->
+  <section class="newsletter" id="newsletter">
+    <div class="container">
+      <div class="reveal">
+        <h2 class="newsletter__title">Join Our Community</h2>
+        <p class="newsletter__desc">Receive our latest stories, book recommendations, and writing prompts.</p>
+        <form class="newsletter__form" id="newsletterForm">
+          <input type="email" class="newsletter__input" placeholder="Enter your email" required>
+          <button type="submit" class="newsletter__submit">Subscribe</button>
+        </form>
+        <p class="newsletter__success">Thank you for joining! We'll be in touch.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer" id="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <a href="index.html"><img src="assets/images/room-icon.png" alt="The Nebula House" class="footer__logo-img"></a>
+          <p class="footer__brand-tagline">From Imagination to Infinity.</p>
+          <p class="footer__brand-tagline">A digital literary ecosystem.</p>
+        </div>
+
+        <div class="footer__rooms">
+          <h4 class="footer__heading">Rooms</h4>
+          <a href="the-chapter-room.html" class="footer__link">The Chapter Room</a>
+          <a href="the-writers-room.html" class="footer__link">The Writer's Room</a>
+          <a href="the-nebula-academy.html" class="footer__link">The Nebula Academy</a>
+          <a href="the-publishing-room.html" class="footer__link">The Publishing Room</a>
+          <a href="the-opinion-yard.html" class="footer__link">The Opinion Yard</a>
+          <a href="my-thoughts.html" class="footer__link">My Thoughts</a>
+        </div>
+
+        <div class="footer__connect">
+          <h4 class="footer__heading">Connect</h4>
+          <a href="mailto:kelechioji@thenebulahouse.com" class="footer__link">Email</a>
+          <a href="https://www.instagram.com/the_nebula_house" target="_blank" rel="noopener" class="footer__link">Instagram</a>
+          <a href="https://youtube.com/@kelechi_oji" target="_blank" rel="noopener" class="footer__link">YouTube</a>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <p>© 2026 The Nebula House. All Rights Reserved.</p>
+        <div class="footer__social">
+          <a href="https://www.instagram.com/the_nebula_house" target="_blank" rel="noopener">Instagram</a>
+          <a href="https://youtube.com/@kelechi_oji" target="_blank" rel="noopener">YouTube</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/pages.js"></script>
+</body>
+</html>

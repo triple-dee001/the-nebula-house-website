@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Nebula Academy | The Nebula House</title>
+  <meta name="description" content="Discover The Nebula Academy - a space for philosophical and intellectual learning through curated courses and terms.">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar__inner">
+      <div class="navbar__logo"><a href="index.html"><img src="assets/images/room-icon.png" alt="The Nebula House" class="navbar__logo-img"></a></div>
+      <div class="navbar__links">
+        <a href="index.html" class="navbar__link">Home</a>
+        <a href="about.html" class="navbar__link">About</a>
+        <div class="navbar__dropdown">
+          <span class="navbar__link navbar__dropdown-trigger">Our Rooms <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+          <div class="navbar__dropdown-menu">
+            <a href="the-chapter-room.html" class="navbar__dropdown-item">The Chapter Room</a>
+            <a href="my-thoughts.html" class="navbar__dropdown-item">My Thoughts</a>
+            <a href="the-writers-room.html" class="navbar__dropdown-item">The Writer's Room</a>
+            <a href="the-publishing-room.html" class="navbar__dropdown-item">The Publishing Room</a>
+            <a href="the-opinion-yard.html" class="navbar__dropdown-item">The Opinion Yard</a>
+            <a href="the-nebula-academy.html" class="navbar__dropdown-item">The Nebula Academy</a>
+          </div>
+        </div>
+      </div>
+      <div class="navbar__toggle" id="menuToggle"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html" class="mobile-menu__link">Home</a>
+    <a href="about.html" class="mobile-menu__link">About</a>
+    <div class="mobile-menu__divider"></div>
+    <a href="the-chapter-room.html" class="mobile-menu__link">The Chapter Room</a>
+    <a href="my-thoughts.html" class="mobile-menu__link">My Thoughts</a>
+    <a href="the-writers-room.html" class="mobile-menu__link">The Writer's Room</a>
+    <a href="the-publishing-room.html" class="mobile-menu__link">The Publishing Room</a>
+    <a href="the-opinion-yard.html" class="mobile-menu__link">The Opinion Yard</a>
+    <a href="the-nebula-academy.html" class="mobile-menu__link">The Nebula Academy</a>
+  </div>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero hero--medium" id="hero">
+    <div class="hero__bg"><div class="hero__stars"></div></div>
+    <div class="hero__content">
+      <p class="hero__tagline">Intellectual Exploration</p>
+      <h1 class="hero__title">The Nebula Academy</h1>
+      <p class="hero__subtitle">A space for philosophical and intellectual exploration. Structured learning journeys through questions of existence, identity, culture, and thought.</p>
+    </div>
+  </section>
+
+  <!-- ===== PHILOSOPHY SECTION ===== -->
+  <section class="section" id="philosophy">
+    <div class="container container--narrow">
+      <div class="section-header reveal">
+        <h2 class="section-header__title">Philosophy for the Modern Mind</h2>
+        <div class="section-header__line"></div>
+      </div>
+
+      <div class="about-story">
+        <p class="reveal">The Nebula Academy is our intellectual home — a place where curiosity meets rigor, and where ancient wisdom converges with contemporary thought.</p>
+
+        <div class="pull-quote reveal">We believe that philosophy isn't confined to dusty textbooks or ivory towers. It lives in our daily questions, our struggles with identity, our search for meaning in a complex world.</div>
+
+        <p class="reveal">Here, we make philosophy accessible, relevant, and transformative.</p>
+
+        <p class="reveal">Each term focuses on a central theme, explored through curated readings, video lessons, written reflections, and community discussions. Whether you're new to philosophy or a seasoned thinker, there's a place for you in our learning community.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CURRENT TERMS ===== -->
+  <section class="section section--dark" id="current-terms">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="section-header__label">Enroll</p>
+        <h2 class="section-header__title">Current Terms</h2>
+        <div class="section-header__line"></div>
+      </div>
+
+      <div class="term-card reveal">
+        <p class="term-card__label">Term I</p>
+        <h3 class="term-card__title">Pain, Meaning, and The Human Condition</h3>
+        <p class="term-card__desc">Term I of The Nebula Academy is an initiation into seriousness. It does not offer self-improvement or optimism. It teaches attention. Across three modules, participants are invited to confront pain, darkness, and inner conflict — not as problems to be solved, but as realities that reveal what is most true about being human.</p>
+
+        <div class="term-card__stats">
+          <div class="term-card__stat">
+            <span class="term-card__stat-value" data-value="3">0</span>
+            <span class="term-card__stat-label">Modules</span>
+          </div>
+          <div class="term-card__stat">
+            <span class="term-card__stat-value" data-value="3">0</span>
+            <span class="term-card__stat-label">Weeks Duration</span>
+          </div>
+        </div>
+
+        <a href="#" class="btn">
+          <span>View Curriculum</span>
+          <span class="arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== NEWSLETTER ===== -->
+  <section class="newsletter" id="newsletter">
+    <div class="container">
+      <div class="reveal">
+        <h2 class="newsletter__title">Join Our Community</h2>
+        <p class="newsletter__desc">Receive our latest stories, book recommendations, and writing prompts.</p>
+        <form class="newsletter__form" id="newsletterForm">
+          <input type="email" class="newsletter__input" placeholder="Enter your email" required>
+          <button type="submit" class="newsletter__submit">Subscribe</button>
+        </form>
+        <p class="newsletter__success">Thank you for joining! We'll be in touch.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer" id="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <a href="index.html"><img src="assets/images/room-icon.png" alt="The Nebula House" class="footer__logo-img"></a>
+          <p class="footer__brand-tagline">From Imagination to Infinity.</p>
+          <p class="footer__brand-tagline">A digital literary ecosystem.</p>
+        </div>
+        <div class="footer__rooms">
+          <h4 class="footer__heading">Rooms</h4>
+          <a href="the-chapter-room.html" class="footer__link">The Chapter Room</a>
+          <a href="the-writers-room.html" class="footer__link">The Writer's Room</a>
+          <a href="the-nebula-academy.html" class="footer__link">The Nebula Academy</a>
+          <a href="the-publishing-room.html" class="footer__link">The Publishing Room</a>
+          <a href="the-opinion-yard.html" class="footer__link">The Opinion Yard</a>
+          <a href="my-thoughts.html" class="footer__link">My Thoughts</a>
+        </div>
+        <div class="footer__connect">
+          <h4 class="footer__heading">Connect</h4>
+          <a href="mailto:kelechioji@thenebulahouse.com" class="footer__link">Email</a>
+          <a href="https://www.instagram.com/the_nebula_house" target="_blank" rel="noopener" class="footer__link">Instagram</a>
+          <a href="https://youtube.com/@kelechi_oji" target="_blank" rel="noopener" class="footer__link">YouTube</a>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>© 2026 The Nebula House. All Rights Reserved.</p>
+        <div class="footer__social">
+          <a href="https://www.instagram.com/the_nebula_house" target="_blank" rel="noopener">Instagram</a>
+          <a href="https://youtube.com/@kelechi_oji" target="_blank" rel="noopener">YouTube</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/pages.js"></script>
+</body>
+</html>
