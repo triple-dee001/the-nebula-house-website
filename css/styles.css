@@ -359,6 +359,39 @@ input, textarea {
   transform: rotate(-45deg) translate(5px, -5px);
 }
 
+/* Account Icon (always visible, sits beside hamburger on mobile) */
+.navbar__account {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xs);
+  color: var(--color-white);
+  opacity: 0.7;
+  transition: opacity var(--transition-base);
+  text-decoration: none;
+  z-index: 1001;
+}
+
+.navbar__account:hover {
+  opacity: 1;
+}
+
+/* On mobile, show account icon + hamburger side by side */
+@media (max-width: 768px) {
+  .navbar__inner {
+    gap: 0;
+  }
+  .navbar__account {
+    order: 2;
+    margin-left: auto;
+    padding: var(--space-sm);
+  }
+  .navbar__toggle {
+    order: 3;
+    margin-left: var(--space-sm);
+  }
+}
+
 /* Mobile Menu Overlay */
 .mobile-menu {
   position: fixed;
