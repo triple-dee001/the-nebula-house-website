@@ -4,14 +4,131 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Writer's Room | The Nebula House</title>
-  <meta name="description" content="Join The Writer's Room - writing prompts, craft essays, and a vibrant community for emerging and thoughtful writers at The Nebula House.">
+  <meta name="description" content="Read and publish essays, stories, and ideas. The Writer's Room is the creative pulse of The Nebula House community.">
   <link rel="stylesheet" href="css/styles.css">
-  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <style>
+    /* ─── Medium-style Writer's Room ─── */
+    .wr-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: var(--space-3xl);
+    }
+    .wr-header__write-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.6rem 1.5rem; background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15); border-radius: 20px;
+      color: #fff; font-size: 0.95rem; font-family: var(--font-secondary);
+      text-decoration: none; cursor: pointer; transition: all 0.25s;
+    }
+    .wr-header__write-btn:hover {
+      background: #fff; color: #000; border-color: #fff;
+    }
+    .wr-layout {
+      display: grid; grid-template-columns: 1fr 340px; gap: var(--space-4xl);
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .wr-layout { grid-template-columns: 1fr; }
+      .wr-sidebar { display: none; }
+    }
+
+    /* Article Cards */
+    .wr-article {
+      display: grid; grid-template-columns: 1fr 140px; gap: var(--space-xl);
+      align-items: center;
+      padding: var(--space-xl) 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      text-decoration: none; color: inherit;
+      transition: opacity 0.2s;
+    }
+    .wr-article:hover { opacity: 0.85; }
+    .wr-article__meta {
+      display: flex; align-items: center; gap: 0.5rem;
+      margin-bottom: 0.5rem; font-size: 0.85rem; color: var(--text-muted);
+    }
+    .wr-article__avatar {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: rgba(255,255,255,0.1); display: flex; align-items:center;
+      justify-content:center; font-size: 0.7rem; font-weight: 700;
+    }
+    .wr-article__title {
+      font-family: var(--font-primary); font-size: 1.45rem;
+      font-weight: 700; line-height: 1.3; margin-bottom: 0.4rem;
+    }
+    .wr-article__excerpt {
+      color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .wr-article__footer {
+      display: flex; align-items: center; gap: 1rem; margin-top: 0.75rem;
+      font-size: 0.8rem; color: var(--text-muted);
+    }
+    .wr-article__thumb {
+      width: 140px; height: 100px; border-radius: 4px; object-fit: cover;
+      background: rgba(255,255,255,0.05);
+    }
+
+    /* Sidebar */
+    .wr-sidebar { position: sticky; top: 100px; }
+    .wr-sidebar__section {
+      margin-bottom: var(--space-2xl);
+    }
+    .wr-sidebar__title {
+      font-family: var(--font-secondary); font-size: 0.9rem;
+      font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: var(--space-md);
+    }
+    .wr-sidebar__topics {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+    }
+    .wr-sidebar__topic {
+      padding: 0.4rem 0.9rem; border-radius: 20px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      color: var(--text-muted); font-size: 0.85rem; text-decoration: none;
+      transition: all 0.2s;
+    }
+    .wr-sidebar__topic:hover {
+      background: rgba(255,255,255,0.12); color: #fff;
+    }
+    .wr-sidebar__writers {
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+    .wr-sidebar__writer {
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .wr-sidebar__writer-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,0.08); display: flex; align-items:center;
+      justify-content:center; font-size: 0.85rem; font-weight: 700;
+    }
+    .wr-sidebar__writer-name {
+      font-weight: 600; font-size: 0.95rem;
+    }
+    .wr-sidebar__writer-desc {
+      font-size: 0.8rem; color: var(--text-muted);
+    }
+
+    /* Empty state */
+    .wr-empty {
+      text-align: center; padding: var(--space-4xl) 0;
+      color: var(--text-muted);
+    }
+    .wr-empty h3 { font-family: var(--font-primary); font-size: 1.5rem; margin-bottom: 1rem; color: #fff; }
+
+    /* Admin delete button on articles */
+    .wr-article__delete {
+      background: none; border: 1px solid rgba(220,50,50,0.3);
+      color: #e55; padding: 0.3rem 0.6rem; border-radius: 4px;
+      font-size: 0.75rem; cursor: pointer; transition: all 0.2s;
+    }
+    .wr-article__delete:hover { background: rgba(220,50,50,0.15); border-color: #e55; }
+  </style>
 </head>
 <body>
 
   <!-- ===== NAVIGATION ===== -->
-  <nav class="navbar scrolled" id="navbar">
+  <nav class="navbar" id="navbar">
     <div class="navbar__inner">
       <div class="navbar__logo"><a href="index.html"><img src="assets/images/room-icon.png" alt="The Nebula House" class="navbar__logo-img"></a></div>
       <div class="navbar__links">
@@ -28,7 +145,7 @@
             <a href="the-nebula-academy.html" class="navbar__dropdown-item">The Nebula Academy</a>
           </div>
         </div>
-<a href="the-admin-room.html" class="navbar__link" id="nav-account-icon" title="Account" style="display:flex; align-items:center;">
+        <a href="the-admin-room.html" class="navbar__link" id="nav-account-icon" title="Account" style="display:flex; align-items:center;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
         </a>
       </div>
@@ -48,47 +165,71 @@
     <a href="the-nebula-academy.html" class="mobile-menu__link">The Nebula Academy</a>
   </div>
 
-  <!-- ===== HERO ===== -->
-  <section class="hero hero--medium" id="hero">
-    <div class="hero__bg"><div class="hero__stars"></div></div>
-    <div class="hero__content">
-      <p class="hero__tagline">Community Publishing</p>
-      <h1 class="hero__title">The Writer's Room</h1>
-      <p class="hero__subtitle">Share your essays, stories, and philosophical musings. A canvas for your mind and a vibrant community for emerging writers.</p>
-    </div>
-  </section>
-
-  <!-- ===== AUTH & DASHBOARD SECTION ===== -->
-  <section class="section" id="auth-section">
-    <div class="container container--narrow text-center reveal">
-      <h2 style="font-family: var(--font-secondary); font-size: 2rem; margin-bottom: 1rem;">Join the Writers</h2>
-      <p style="color: var(--text-secondary); margin-bottom: 2rem;">Sign in to publish your work and engage with other writers.</p>
-      <button class="btn" id="btn-login-modal"><span>Sign In / Join</span> <span class="arrow">→</span></button>
-    </div>
-  </section>
-
-  <section class="section section--dark" id="user-dashboard" style="display: none;">
-    <div class="container reveal">
-      <div class="dashboard-header">
-        <h2 style="font-family: var(--font-secondary); font-size: 1.5rem;">Welcome, <span id="user-display-name">Writer</span></h2>
-        <div class="dashboard-actions">
-          <button class="btn" id="btn-new-post">Write a Story</button>
-          <button class="btn" id="btn-logout" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: var(--text-muted);">Sign Out</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== FEED SECTION ===== -->
-  <section class="section" id="feed-section">
+  <!-- ===== MAIN CONTENT ===== -->
+  <section class="section section--dark" style="padding-top: calc(var(--space-4xl) + 80px); min-height: 100vh;">
     <div class="container">
-      <div class="section-header reveal">
-        <p class="section-header__label">Community Feed</p>
-        <h2 class="section-header__title">Latest Writing</h2>
-        <div class="section-header__line"></div>
+
+      <!-- Writer's Room Header -->
+      <div class="wr-header reveal">
+        <div>
+          <h1 style="font-family: var(--font-primary); font-size: 2.5rem; margin-bottom: 0.25rem;">The Writer's Room</h1>
+          <p style="color: var(--text-muted); font-size: 1rem;">Stories, essays, and ideas from the Nebula community.</p>
+        </div>
+        <a class="wr-header__write-btn" id="btn-write">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+          Write
+        </a>
       </div>
-      <div class="posts-grid stagger-children" id="article-feed">
-        <!-- Rendered by JS -->
+
+      <!-- Layout: Feed + Sidebar -->
+      <div class="wr-layout">
+
+        <!-- Article Feed -->
+        <div id="wr-feed">
+          <div class="wr-empty" id="wr-empty-state">
+            <h3>No stories yet</h3>
+            <p>Be the first to publish. Click "Write" to begin crafting your story.</p>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="wr-sidebar">
+          <div class="wr-sidebar__section">
+            <p class="wr-sidebar__title">Trending Topics</p>
+            <div class="wr-sidebar__topics">
+              <a href="#" class="wr-sidebar__topic">Philosophy</a>
+              <a href="#" class="wr-sidebar__topic">Faith</a>
+              <a href="#" class="wr-sidebar__topic">Masculinity</a>
+              <a href="#" class="wr-sidebar__topic">Suffering</a>
+              <a href="#" class="wr-sidebar__topic">Literature</a>
+              <a href="#" class="wr-sidebar__topic">Identity</a>
+              <a href="#" class="wr-sidebar__topic">Nigeria</a>
+              <a href="#" class="wr-sidebar__topic">Self-Discovery</a>
+            </div>
+          </div>
+          <div class="wr-sidebar__section">
+            <p class="wr-sidebar__title">Featured Writers</p>
+            <div class="wr-sidebar__writers">
+              <div class="wr-sidebar__writer">
+                <div class="wr-sidebar__writer-avatar">K</div>
+                <div>
+                  <div class="wr-sidebar__writer-name">Kelechi Oji</div>
+                  <div class="wr-sidebar__writer-desc">Founder · 4 articles</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="wr-sidebar__section">
+            <p class="wr-sidebar__title">Newsletter</p>
+            <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1rem;">Get new stories delivered to your inbox.</p>
+            <form id="wr-newsletter-form" style="display:flex; gap:0.5rem;">
+              <input type="email" placeholder="Your email" required style="flex:1; padding:0.6rem 0.8rem; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.15); border-radius:4px; color:#fff; font-size:0.9rem; outline:none;">
+              <button type="submit" style="padding:0.6rem 1rem; background:#fff; color:#000; border:none; border-radius:4px; font-weight:600; cursor:pointer; font-size:0.85rem;">Join</button>
+            </form>
+            <p id="wr-newsletter-success" style="color:#4caf50; font-size:0.85rem; margin-top:0.5rem; display:none;">Subscribed!</p>
+          </div>
+        </aside>
       </div>
     </div>
   </section>
@@ -118,56 +259,98 @@
           <a href="https://youtube.com/@kelechi_oji" target="_blank" rel="noopener" class="footer__link">YouTube</a>
         </div>
       </div>
-      <div class="footer__bottom"><p>© 2026 The Nebula House. All Rights Reserved.</p></div>
+      <div class="footer__bottom"><p>&copy; 2026 The Nebula House. All Rights Reserved.</p></div>
     </div>
   </footer>
 
-  <!-- ===== MODALS ===== -->
-  <div class="modal-overlay" id="auth-modal">
-    <div class="custom-modal">
-      <div class="modal-header">
-        <h2 style="font-family: var(--font-secondary); font-size: 1.5rem;">Access The Room</h2>
-        <button class="modal-close" id="btn-close-auth">&times;</button>
-      </div>
-      <p style="color:var(--text-secondary); font-size: 0.85rem; margin-bottom: 1.5rem;">
-        Note: You can proceed as a guest using local storage if Firebase is not connected.
-      </p>
-      <input type="text" id="auth-name" placeholder="Display Name (for Signup)" class="nominate-form__input" style="margin-bottom: 1rem;">
-      <input type="email" id="auth-email" placeholder="Email" class="nominate-form__input" style="margin-bottom: 1rem;">
-      <input type="password" id="auth-password" placeholder="Password" class="nominate-form__input" style="margin-bottom: 1.5rem;">
-      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-        <button class="btn btn--block" id="btn-submit-login"><span>Sign In</span> <span class="arrow">→</span></button>
-        <button class="btn btn--block" style="background: transparent; border: 1px solid rgba(255,255,255,0.3);" id="btn-submit-signup">Sign Up</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-overlay" id="editor-modal">
-    <div class="custom-modal editor-modal">
-      <div class="modal-header">
-        <h2 style="font-family: var(--font-secondary); font-size: 1.5rem;">Draft Your Post</h2>
-        <button class="modal-close" id="btn-close-editor">&times;</button>
-      </div>
-      <input type="text" id="editor-title" placeholder="Title of your piece" class="nominate-form__input" style="margin-bottom: 1rem; font-size: 1.25rem;">
-      <input type="text" id="editor-tags" placeholder="Tags (comma separated)" class="nominate-form__input" style="margin-bottom: 1rem;">
-      
-      <!-- Quill container -->
-      <div id="quill-editor"></div>
-      
-      <div style="margin-top: 1.5rem; text-align: right;">
-        <button class="btn" id="btn-publish">Publish to Feed</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Scripts -->
-  <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
-  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
-  
   <script src="js/main.js"></script>
-  <script src="js/writers-room.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // ─── Write Button Auth Guard ───
+      document.getElementById('btn-write').addEventListener('click', () => {
+        const user = getCurrentUser();
+        if (user) {
+          window.location.href = 'write.html';
+        } else {
+          openAuthModal();
+          // After successful auth, redirect
+          window.addEventListener('nebula-auth-change', function handler(e) {
+            if (e.detail.user) {
+              window.removeEventListener('nebula-auth-change', handler);
+              window.location.href = 'write.html';
+            }
+          });
+        }
+      });
+
+      // ─── Load Article Feed ───
+      await loadFeed();
+
+      // ─── Newsletter Form ───
+      document.getElementById('wr-newsletter-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const input = e.target.querySelector('input[type="email"]');
+        if (input.value) {
+          await saveNewsletterEmail(input.value);
+          input.value = '';
+          const msg = document.getElementById('wr-newsletter-success');
+          msg.style.display = 'block';
+          setTimeout(() => { msg.style.display = 'none'; }, 3000);
+        }
+      });
+    });
+
+    async function loadFeed() {
+      const feed = document.getElementById('wr-feed');
+      const empty = document.getElementById('wr-empty-state');
+      const posts = await getAllPosts();
+      const user = getCurrentUser();
+      const userIsAdmin = user && isAdmin(user);
+
+      if (posts.length === 0) {
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+
+      feed.innerHTML = posts.map(post => {
+        const initial = (post.authorName || 'A')[0].toUpperCase();
+        const date = new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const readTime = Math.max(1, Math.ceil((post.body || '').split(/\s+/).length / 200));
+        const excerpt = (post.body || '').replace(/<[^>]*>/g, '').substring(0, 180) + '...';
+
+        return `
+          <div class="wr-article">
+            <div>
+              <div class="wr-article__meta">
+                <div class="wr-article__avatar">${initial}</div>
+                <span>${post.authorName || 'Anonymous'}</span>
+              </div>
+              <div class="wr-article__title">${post.title || 'Untitled'}</div>
+              <div class="wr-article__excerpt">${excerpt}</div>
+              <div class="wr-article__footer">
+                <span>${date}</span>
+                <span>·</span>
+                <span>${readTime} min read</span>
+                ${post.tags ? post.tags.split(',').slice(0,2).map(t => `<span style="background:rgba(255,255,255,0.06);padding:0.15rem 0.5rem;border-radius:12px;">${t.trim()}</span>`).join('') : ''}
+                ${userIsAdmin ? `<button class="wr-article__delete" data-id="${post.id}" onclick="handleDelete('${post.id}')">Delete</button>` : ''}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function handleDelete(postId) {
+      if (!confirm('Are you sure you want to delete this article? This cannot be undone.')) return;
+      await deletePost(postId);
+      await loadFeed();
+    }
+  </script>
 </body>
 </html>

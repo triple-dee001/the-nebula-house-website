@@ -153,8 +153,10 @@ function initNewsletterForm() {
       const successMsg = form.parentElement.querySelector('.newsletter__success');
 
       if (input && input.value) {
-        // Store email (placeholder for actual integration)
-        console.log('Newsletter signup:', input.value);
+        // Save via auth.js (persists to localStorage + Firebase)
+        if (typeof saveNewsletterEmail === 'function') {
+          saveNewsletterEmail(input.value);
+        }
 
         input.value = '';
 

@@ -7,110 +7,96 @@
   <link rel="stylesheet" href="css/styles.css">
   <style>
     :root {
-      /* Force a clean, white admin theme overriding the global dark theme */
-      --bg-color: #f7f9fa;
-      --text-color: #111111;
-      --text-muted: #555555;
-      --accent-color: #000000;
-      --border-color: #e1e4e8;
-      --card-bg: #ffffff;
+      --admin-bg: #fafafa;
+      --admin-card: #ffffff;
+      --admin-text: #111;
+      --admin-muted: #666;
+      --admin-border: #e5e7eb;
+      --admin-accent: #111;
+      --admin-danger: #ef4444;
     }
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-color);
-    }
+    body { background: var(--admin-bg); color: var(--admin-text); }
+
     .admin-layout {
-      display: grid;
-      grid-template-columns: 250px 1fr;
+      display: grid; grid-template-columns: 240px 1fr;
       min-height: 100vh;
     }
-    .admin-sidebar {
-      background: var(--card-bg);
-      border-right: 1px solid var(--border-color);
-      padding: var(--space-xl);
-      display: flex;
-      flex-direction: column;
-    }
-    .admin-nav {
-      margin-top: var(--space-2xl);
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      flex: 1;
-    }
-    .admin-nav a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 1.1rem;
-      padding: 0.75rem 1rem;
-      border-radius: 4px;
-      transition: background 0.2s, color 0.2s;
-    }
-    .admin-nav a:hover, .admin-nav a.active {
-      background: var(--border-color);
-      color: var(--text-color);
-    }
-    .admin-main {
-      padding: var(--space-2xl) var(--space-3xl);
-    }
-    .stat-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: var(--space-xl);
-      margin-bottom: var(--space-3xl);
-    }
-    .stat-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      padding: var(--space-xl);
-      border-radius: 8px;
-    }
-    .stat-card h3 {
-      font-size: 1rem;
-      color: var(--text-muted);
-      margin-bottom: 0.5rem;
-    }
-    .stat-card .value {
-      font-size: 2.5rem;
-      font-weight: 700;
-      font-family: var(--font-secondary);
-    }
-    .data-table-container {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-    }
-    .data-table th, .data-table td {
-      padding: 1rem;
-      border-bottom: 1px solid var(--border-color);
-    }
-    .data-table th {
-      background: #fafafa;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
     @media (max-width: 768px) {
-      .admin-layout {
-        grid-template-columns: 1fr;
-      }
-      .admin-sidebar {
-        border-right: none;
-        border-bottom: 1px solid var(--border-color);
-        padding: var(--space-md);
-      }
-      .admin-nav {
-        flex-direction: row;
-        overflow-x: auto;
-        margin-top: var(--space-md);
-        padding-bottom: 1rem;
-      }
+      .admin-layout { grid-template-columns: 1fr; }
+      .admin-sidebar { border-right: none; border-bottom: 1px solid var(--admin-border); }
     }
+
+    /* Sidebar */
+    .admin-sidebar {
+      background: var(--admin-card); border-right: 1px solid var(--admin-border);
+      padding: 1.5rem; display: flex; flex-direction: column;
+    }
+    .admin-sidebar__brand { text-align: center; padding-bottom: 1.5rem; border-bottom: 1px solid var(--admin-border); }
+    .admin-sidebar__brand img { width: 40px; filter: invert(1); }
+    .admin-sidebar__brand h2 { font-size: 1.1rem; margin-top: 0.75rem; font-family: var(--font-secondary, sans-serif); }
+    .admin-nav { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.25rem; flex: 1; }
+    .admin-nav a {
+      padding: 0.65rem 0.85rem; border-radius: 6px; color: var(--admin-muted);
+      text-decoration: none; font-size: 0.95rem; transition: all 0.15s;
+      display: flex; align-items: center; gap: 0.6rem;
+    }
+    .admin-nav a:hover, .admin-nav a.active { background: #f3f4f6; color: var(--admin-text); }
+    .admin-nav a.active { font-weight: 600; }
+    .admin-nav__divider { height: 1px; background: var(--admin-border); margin: 1rem 0; }
+
+    /* Main */
+    .admin-main { padding: 2rem 2.5rem; overflow-y: auto; }
+    .admin-main h1 { font-size: 1.75rem; margin-bottom: 0.25rem; }
+    .admin-main p.sub { color: var(--admin-muted); margin-bottom: 2rem; }
+
+    /* Stat Cards */
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2.5rem; }
+    .stat-card {
+      background: var(--admin-card); border: 1px solid var(--admin-border);
+      border-radius: 10px; padding: 1.25rem;
+    }
+    .stat-card h4 { font-size: 0.85rem; color: var(--admin-muted); font-weight: 500; margin-bottom: 0.5rem; }
+    .stat-card .val { font-size: 2rem; font-weight: 700; font-family: var(--font-secondary, sans-serif); }
+
+    /* Tabs */
+    .admin-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--admin-border); margin-bottom: 1.5rem; }
+    .admin-tab {
+      padding: 0.75rem 1.25rem; background: none; border: none; cursor: pointer;
+      color: var(--admin-muted); font-size: 0.95rem; font-family: inherit;
+      border-bottom: 2px solid transparent; transition: all 0.2s;
+    }
+    .admin-tab:hover { color: var(--admin-text); }
+    .admin-tab.active { color: var(--admin-text); border-bottom-color: var(--admin-text); font-weight: 600; }
+
+    /* Tables */
+    .data-panel { background: var(--admin-card); border: 1px solid var(--admin-border); border-radius: 10px; overflow: hidden; }
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th, .data-table td { padding: 0.85rem 1rem; text-align: left; border-bottom: 1px solid var(--admin-border); font-size: 0.9rem; }
+    .data-table th { background: #f9fafb; color: var(--admin-muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: #f9fafb; }
+    .empty-msg { padding: 2rem; text-align: center; color: var(--admin-muted); font-size: 0.95rem; }
+
+    /* Delete button */
+    .btn-delete {
+      padding: 0.3rem 0.7rem; background: transparent; color: var(--admin-danger);
+      border: 1px solid rgba(239,68,68,0.25); border-radius: 4px; font-size: 0.8rem;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-delete:hover { background: rgba(239,68,68,0.08); border-color: var(--admin-danger); }
+
+    .btn-back {
+      display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem;
+      background: var(--admin-accent); color: #fff; border: none; border-radius: 6px;
+      font-size: 0.85rem; text-decoration: none; transition: opacity 0.2s;
+    }
+    .btn-back:hover { opacity: 0.85; }
+    .btn-logout {
+      padding: 0.5rem 1rem; background: transparent; border: 1px solid var(--admin-border);
+      border-radius: 6px; font-size: 0.85rem; cursor: pointer; color: var(--admin-muted);
+      transition: all 0.2s;
+    }
+    .btn-logout:hover { border-color: var(--admin-danger); color: var(--admin-danger); }
   </style>
 </head>
 <body>
@@ -118,111 +104,229 @@
   <div class="admin-layout">
     <!-- Sidebar -->
     <aside class="admin-sidebar">
-      <div style="text-align: center;">
-        <img src="assets/images/room-icon.png" alt="Logo" style="width: 50px; border-radius: 4px; filter: invert(1);">
-        <h2 style="margin-top: 1rem; font-size: 1.25rem; font-family: var(--font-secondary);">Admin HQ</h2>
+      <div class="admin-sidebar__brand">
+        <img src="assets/images/room-icon.png" alt="Logo">
+        <h2>Admin HQ</h2>
       </div>
-      
       <nav class="admin-nav">
-        <a href="#" class="active">Overview</a>
-        <a href="#writers">Writers</a>
-        <a href="#content">Content Hub</a>
-        <a href="#analytics">Analytics</a>
-        <hr style="border:none; border-top: 1px solid var(--border-color); width: 100%; margin: 1rem 0;">
+        <a href="#" class="active" data-tab="overview">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          Overview
+        </a>
+        <a href="#" data-tab="users">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Users
+        </a>
+        <a href="#" data-tab="articles">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Articles
+        </a>
+        <a href="#" data-tab="newsletter">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Newsletter
+        </a>
+        <div class="admin-nav__divider"></div>
         <a href="index.html">← Back to Site</a>
       </nav>
     </aside>
 
-    <!-- Main Content -->
+    <!-- Main -->
     <main class="admin-main">
-      <header style="margin-bottom: var(--space-3xl); display: flex; justify-content: space-between; align-items: center;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2rem;">
         <div>
-          <h1 style="font-size: 2.5rem;">Dashboard Overview</h1>
-          <p style="color: var(--text-muted);">Welcome back. Here is what's happening today.</p>
+          <h1 id="admin-page-title">Dashboard Overview</h1>
+          <p class="sub" id="admin-page-sub">Welcome back, Admin.</p>
         </div>
-        <button class="btn" style="background: black; color: white; padding: 0.5rem 1rem;" onclick="localStorage.removeItem('nebula_user'); window.location.href='index.html';">Log Out</button>
-      </header>
+        <button class="btn-logout" id="admin-logout">Log Out</button>
+      </div>
 
       <!-- Stats -->
-      <section class="stat-cards">
+      <div class="stat-grid" id="stats-section">
         <div class="stat-card">
-          <h3>Registered Writers</h3>
-          <div class="value" id="stat-writers">0</div>
+          <h4>Registered Users</h4>
+          <div class="val" id="stat-users">0</div>
         </div>
         <div class="stat-card">
-          <h3>Total Submissions</h3>
-          <div class="value" id="stat-submissions">0</div>
+          <h4>Published Articles</h4>
+          <div class="val" id="stat-articles">0</div>
         </div>
         <div class="stat-card">
-          <h3>Page Views (Simulated)</h3>
-          <div class="value" id="stat-views">1,492</div>
+          <h4>Newsletter Subscribers</h4>
+          <div class="val" id="stat-newsletter">0</div>
         </div>
         <div class="stat-card">
-          <h3>Subscribers</h3>
-          <div class="value" id="stat-subs">124</div>
+          <h4>Page Views (est.)</h4>
+          <div class="val">1,492</div>
         </div>
-      </section>
+      </div>
 
-      <!-- User DB -->
-      <section id="writers">
-        <h2 style="margin-bottom: var(--space-md);">Recent Registrations</h2>
-        <div class="data-table-container">
+      <!-- Tab Content -->
+      <div id="tab-overview">
+        <h2 style="font-size:1.15rem; margin-bottom:1rem;">Recent Registrations</h2>
+        <div class="data-panel">
           <table class="data-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Joined Date</th>
-                <th>Posts</th>
-              </tr>
-            </thead>
-            <tbody id="admin-user-list">
-              <!-- JS injected -->
-            </tbody>
+            <thead><tr><th>Name</th><th>Email</th><th>Joined</th></tr></thead>
+            <tbody id="overview-users"></tbody>
           </table>
-          <div id="no-users-msg" style="padding: 2rem; text-align: center; color: var(--text-muted); display: none;">No registered users yet.</div>
+          <div class="empty-msg" id="overview-users-empty" style="display:none;">No registered users yet.</div>
         </div>
-      </section>
+      </div>
+
+      <div id="tab-users" style="display:none;">
+        <h2 style="font-size:1.15rem; margin-bottom:1rem;">All Registered Users</h2>
+        <div class="data-panel">
+          <table class="data-table">
+            <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th></tr></thead>
+            <tbody id="all-users-list"></tbody>
+          </table>
+          <div class="empty-msg" id="all-users-empty" style="display:none;">No users.</div>
+        </div>
+      </div>
+
+      <div id="tab-articles" style="display:none;">
+        <h2 style="font-size:1.15rem; margin-bottom:1rem;">All Published Articles</h2>
+        <div class="data-panel">
+          <table class="data-table">
+            <thead><tr><th>Title</th><th>Author</th><th>Date</th><th>Actions</th></tr></thead>
+            <tbody id="all-articles-list"></tbody>
+          </table>
+          <div class="empty-msg" id="all-articles-empty" style="display:none;">No articles published yet.</div>
+        </div>
+      </div>
+
+      <div id="tab-newsletter" style="display:none;">
+        <h2 style="font-size:1.15rem; margin-bottom:1rem;">Newsletter Subscribers</h2>
+        <div class="data-panel">
+          <table class="data-table">
+            <thead><tr><th>Email</th><th>Subscribed On</th></tr></thead>
+            <tbody id="newsletter-list"></tbody>
+          </table>
+          <div class="empty-msg" id="newsletter-empty" style="display:none;">No subscribers yet.</div>
+        </div>
+      </div>
+
     </main>
   </div>
 
-  <!-- Script to load mock analytics and DB users -->
+  <!-- Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+  <script src="js/auth.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Fetch users from localStorage (stored as nebula_users dictionary)
-      const usersDict = JSON.parse(localStorage.getItem('nebula_users')) || {};
-      const postsArray = JSON.parse(localStorage.getItem('nebula_posts')) || [];
+    document.addEventListener('DOMContentLoaded', async () => {
+      // ─── Auth Guard: Admin only ───
+      setTimeout(async () => {
+        const user = getCurrentUser();
+        if (!user || !isAdmin(user)) {
+          window.location.href = 'index.html';
+          return;
+        }
+        await loadDashboard();
+      }, 300);
 
-      const userIds = Object.keys(usersDict);
-      
-      document.getElementById('stat-writers').innerText = userIds.length;
-      document.getElementById('stat-submissions').innerText = postsArray.length;
+      // ─── Tab Navigation ───
+      document.querySelectorAll('.admin-nav a[data-tab]').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const tab = link.dataset.tab;
+          document.querySelectorAll('.admin-nav a[data-tab]').forEach(l => l.classList.remove('active'));
+          link.classList.add('active');
 
-      const tbody = document.getElementById('admin-user-list');
-      const noUsersMsg = document.getElementById('no-users-msg');
+          ['overview', 'users', 'articles', 'newsletter'].forEach(t => {
+            const el = document.getElementById('tab-' + t);
+            if (el) el.style.display = t === tab ? 'block' : 'none';
+          });
 
-      if (userIds.length === 0) {
-        noUsersMsg.style.display = 'block';
-      } else {
-        userIds.forEach(uid => {
-          const user = usersDict[uid];
-          // count posts for this user
-          const userPostCount = postsArray.filter(p => p.authorId === uid).length;
+          // Update header
+          const titles = { overview: 'Dashboard Overview', users: 'User Management', articles: 'Content Moderation', newsletter: 'Newsletter Subscribers' };
+          document.getElementById('admin-page-title').textContent = titles[tab] || 'Dashboard';
 
-          // mock joined date
-          const joinedDate = user.joined || new Date().toISOString().split('T')[0];
-
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td style="font-weight: 500;">${user.name}</td>
-            <td>${user.email}</td>
-            <td>${joinedDate}</td>
-            <td>${userPostCount}</td>
-          `;
-          tbody.appendChild(tr);
+          // Show/hide stats
+          document.getElementById('stats-section').style.display = tab === 'overview' ? '' : 'none';
         });
-      }
+      });
+
+      // ─── Logout ───
+      document.getElementById('admin-logout').addEventListener('click', async () => {
+        await signOut();
+        window.location.href = 'index.html';
+      });
     });
+
+    async function loadDashboard() {
+      const users = await getAllUsers();
+      const posts = await getAllPosts();
+      const subs = await getNewsletterSubs();
+
+      // Stats
+      document.getElementById('stat-users').textContent = users.length;
+      document.getElementById('stat-articles').textContent = posts.length;
+      document.getElementById('stat-newsletter').textContent = subs.length;
+
+      // ─── Overview: Recent users (top 5) ───
+      const overviewTbody = document.getElementById('overview-users');
+      if (users.length === 0) {
+        document.getElementById('overview-users-empty').style.display = 'block';
+      } else {
+        overviewTbody.innerHTML = users.slice(0, 5).map(u => `
+          <tr>
+            <td style="font-weight:500;">${u.name || 'N/A'}</td>
+            <td>${u.email}</td>
+            <td>${u.joined ? new Date(u.joined).toLocaleDateString() : '—'}</td>
+          </tr>
+        `).join('');
+      }
+
+      // ─── Users tab: Full list ───
+      const usersTbody = document.getElementById('all-users-list');
+      if (users.length === 0) {
+        document.getElementById('all-users-empty').style.display = 'block';
+      } else {
+        usersTbody.innerHTML = users.map(u => `
+          <tr>
+            <td style="font-weight:500;">${u.name || 'N/A'}</td>
+            <td>${u.email}</td>
+            <td><span style="background:${u.role==='admin'?'#000':'#e5e7eb'};color:${u.role==='admin'?'#fff':'#333'};padding:0.2rem 0.6rem;border-radius:12px;font-size:0.8rem;">${u.role || 'user'}</span></td>
+            <td>${u.joined ? new Date(u.joined).toLocaleDateString() : '—'}</td>
+          </tr>
+        `).join('');
+      }
+
+      // ─── Articles tab: Full list with delete ───
+      const articlesTbody = document.getElementById('all-articles-list');
+      if (posts.length === 0) {
+        document.getElementById('all-articles-empty').style.display = 'block';
+      } else {
+        articlesTbody.innerHTML = posts.map(p => `
+          <tr>
+            <td style="font-weight:500;">${p.title || 'Untitled'}</td>
+            <td>${p.authorName || p.authorEmail || 'Unknown'}</td>
+            <td>${p.createdAt ? new Date(p.createdAt).toLocaleDateString() : '—'}</td>
+            <td><button class="btn-delete" onclick="adminDeletePost('${p.id}')">Delete</button></td>
+          </tr>
+        `).join('');
+      }
+
+      // ─── Newsletter tab ───
+      const nlTbody = document.getElementById('newsletter-list');
+      if (subs.length === 0) {
+        document.getElementById('newsletter-empty').style.display = 'block';
+      } else {
+        nlTbody.innerHTML = subs.map(s => `
+          <tr>
+            <td>${s.email}</td>
+            <td>${s.subscribedAt ? new Date(s.subscribedAt).toLocaleDateString() : '—'}</td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    async function adminDeletePost(postId) {
+      if (!confirm('Delete this article permanently?')) return;
+      await deletePost(postId);
+      await loadDashboard();
+    }
   </script>
 </body>
 </html>

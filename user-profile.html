@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile | The Nebula House</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .profile-card {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; padding: var(--space-2xl); margin-bottom: var(--space-2xl);
+    }
+    .profile-header {
+      display: flex; align-items: center; gap: var(--space-xl); margin-bottom: var(--space-xl);
+    }
+    .profile-avatar {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: rgba(255,255,255,0.08); display: flex; align-items:center;
+      justify-content:center; font-size: 2rem; font-weight: 700;
+      font-family: var(--font-secondary); color: #fff;
+    }
+    .profile-name { font-family: var(--font-primary); font-size: 1.75rem; margin-bottom: 0.25rem; }
+    .profile-email { color: var(--text-muted); font-size: 0.95rem; }
+    .profile-joined { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.25rem; }
+    .profile-stats { display: flex; gap: var(--space-2xl); margin-top: var(--space-xl); }
+    .profile-stat { text-align: center; }
+    .profile-stat__value { font-size: 1.75rem; font-weight: 700; font-family: var(--font-secondary); }
+    .profile-stat__label { font-size: 0.85rem; color: var(--text-muted); }
+    .profile-posts { margin-top: var(--space-xl); }
+    .profile-post {
+      padding: var(--space-md) 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .profile-post__title {
+      font-family: var(--font-primary); font-size: 1.15rem; font-weight: 600; margin-bottom: 0.25rem;
+    }
+    .profile-post__meta { color: var(--text-muted); font-size: 0.85rem; }
+    .profile-actions {
+      display: flex; gap: 1rem; margin-top: var(--space-xl);
+    }
+    .btn-signout {
+      padding: 0.6rem 1.5rem; background: transparent; color: #e55;
+      border: 1px solid rgba(220,50,50,0.3); border-radius: 6px;
+      cursor: pointer; font-size: 0.9rem; transition: all 0.2s;
+    }
+    .btn-signout:hover { background: rgba(220,50,50,0.1); border-color: #e55; }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar__inner">
+      <div class="navbar__logo"><a href="index.html"><img src="assets/images/room-icon.png" alt="The Nebula House" class="navbar__logo-img"></a></div>
+      <div class="navbar__links">
+        <a href="index.html" class="navbar__link">Home</a>
+        <a href="about.html" class="navbar__link">About</a>
+        <div class="navbar__dropdown">
+          <span class="navbar__link navbar__dropdown-trigger">Our Rooms <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+          <div class="navbar__dropdown-menu">
+            <a href="the-chapter-room.html" class="navbar__dropdown-item">The Chapter Room</a>
+            <a href="my-thoughts.html" class="navbar__dropdown-item">My Thoughts</a>
+            <a href="the-writers-room.html" class="navbar__dropdown-item">The Writer's Room</a>
+            <a href="the-publishing-room.html" class="navbar__dropdown-item">The Publishing Room</a>
+            <a href="the-opinion-yard.html" class="navbar__dropdown-item">The Opinion Yard</a>
+            <a href="the-nebula-academy.html" class="navbar__dropdown-item">The Nebula Academy</a>
+          </div>
+        </div>
+        <a href="#" class="navbar__link" id="nav-account-icon" title="Account" style="display:flex; align-items:center;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </a>
+      </div>
+      <div class="navbar__toggle" id="menuToggle"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html" class="mobile-menu__link">Home</a><a href="about.html" class="mobile-menu__link">About</a>
+    <div class="mobile-menu__divider"></div>
+    <a href="the-chapter-room.html" class="mobile-menu__link">The Chapter Room</a>
+    <a href="my-thoughts.html" class="mobile-menu__link">My Thoughts</a>
+    <a href="the-writers-room.html" class="mobile-menu__link">The Writer's Room</a>
+    <a href="the-publishing-room.html" class="mobile-menu__link">The Publishing Room</a>
+    <a href="the-opinion-yard.html" class="mobile-menu__link">The Opinion Yard</a>
+    <a href="the-nebula-academy.html" class="mobile-menu__link">The Nebula Academy</a>
+  </div>
+
+  <!-- ===== PROFILE ===== -->
+  <section class="section section--dark" style="padding-top: calc(var(--space-4xl) + 80px); min-height: 100vh;">
+    <div class="container container--narrow">
+
+      <div class="profile-card reveal" id="profile-card">
+        <div class="profile-header">
+          <div class="profile-avatar" id="profile-avatar">?</div>
+          <div>
+            <div class="profile-name" id="profile-name">Loading...</div>
+            <div class="profile-email" id="profile-email"></div>
+            <div class="profile-joined" id="profile-joined"></div>
+          </div>
+        </div>
+        <div class="profile-stats">
+          <div class="profile-stat">
+            <div class="profile-stat__value" id="profile-post-count">0</div>
+            <div class="profile-stat__label">Stories Published</div>
+          </div>
+        </div>
+        <div class="profile-actions">
+          <a href="write.html" class="btn"><span>Write a Story</span> <span class="arrow">→</span></a>
+          <button class="btn-signout" id="btn-signout">Sign Out</button>
+        </div>
+      </div>
+
+      <div class="section-header reveal">
+        <p class="section-header__label">My Work</p>
+        <h2 class="section-header__title">Published Stories</h2>
+        <div class="section-header__line"></div>
+      </div>
+
+      <div id="profile-posts">
+        <p style="text-align:center; color:var(--text-muted); padding:var(--space-2xl) 0;">You haven't published any stories yet.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container"><div class="footer__grid"><div class="footer__brand"><a href="index.html"><img src="assets/images/room-icon.png" alt="The Nebula House" class="footer__logo-img"></a><p class="footer__brand-tagline">From Imagination to Infinity.</p><p class="footer__brand-tagline">A digital literary ecosystem.</p></div><div class="footer__rooms"><h4 class="footer__heading">Rooms</h4><a href="the-chapter-room.html" class="footer__link">The Chapter Room</a><a href="the-writers-room.html" class="footer__link">The Writer's Room</a><a href="the-nebula-academy.html" class="footer__link">The Nebula Academy</a><a href="the-publishing-room.html" class="footer__link">The Publishing Room</a><a href="the-opinion-yard.html" class="footer__link">The Opinion Yard</a><a href="my-thoughts.html" class="footer__link">My Thoughts</a></div><div class="footer__connect"><h4 class="footer__heading">Connect</h4><a href="mailto:kelechioji@thenebulahouse.com" class="footer__link">Email</a><a href="https://www.instagram.com/the_nebula_house" target="_blank" rel="noopener" class="footer__link">Instagram</a><a href="https://youtube.com/@kelechi_oji" target="_blank" rel="noopener" class="footer__link">YouTube</a></div></div><div class="footer__bottom"><p>&copy; 2026 The Nebula House. All Rights Reserved.</p></div></div>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      setTimeout(async () => {
+        const user = getCurrentUser();
+        if (!user) {
+          window.location.href = 'index.html';
+          return;
+        }
+
+        // Populate profile
+        document.getElementById('profile-avatar').textContent = (user.name || user.email)[0].toUpperCase();
+        document.getElementById('profile-name').textContent = user.name || 'Writer';
+        document.getElementById('profile-email').textContent = user.email;
+        document.getElementById('profile-joined').textContent = user.joined ? `Joined ${new Date(user.joined).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}` : '';
+
+        // Load user's posts
+        const allPosts = await getAllPosts();
+        const myPosts = allPosts.filter(p => p.authorEmail === user.email);
+        document.getElementById('profile-post-count').textContent = myPosts.length;
+
+        const container = document.getElementById('profile-posts');
+        if (myPosts.length > 0) {
+          container.innerHTML = myPosts.map(p => `
+            <div class="profile-post">
+              <div class="profile-post__title">${p.title}</div>
+              <div class="profile-post__meta">${new Date(p.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} · ${Math.max(1, Math.ceil((p.body||'').split(/\s+/).length / 200))} min read</div>
+            </div>
+          `).join('');
+        }
+
+        // Sign out
+        document.getElementById('btn-signout').addEventListener('click', async () => {
+          await signOut();
+          window.location.href = 'index.html';
+        });
+      }, 300);
+    });
+  </script>
+</body>
+</html>
