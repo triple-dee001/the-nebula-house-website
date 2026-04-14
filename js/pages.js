@@ -58,48 +58,7 @@ function initBook3DTilt() {
 }
 
 
-/* --- Chapter Room: Expandable book summaries --- */
-function initChapterRoom() {
-  const timelineItems = document.querySelectorAll('.book-timeline__item');
-
-  timelineItems.forEach(item => {
-    const desc = item.querySelector('.book-timeline__desc');
-    if (!desc) return;
-
-    const fullText = desc.textContent;
-    const truncateLength = 150;
-
-    if (fullText.length > truncateLength) {
-      const truncated = fullText.substring(0, truncateLength).trim() + '...';
-      desc.setAttribute('data-full', fullText);
-      desc.setAttribute('data-truncated', truncated);
-      desc.textContent = truncated;
-
-      const toggleBtn = document.createElement('button');
-      toggleBtn.className = 'link-btn';
-      toggleBtn.innerHTML = 'Read More <span class="arrow">→</span>';
-      toggleBtn.style.marginTop = '0.5rem';
-      toggleBtn.style.fontSize = '0.875rem';
-
-      toggleBtn.addEventListener('click', () => {
-        const isExpanded = desc.getAttribute('data-expanded') === 'true';
-        if (isExpanded) {
-          desc.textContent = desc.getAttribute('data-truncated');
-          desc.setAttribute('data-expanded', 'false');
-          toggleBtn.innerHTML = 'Read More <span class="arrow">→</span>';
-        } else {
-          desc.textContent = desc.getAttribute('data-full');
-          desc.setAttribute('data-expanded', 'true');
-          toggleBtn.innerHTML = 'Show Less <span class="arrow">↑</span>';
-        }
-        desc.after(toggleBtn);
-      });
-
-      desc.after(toggleBtn);
-    }
-  });
-}
-
+/* --- Chapter Room: Removed expanding text, now direct links --- */
 
 /* --- Academy: Animated stat counters --- */
 function initAcademy() {
