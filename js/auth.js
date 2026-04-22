@@ -6,12 +6,12 @@
 // ─── CONFIGURATION ───────────────────────────
 // TODO: Replace with your actual Firebase config from console.firebase.google.com
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyB9Mg6HUbDHrHMEF1dHRt_b1Rb64vQUxzA",
+  authDomain: "the-nebula-house-14152.firebaseapp.com",
+  projectId: "the-nebula-house-14152",
+  storageBucket: "the-nebula-house-14152.firebasestorage.app",
+  messagingSenderId: "702880167709",
+  appId: "1:702880167709:web:1715cfef82a655316d13f4"
 };
 
 // Admin emails — add more as needed
@@ -20,7 +20,7 @@ const ADMIN_EMAILS = [
 ];
 
 // Toggle this to true once you paste your real Firebase config above
-const USE_FIREBASE = false;
+const USE_FIREBASE = true;
 
 // ─── FIREBASE INIT ───────────────────────────
 let auth = null;
