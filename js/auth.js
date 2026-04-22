@@ -6,12 +6,13 @@
 // ─── CONFIGURATION ───────────────────────────
 // TODO: Replace with your actual Firebase config from console.firebase.google.com
 const firebaseConfig = {
-  apiKey: "AIzaSyB9Mg6HUbDHrHMEF1dHRt_b1Rb64vQUxzA",
+  apiKey: "AIzaSyB9Mg6HUbDHrHMef1dHRt_b1Rb64vQUXzA",
   authDomain: "the-nebula-house-14152.firebaseapp.com",
   projectId: "the-nebula-house-14152",
   storageBucket: "the-nebula-house-14152.firebasestorage.app",
   messagingSenderId: "702880167709",
-  appId: "1:702880167709:web:1715cfef82a655316d13f4"
+  appId: "1:702880167709:web:1715cfef82a655316d13f4",
+  measurementId: "G-EP5DPZYCGC"
 };
 
 // Admin emails — add more as needed
@@ -559,7 +560,7 @@ async function addPostComment(postId, comment) {
   if (USE_FIREBASE && db) {
     // Save the actual comment
     await db.collection('posts').doc(postId).collection('comments').add(comment);
-    
+
     // Update the counter
     const ref = db.collection('post_metrics').doc(postId);
     const doc = await ref.get();
