@@ -141,31 +141,50 @@ function initStarField() {
 }
 
 
-/* --- Newsletter Form --- */
+/* --- Newsletter Form (Mailchimp Ready) --- */
 function initNewsletterForm() {
   const forms = document.querySelectorAll('.newsletter__form, .coming-soon__form');
 
+  // Check if already subscribed to hide form visually
+  if (localStorage.getItem('nebula_newsletter_subscribed') === 'true') {
+    forms.forEach(form => {
+      const parent = form.closest('.newsletter__content') || form.parentElement;
+      if (parent) {
+        parent.innerHTML = '<p style="color: #4caf50; font-size: 1.1rem; font-family: var(--font-secondary); padding: 1rem 0;">You are subscribed to the Nebula newsletter. Thank you.</p>';
+      }
+    });
+    return;
+  }
+
   forms.forEach(form => {
     form.addEventListener('submit', (e) => {
-      e.preventDefault();
-
+      // If we are wired to Mailchimp (form has action), we DO NOT prevent default.
+      // We let it submit, but we flag the local storage.
+      const action = form.getAttribute('action');
       const input = form.querySelector('input[type="email"]');
       const successMsg = form.parentElement.querySelector('.newsletter__success');
-
+      
       if (input && input.value) {
-        // Save via auth.js (persists to localStorage + Firebase)
+        // Save via auth.js locally & Firebase (if enabled)
         if (typeof saveNewsletterEmail === 'function') {
           saveNewsletterEmail(input.value);
         }
 
-        input.value = '';
+        // Set the hidden flag
+        localStorage.setItem('nebula_newsletter_subscribed', 'true');
 
-        if (successMsg) {
-          successMsg.classList.add('visible');
-          setTimeout(() => {
-            successMsg.classList.remove('visible');
-          }, 4000);
+        if (!action || action === '#') {
+          // If no Mailchimp action yet, block submission and just show JS message
+          e.preventDefault();
+          input.value = '';
+          if (successMsg) {
+            successMsg.classList.add('visible');
+            setTimeout(() => {
+              successMsg.classList.remove('visible');
+            }, 4000);
+          }
         }
+        // If action exists, browser will POST to Mailchimp and redirect user properly.
       }
     });
   });

@@ -238,17 +238,19 @@
           <h2 class="nominate-box__title">What Should We Read Next?</h2>
           <p class="nominate-box__desc">Have a book that shifted your perspective? Nominate it for an upcoming Chapter Room discussion.</p>
         </div>
-        <form class="nominate-form" onsubmit="event.preventDefault(); alert('Nomination received! Thank you.'); this.reset();">
+        <form class="nominate-form" id="nomination-form">
+          <div id="nom-error" style="color:#e55; margin-bottom:1rem; display:none; font-size:0.9rem;"></div>
           <div class="nominate-form__group">
-            <input type="text" class="nominate-form__input" placeholder="Book Title" required>
+            <input type="text" id="nom-title" class="nominate-form__input" placeholder="Book Title" required>
           </div>
           <div class="nominate-form__group">
-            <input type="text" class="nominate-form__input" placeholder="Author" required>
+            <input type="text" id="nom-author" class="nominate-form__input" placeholder="Author" required>
           </div>
           <div class="nominate-form__group">
-            <textarea class="nominate-form__input" placeholder="Why should we read this? (Optional)" rows="3"></textarea>
+            <textarea id="nom-reason" class="nominate-form__input" placeholder="Why should we read this? (Optional)" rows="3"></textarea>
           </div>
-          <button type="submit" class="btn btn--block"><span>Submit Nomination</span> <span class="arrow">→</span></button>
+          <button type="submit" class="btn btn--secondary" id="nom-submit">Submit Nomination</button>
+          <div id="nom-success" style="color:#4caf50; margin-top:1rem; display:none; font-size:0.95rem;">Nomination submitted! We'll review it soon.</div>
         </form>
       </div>
     </div>
@@ -311,5 +313,56 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
   <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('nomination-form');
+      if (form) {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const btn = document.getElementById('nom-submit');
+          const errorMsg = document.getElementById('nom-error');
+          const successMsg = document.getElementById('nom-success');
+          
+          errorMsg.style.display = 'none';
+          successMsg.style.display = 'none';
+          
+          // Verify user is signed in
+          const user = getCurrentUser();
+          if (!user) {
+            errorMsg.textContent = 'Please sign in to nominate a book.';
+            errorMsg.style.display = 'block';
+            openAuthModal();
+            return;
+          }
+
+          btn.disabled = true;
+          btn.textContent = 'Submitting...';
+
+          try {
+            const nomination = {
+              title: document.getElementById('nom-title').value.trim(),
+              author: document.getElementById('nom-author').value.trim(),
+              reason: document.getElementById('nom-reason').value.trim(),
+              submitterId: user.uid,
+              submitterName: user.name || user.email,
+              submitterEmail: user.email,
+              submittedAt: new Date().toISOString()
+            };
+
+            await submitBookNomination(nomination);
+            
+            form.reset();
+            successMsg.style.display = 'block';
+          } catch (err) {
+            errorMsg.textContent = 'Error: ' + err.message;
+            errorMsg.style.display = 'block';
+          } finally {
+            btn.disabled = false;
+            btn.textContent = 'Submit Nomination';
+          }
+        });
+      }
+    });
+  </script>
 </body>
 </html>

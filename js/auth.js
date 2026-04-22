@@ -430,6 +430,23 @@ async function saveNewsletterEmail(email) {
 }
 
 // ─── POSTS (CRUD) ────────────────────────────
+async function updateUserProfile(uid, data) {
+  if (USE_FIREBASE && db) {
+    await db.collection('users').doc(uid).update(data);
+    // Also update current session
+    Object.assign(currentUser, data);
+    return currentUser;
+  }
+  const users = JSON.parse(localStorage.getItem('nebula_users')) || {};
+  if (users[uid]) {
+    Object.assign(users[uid], data);
+    localStorage.setItem('nebula_users', JSON.stringify(users));
+    Object.assign(currentUser, data);
+    localStorage.setItem('nebula_current_user', JSON.stringify(currentUser));
+  }
+  return currentUser;
+}
+
 async function publishPost(post) {
   if (USE_FIREBASE && db) {
     const ref = await db.collection('posts').add(post);
@@ -475,6 +492,27 @@ async function getNewsletterSubs() {
     return snap.docs.map(d => d.data());
   }
   return JSON.parse(localStorage.getItem('nebula_newsletter')) || [];
+}
+
+// ─── NOMINATIONS (Book Suggestions) ────────────
+async function submitBookNomination(nomination) {
+  if (USE_FIREBASE && db) {
+    const ref = await db.collection('nominations').add(nomination);
+    return ref.id;
+  }
+  const noms = JSON.parse(localStorage.getItem('nebula_nominations')) || [];
+  nomination.id = 'nom_' + Date.now();
+  noms.unshift(nomination);
+  localStorage.setItem('nebula_nominations', JSON.stringify(noms));
+  return nomination.id;
+}
+
+async function getAllNominations() {
+  if (USE_FIREBASE && db) {
+    const snap = await db.collection('nominations').orderBy('submittedAt', 'desc').get();
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  }
+  return JSON.parse(localStorage.getItem('nebula_nominations')) || [];
 }
 
 // ─── INITIALIZATION ─────────────────────────

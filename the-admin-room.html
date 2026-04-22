@@ -125,6 +125,10 @@
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
           Newsletter
         </a>
+        <a href="#" data-tab="nominations">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          Nominations
+        </a>
         <div class="admin-nav__divider"></div>
         <a href="index.html">← Back to Site</a>
       </nav>
@@ -205,6 +209,17 @@
         </div>
       </div>
 
+      <div id="tab-nominations" style="display:none;">
+        <h2 style="font-size:1.15rem; margin-bottom:1rem;">Chapter Room Book Nominations</h2>
+        <div class="data-panel">
+          <table class="data-table">
+            <thead><tr><th>Book Title</th><th>Author</th><th>Reason</th><th>Nominated By</th><th>Date</th></tr></thead>
+            <tbody id="nominations-list"></tbody>
+          </table>
+          <div class="empty-msg" id="nominations-empty" style="display:none;">No book nominations yet.</div>
+        </div>
+      </div>
+
     </main>
   </div>
 
@@ -233,13 +248,13 @@
           document.querySelectorAll('.admin-nav a[data-tab]').forEach(l => l.classList.remove('active'));
           link.classList.add('active');
 
-          ['overview', 'users', 'articles', 'newsletter'].forEach(t => {
+          ['overview', 'users', 'articles', 'newsletter', 'nominations'].forEach(t => {
             const el = document.getElementById('tab-' + t);
             if (el) el.style.display = t === tab ? 'block' : 'none';
           });
 
           // Update header
-          const titles = { overview: 'Dashboard Overview', users: 'User Management', articles: 'Content Moderation', newsletter: 'Newsletter Subscribers' };
+          const titles = { overview: 'Dashboard Overview', users: 'User Management', articles: 'Content Moderation', newsletter: 'Newsletter Subscribers', nominations: 'Book Nominations' };
           document.getElementById('admin-page-title').textContent = titles[tab] || 'Dashboard';
 
           // Show/hide stats
@@ -258,6 +273,7 @@
       const users = await getAllUsers();
       const posts = await getAllPosts();
       const subs = await getNewsletterSubs();
+      const noms = await getAllNominations();
 
       // Stats
       document.getElementById('stat-users').textContent = users.length;
@@ -317,6 +333,22 @@
           <tr>
             <td>${s.email}</td>
             <td>${s.subscribedAt ? new Date(s.subscribedAt).toLocaleDateString() : '—'}</td>
+          </tr>
+        `).join('');
+      }
+
+      // ─── Nominations tab ───
+      const nomTbody = document.getElementById('nominations-list');
+      if (noms.length === 0) {
+        document.getElementById('nominations-empty').style.display = 'block';
+      } else {
+        nomTbody.innerHTML = noms.map(n => `
+          <tr>
+            <td style="font-weight:500;">${n.title}</td>
+            <td>${n.author}</td>
+            <td style="max-width:300px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${n.reason}">${n.reason || '—'}</td>
+            <td>${n.submitterEmail}</td>
+            <td>${n.submittedAt ? new Date(n.submittedAt).toLocaleDateString() : '—'}</td>
           </tr>
         `).join('');
       }

@@ -90,13 +90,23 @@
 
       <div class="profile-card reveal" id="profile-card">
         <div class="profile-header">
-          <div class="profile-avatar" id="profile-avatar">?</div>
-          <div>
+          <div class="profile-avatar" id="profile-avatar" style="cursor:pointer;" title="In a full backend, this would open a file picker to upload a new avatar.">?</div>
+          <div style="flex:1;">
             <div class="profile-name" id="profile-name">Loading...</div>
             <div class="profile-email" id="profile-email"></div>
             <div class="profile-joined" id="profile-joined"></div>
           </div>
         </div>
+        
+        <div style="margin-bottom:var(--space-xl);">
+          <label style="display:block; color:var(--text-muted); font-size:0.85rem; margin-bottom:0.5rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">Bio</label>
+          <div style="display:flex; gap:1rem;">
+            <textarea id="profile-bio" rows="2" placeholder="Write a short bio about yourself..." style="flex:1; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#fff; padding:0.75rem; font-family:inherit; font-size:0.95rem; resize:vertical; outline:none;"></textarea>
+            <button id="btn-save-bio" class="btn btn--secondary" style="align-self:flex-start; padding:0.6rem 1.25rem;">Save</button>
+          </div>
+          <div id="bio-success" style="color:#4caf50; font-size:0.85rem; margin-top:0.5rem; display:none;">Bio updated successfully!</div>
+        </div>
+
         <div class="profile-stats">
           <div class="profile-stat">
             <div class="profile-stat__value" id="profile-post-count">0</div>
@@ -139,11 +149,38 @@
           return;
         }
 
+        // Fetch full user doc for custom fields like bio
+        let userData = user;
+        if (typeof db !== 'undefined' && db && user.uid && window.USE_FIREBASE) {
+          const doc = await db.collection('users').doc(user.uid).get();
+          if (doc.exists) userData = { ...user, ...doc.data() };
+        } else {
+           const localUsers = JSON.parse(localStorage.getItem('nebula_users')) || {};
+           if (localUsers[user.uid]) userData = localUsers[user.uid];
+        }
+
         // Populate profile
-        document.getElementById('profile-avatar').textContent = (user.name || user.email)[0].toUpperCase();
-        document.getElementById('profile-name').textContent = user.name || 'Writer';
-        document.getElementById('profile-email').textContent = user.email;
-        document.getElementById('profile-joined').textContent = user.joined ? `Joined ${new Date(user.joined).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}` : '';
+        document.getElementById('profile-avatar').textContent = (userData.name || userData.email)[0].toUpperCase();
+        document.getElementById('profile-name').textContent = userData.name || 'Writer';
+        document.getElementById('profile-email').textContent = userData.email;
+        document.getElementById('profile-joined').textContent = userData.joined ? `Joined ${new Date(userData.joined).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}` : '';
+        document.getElementById('profile-bio').value = userData.bio || '';
+
+        // Save bio
+        document.getElementById('btn-save-bio').addEventListener('click', async () => {
+          const btn = document.getElementById('btn-save-bio');
+          const bio = document.getElementById('profile-bio').value.trim();
+          btn.textContent = 'Saving...';
+          btn.disabled = true;
+          
+          await updateUserProfile(user.uid, { bio });
+          
+          btn.textContent = 'Save';
+          btn.disabled = false;
+          const msg = document.getElementById('bio-success');
+          msg.style.display = 'block';
+          setTimeout(() => msg.style.display = 'none', 3000);
+        });
 
         // Load user's posts
         const allPosts = await getAllPosts();
