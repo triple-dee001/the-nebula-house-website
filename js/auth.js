@@ -477,6 +477,114 @@ async function deletePost(postId) {
   localStorage.setItem('nebula_posts', JSON.stringify(posts));
 }
 
+// ─── POST METRICS (Views, Likes, Ratings, Comments) ─────────
+async function getPostMetrics(postId) {
+  if (USE_FIREBASE && db) {
+    const doc = await db.collection('post_metrics').doc(postId).get();
+    if (doc.exists) return doc.data();
+    return { views: 0, likes: 0, ratingsTotal: 0, ratingsCount: 0, commentsCount: 0 };
+  }
+  return {
+    views: parseInt(localStorage.getItem(`${postId}_views`)) || 0,
+    likes: parseInt(localStorage.getItem(`${postId}_likes_count`)) || 0,
+    ratingsCount: 0, // Fallback doesn't aggregate
+    ratingsTotal: 0,
+    commentsCount: (JSON.parse(localStorage.getItem(`${postId}_comments`)) || []).length
+  };
+}
+
+async function incrementPostView(postId) {
+  if (USE_FIREBASE && db) {
+    const ref = db.collection('post_metrics').doc(postId);
+    const doc = await ref.get();
+    if (!doc.exists) {
+      await ref.set({ views: 1, likes: 0, ratingsTotal: 0, ratingsCount: 0, commentsCount: 0 });
+    } else {
+      await ref.update({ views: firebase.firestore.FieldValue.increment(1) });
+    }
+    return;
+  }
+  const key = `${postId}_views`;
+  let v = parseInt(localStorage.getItem(key)) || 0;
+  localStorage.setItem(key, v + 1);
+}
+
+async function togglePostLike(postId, userId, isLiking) {
+  if (USE_FIREBASE && db) {
+    const ref = db.collection('post_metrics').doc(postId);
+    const doc = await ref.get();
+    if (!doc.exists) {
+      await ref.set({ views: 0, likes: isLiking ? 1 : 0, ratingsTotal: 0, ratingsCount: 0, commentsCount: 0 });
+    } else {
+      const increment = isLiking ? 1 : -1;
+      // Prevent negative likes
+      if (!isLiking && doc.data().likes <= 0) return;
+      await ref.update({ likes: firebase.firestore.FieldValue.increment(increment) });
+    }
+    return;
+  }
+  const countKey = `${postId}_likes_count`;
+  const likedKey = `${postId}_user_liked`;
+  let v = parseInt(localStorage.getItem(countKey)) || 0;
+  if (isLiking) {
+    v++;
+    localStorage.setItem(likedKey, 'true');
+  } else {
+    v = Math.max(0, v - 1);
+    localStorage.setItem(likedKey, 'false');
+  }
+  localStorage.setItem(countKey, v);
+}
+
+async function submitPostRating(postId, userId, rating, previousRating = 0) {
+  if (USE_FIREBASE && db) {
+    const ref = db.collection('post_metrics').doc(postId);
+    const doc = await ref.get();
+    if (!doc.exists) {
+      await ref.set({ views: 0, likes: 0, ratingsTotal: rating, ratingsCount: 1, commentsCount: 0 });
+    } else {
+      let incrementCount = previousRating > 0 ? 0 : 1;
+      let incrementTotal = rating - previousRating;
+      await ref.update({
+        ratingsCount: firebase.firestore.FieldValue.increment(incrementCount),
+        ratingsTotal: firebase.firestore.FieldValue.increment(incrementTotal)
+      });
+    }
+    return;
+  }
+  localStorage.setItem(`${postId}_user_rating`, rating);
+}
+
+async function addPostComment(postId, comment) {
+  if (USE_FIREBASE && db) {
+    // Save the actual comment
+    await db.collection('posts').doc(postId).collection('comments').add(comment);
+    
+    // Update the counter
+    const ref = db.collection('post_metrics').doc(postId);
+    const doc = await ref.get();
+    if (!doc.exists) {
+      await ref.set({ views: 0, likes: 0, ratingsTotal: 0, ratingsCount: 0, commentsCount: 1 });
+    } else {
+      await ref.update({ commentsCount: firebase.firestore.FieldValue.increment(1) });
+    }
+    return;
+  }
+  const key = `${postId}_comments`;
+  const comments = JSON.parse(localStorage.getItem(key)) || [];
+  comments.push(comment);
+  localStorage.setItem(key, JSON.stringify(comments));
+}
+
+async function getPostComments(postId) {
+  if (USE_FIREBASE && db) {
+    const snap = await db.collection('posts').doc(postId).collection('comments').orderBy('timestamp', 'asc').get();
+    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  }
+  return JSON.parse(localStorage.getItem(`${postId}_comments`)) || [];
+}
+
+
 async function getAllUsers() {
   if (USE_FIREBASE && db) {
     const snap = await db.collection('users').orderBy('joined', 'desc').get();

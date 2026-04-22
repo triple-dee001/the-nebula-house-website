@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initAcademy();
   } else if (path.includes('my-thoughts')) {
     initMyThoughts();
+  } else if (path.includes('blog')) {
+    initBlogGrid();
   } else if (
     path.includes('the-writers-room') ||
     path.includes('the-opinion-yard') ||
@@ -23,6 +25,31 @@ document.addEventListener('DOMContentLoaded', () => {
     initComingSoon();
   }
 });
+
+/* --- Blog Grid: Dynamic Metrics --- */
+function initBlogGrid() {
+  const cards = document.querySelectorAll('.blog-card');
+  
+  // Wait slightly to ensure auth.js has loaded Firebase
+  setTimeout(() => {
+    cards.forEach(async (card) => {
+      const postId = card.getAttribute('data-post-id');
+      if (!postId) return;
+      
+      if (typeof getPostMetrics === 'function') {
+        const metrics = await getPostMetrics(postId);
+        
+        const viewsEl = card.querySelector('.card-views');
+        const commentsEl = card.querySelector('.card-comments');
+        const likesEl = card.querySelector('.card-likes');
+        
+        if (viewsEl) viewsEl.textContent = `${metrics.views} view${metrics.views !== 1 ? 's' : ''}`;
+        if (commentsEl) commentsEl.textContent = `${metrics.commentsCount} comment${metrics.commentsCount !== 1 ? 's' : ''}`;
+        if (likesEl) likesEl.textContent = metrics.likes;
+      }
+    });
+  }, 100);
+}
 
 
 /* --- 3D Book: Mouse-tracking tilt effect --- */

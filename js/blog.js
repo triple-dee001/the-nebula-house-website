@@ -2,49 +2,52 @@
    THE NEBULA HOUSE — Blog Post Interactions
    ============================================ */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // Get post identifier from strict URL or fallback to pathname
   const pathParts = window.location.pathname.split('/');
   const rawId = pathParts[pathParts.length - 1].replace(/\.html$/, '') || 'default-post';
   const postId = `post_${rawId}`;
 
-  // 1. View Counter
-  incrementAndDisplayViews(postId);
+  // Wait a small bit for auth.js to init Firebase if it's there
+  setTimeout(async () => {
+    // 1. View Counter
+    await incrementAndDisplayViews(postId);
 
-  // 2. Likes
-  initLikes(postId);
+    // 2. Likes
+    await initLikes(postId);
 
-  // 3. Ratings
-  initRating(postId);
+    // 3. Ratings
+    await initRating(postId);
 
-  // 4. Comments
-  initComments(postId);
+    // 4. Comments
+    await initComments(postId);
+  }, 100);
 });
 
 /* --- 1. Views --- */
-function incrementAndDisplayViews(postId) {
+async function incrementAndDisplayViews(postId) {
   const viewsEl = document.getElementById('post-views');
   if (!viewsEl) return;
 
-  const storageKey = `${postId}_views`;
-  // Simple view counter (increments on every load for prototype purposes)
-  let views = parseInt(localStorage.getItem(storageKey)) || 0;
-  views++;
-  localStorage.setItem(storageKey, views);
-  viewsEl.textContent = `${views} view${views !== 1 ? 's' : ''}`;
+  // Wait for the view to increment, then fetch the updated metrics
+  if (typeof incrementPostView === 'function') {
+    await incrementPostView(postId);
+    const metrics = await getPostMetrics(postId);
+    viewsEl.textContent = `${metrics.views} view${metrics.views !== 1 ? 's' : ''}`;
+  }
 }
 
 /* --- 2. Likes --- */
-function initLikes(postId) {
+async function initLikes(postId) {
   const likeBtn = document.getElementById('like-btn');
   const likeCountEl = document.getElementById('like-count');
   if (!likeBtn || !likeCountEl) return;
 
-  const countKey = `${postId}_likes_count`;
   const likedKey = `${postId}_user_liked`;
-
-  let likeCount = parseInt(localStorage.getItem(countKey)) || 0;
   let hasLiked = localStorage.getItem(likedKey) === 'true';
+
+  let metrics = await getPostMetrics(postId);
+  let likeCount = metrics.likes;
 
   function updateLikeUI() {
     likeCountEl.textContent = likeCount;
@@ -59,7 +62,8 @@ function initLikes(postId) {
 
   updateLikeUI();
 
-  likeBtn.addEventListener('click', () => {
+  likeBtn.addEventListener('click', async () => {
+    // Optimistic UI update
     if (hasLiked) {
       hasLiked = false;
       likeCount = Math.max(0, likeCount - 1);
@@ -67,22 +71,51 @@ function initLikes(postId) {
       hasLiked = true;
       likeCount++;
     }
-    localStorage.setItem(countKey, likeCount);
-    localStorage.setItem(likedKey, hasLiked);
     updateLikeUI();
     likeBtn.style.transform = 'scale(1.2)';
     setTimeout(() => { likeBtn.style.transform = 'scale(1)'; }, 200);
+
+    // Update backend
+    if (typeof togglePostLike === 'function') {
+      const user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+      await togglePostLike(postId, user ? user.uid : 'anonymous', hasLiked);
+    }
   });
 }
 
 /* --- 3. Rating --- */
-function initRating(postId) {
+async function initRating(postId) {
   const stars = document.querySelectorAll('.star-rating .star');
   const ratingText = document.getElementById('rating-text');
+  // We'll add a new element to display the general rating
+  const ratingContainer = document.querySelector('.star-rating');
+  let generalRatingEl = document.getElementById('general-rating');
+  
+  if (!generalRatingEl && ratingContainer) {
+    generalRatingEl = document.createElement('div');
+    generalRatingEl.id = 'general-rating';
+    generalRatingEl.style.fontSize = '0.85rem';
+    generalRatingEl.style.color = 'var(--text-secondary)';
+    generalRatingEl.style.marginTop = '0.5rem';
+    ratingContainer.appendChild(generalRatingEl);
+  }
+
   if (stars.length === 0) return;
 
   const rateKey = `${postId}_user_rating`;
   let currentRating = parseInt(localStorage.getItem(rateKey)) || 0;
+
+  async function fetchAndDisplayGeneralRating() {
+    if (typeof getPostMetrics === 'function' && generalRatingEl) {
+      const metrics = await getPostMetrics(postId);
+      if (metrics.ratingsCount > 0) {
+        const avg = (metrics.ratingsTotal / metrics.ratingsCount).toFixed(1);
+        generalRatingEl.textContent = `General Rating: ${avg}/5 (${metrics.ratingsCount} review${metrics.ratingsCount !== 1 ? 's' : ''})`;
+      } else {
+        generalRatingEl.textContent = 'General Rating: No ratings yet';
+      }
+    }
+  }
 
   function updateStars(rating) {
     stars.forEach((star, index) => {
@@ -101,30 +134,39 @@ function initRating(postId) {
   }
 
   updateStars(currentRating);
+  fetchAndDisplayGeneralRating();
 
   stars.forEach((star, index) => {
     star.addEventListener('mouseover', () => updateStars(index + 1));
     star.addEventListener('mouseout', () => updateStars(currentRating));
-    star.addEventListener('click', () => {
+    star.addEventListener('click', async () => {
+      const previousRating = currentRating;
       currentRating = index + 1;
-      localStorage.setItem(rateKey, currentRating);
       updateStars(currentRating);
+      
+      if (typeof submitPostRating === 'function') {
+        const user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+        await submitPostRating(postId, user ? user.uid : 'anonymous', currentRating, previousRating);
+        fetchAndDisplayGeneralRating(); // Refresh aggregate rating
+      }
     });
   });
 }
 
 /* --- 4. Comments --- */
-function initComments(postId) {
+async function initComments(postId) {
   const form = document.getElementById('comment-form');
   const input = document.getElementById('comment-input');
   const list = document.getElementById('comments-list');
   const countEl = document.getElementById('comment-count');
   if (!form || !list) return;
 
-  const storageKey = `${postId}_comments`;
-
-  function loadComments() {
-    const comments = JSON.parse(localStorage.getItem(storageKey)) || [];
+  async function loadComments() {
+    let comments = [];
+    if (typeof getPostComments === 'function') {
+      comments = await getPostComments(postId);
+    }
+    
     list.innerHTML = '';
     
     if (countEl) {
@@ -136,6 +178,7 @@ function initComments(postId) {
       return;
     }
 
+    // Display newest first by reversing array
     comments.slice().reverse().forEach(comment => {
       const el = document.createElement('div');
       el.className = 'comment';
@@ -155,26 +198,28 @@ function initComments(postId) {
     });
   }
 
-  loadComments();
+  await loadComments();
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const text = input.value.trim();
     if (!text) return;
 
-    const comments = JSON.parse(localStorage.getItem(storageKey)) || [];
+    const user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+    const authorName = user && user.name ? user.name : 'Guest Reader';
+
     const newComment = {
-      id: Date.now(),
-      author: 'Guest Reader', // Anonymous testing
+      author: authorName,
       text: text,
       timestamp: new Date().toISOString()
     };
 
-    comments.push(newComment);
-    localStorage.setItem(storageKey, JSON.stringify(comments));
+    if (typeof addPostComment === 'function') {
+      await addPostComment(postId, newComment);
+    }
     
     input.value = '';
-    loadComments();
+    await loadComments();
   });
 }
 

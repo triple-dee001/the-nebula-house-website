@@ -26,10 +26,13 @@ posts = [
 ]
 
 def make_card(p, i):
-    c_text = f'{p["comments"]} comment{"s" if p["comments"] != 1 else ""}'
+    # Extract post ID from href: "post/no-man-left-behind.html" -> "post_no-man-left-behind"
+    raw_id = p["href"].split('/')[-1].replace('.html', '')
+    post_id = f"post_{raw_id}"
+    
     return f'''
         <!-- {i+1}. {p["title"]} -->
-        <a href="{p["href"]}" class="blog-card">
+        <a href="{p["href"]}" class="blog-card" data-post-id="{post_id}">
           <div class="blog-card__image" style="background-image: url('{p["img"]}');"></div>
           <div class="blog-card__content">
             <div class="blog-card__author-row">
@@ -44,11 +47,11 @@ def make_card(p, i):
             <p class="blog-card__excerpt">{p["excerpt"]}</p>
             <div class="blog-card__footer">
               <div class="blog-card__stats">
-                <span>{p["views"]} views</span>
-                <span>{c_text}</span>
+                <span class="card-views">... views</span>
+                <span class="card-comments">... comments</span>
               </div>
               <div class="blog-card__heart">
-                <span>{p["likes"]}</span>
+                <span class="card-likes">...</span>
                 <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
               </div>
             </div>
