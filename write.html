@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Write a Story | The Nebula House</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <style>
+    body { background: #0a0a0a; }
+
+    /* ─── Minimal Top Bar ─── */
+    .write-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.75rem 2rem; border-bottom: 1px solid rgba(255,255,255,0.06);
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(10,10,10,0.95); backdrop-filter: blur(12px);
+    }
+    .write-topbar__logo img { height: 32px; }
+    .write-topbar__actions { display: flex; align-items: center; gap: 1rem; }
+    .write-topbar__publish {
+      padding: 0.5rem 1.5rem; background: #4caf50; color: #fff;
+      border: none; border-radius: 20px; font-size: 0.9rem;
+      font-family: var(--font-secondary); cursor: pointer;
+      transition: background 0.2s; font-weight: 600;
+    }
+    .write-topbar__publish:hover { background: #43a047; }
+    .write-topbar__publish:disabled { background: #333; color: #888; cursor: not-allowed; }
+    .write-topbar__draft {
+      padding: 0.5rem 1rem; background: transparent; color: var(--text-muted);
+      border: 1px solid rgba(255,255,255,0.12); border-radius: 20px;
+      font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
+    }
+    .write-topbar__draft:hover { border-color: #fff; color: #fff; }
+    .write-topbar__user {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255,255,255,0.1); display: flex; align-items:center;
+      justify-content:center; font-size: 0.85rem; font-weight: 700; color:#fff;
+    }
+
+    /* ─── Editor Canvas ─── */
+    .write-canvas {
+      max-width: 740px; margin: 0 auto;
+      padding: calc(80px + var(--space-3xl)) 1rem var(--space-4xl);
+    }
+    .write-title {
+      width: 100%; border: none; outline: none; background: transparent;
+      font-family: var(--font-primary); font-size: 2.75rem; font-weight: 700;
+      color: #fff; line-height: 1.2; padding: 0; margin-bottom: 1rem;
+      resize: none; overflow: hidden;
+    }
+    .write-title::placeholder { color: rgba(255,255,255,0.2); }
+    .write-subtitle {
+      width: 100%; border: none; outline: none; background: transparent;
+      font-family: var(--font-primary); font-size: 1.35rem;
+      color: rgba(255,255,255,0.5); line-height: 1.5; padding: 0;
+      margin-bottom: 2rem; resize: none; overflow: hidden;
+    }
+    .write-subtitle::placeholder { color: rgba(255,255,255,0.15); }
+
+    /* Quill overrides for distraction-free look */
+    .ql-toolbar.ql-snow {
+      border: none !important; border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+      padding: 0.5rem 0 !important;
+    }
+    .ql-toolbar .ql-stroke { stroke: rgba(255,255,255,0.4) !important; }
+    .ql-toolbar .ql-fill { fill: rgba(255,255,255,0.4) !important; }
+    .ql-toolbar .ql-picker-label { color: rgba(255,255,255,0.4) !important; }
+    .ql-toolbar button:hover .ql-stroke { stroke: #fff !important; }
+    .ql-toolbar button:hover .ql-fill { fill: #fff !important; }
+    .ql-container.ql-snow {
+      border: none !important; font-family: var(--font-primary);
+      font-size: 1.2rem; color: rgba(255,255,255,0.85);
+      min-height: 400px; line-height: 1.8;
+    }
+    .ql-editor { padding: 1rem 0 !important; }
+    .ql-editor::before { color: rgba(255,255,255,0.15) !important; font-style: normal !important; }
+    .ql-editor blockquote {
+      border-left: 3px solid rgba(255,255,255,0.2) !important;
+      color: rgba(255,255,255,0.6) !important;
+    }
+
+    /* ─── Publish Modal ─── */
+    .publish-overlay {
+      position: fixed; inset: 0; z-index: 10001;
+      background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+      display: none; align-items: center; justify-content: center;
+    }
+    .publish-overlay.open { display: flex; }
+    .publish-card {
+      background: #111; border: 1px solid #222; border-radius: 12px;
+      padding: 2rem; width: 90%; max-width: 500px;
+    }
+    .publish-card h2 {
+      font-family: var(--font-primary); font-size: 1.5rem; margin-bottom: 1.5rem;
+    }
+    .publish-card label {
+      display: block; margin-bottom: 0.5rem; color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .publish-card input, .publish-card textarea {
+      width: 100%; padding: 0.75rem; background: #1a1a1a;
+      border: 1px solid #333; border-radius: 6px; color: #fff;
+      font-size: 0.95rem; margin-bottom: 1rem; font-family: inherit;
+      outline: none; box-sizing: border-box;
+    }
+    .publish-card textarea { resize: vertical; min-height: 80px; }
+    .publish-card input:focus, .publish-card textarea:focus { border-color: #fff; }
+    .publish-actions {
+      display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1rem;
+    }
+    .publish-actions button {
+      padding: 0.65rem 1.5rem; border-radius: 6px; cursor: pointer;
+      font-size: 0.95rem; font-family: inherit; border: none;
+      transition: all 0.2s;
+    }
+    .btn-cancel { background: transparent; color: #888; border: 1px solid #333 !important; }
+    .btn-cancel:hover { color: #fff; border-color: #fff !important; }
+    .btn-go { background: #4caf50; color: #fff; font-weight: 600; }
+    .btn-go:hover { background: #43a047; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="write-topbar">
+    <a href="the-writers-room.html" class="write-topbar__logo">
+      <img src="assets/images/room-icon.png" alt="The Nebula House">
+    </a>
+    <div class="write-topbar__actions">
+      <button class="write-topbar__publish" id="btn-open-publish" disabled>Publish</button>
+      <div class="write-topbar__user" id="write-user-avatar"></div>
+    </div>
+  </div>
+
+  <!-- Editor Canvas -->
+  <div class="write-canvas">
+    <textarea class="write-title" id="write-title" placeholder="Title" rows="1"></textarea>
+    <textarea class="write-subtitle" id="write-subtitle" placeholder="Subtitle (optional)" rows="1"></textarea>
+    <div id="quill-editor"></div>
+  </div>
+
+  <!-- Publish Settings Modal -->
+  <div class="publish-overlay" id="publish-modal">
+    <div class="publish-card">
+      <h2>Ready to publish?</h2>
+      <label>Tags (comma separated)</label>
+      <input type="text" id="publish-tags" placeholder="Philosophy, Faith, Identity">
+      <label>Story Preview (excerpt shown in the feed)</label>
+      <textarea id="publish-excerpt" placeholder="A short summary of your story..."></textarea>
+      <div class="publish-actions">
+        <button class="btn-cancel" id="btn-cancel-publish">Cancel</button>
+        <button class="btn-go" id="btn-confirm-publish">Publish Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // ─── Auth Guard ───
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        const user = getCurrentUser();
+        if (!user) {
+          window.location.href = 'the-writers-room.html';
+          return;
+        }
+        // Show user avatar
+        const avatar = document.getElementById('write-user-avatar');
+        const initial = (user.name || user.email)[0].toUpperCase();
+        avatar.textContent = initial;
+      }, 200);
+    });
+
+    // ─── Auto-resize textareas ───
+    document.querySelectorAll('.write-title, .write-subtitle').forEach(el => {
+      el.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
+      });
+    });
+
+    // ─── Quill Editor ───
+    const quill = new Quill('#quill-editor', {
+      theme: 'snow',
+      placeholder: 'Tell your story...',
+      modules: {
+        toolbar: [
+          [{ header: [1, 2, 3, false] }],
+          ['bold', 'italic', 'underline', 'strike'],
+          ['blockquote', 'code-block'],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          ['link', 'image'],
+          ['clean']
+        ]
+      }
+    });
+
+    // Enable publish button when there's content
+    quill.on('text-change', () => {
+      const hasContent = quill.getText().trim().length > 0;
+      const hasTitle = document.getElementById('write-title').value.trim().length > 0;
+      document.getElementById('btn-open-publish').disabled = !(hasContent && hasTitle);
+    });
+
+    document.getElementById('write-title').addEventListener('input', () => {
+      const hasContent = quill.getText().trim().length > 0;
+      const hasTitle = document.getElementById('write-title').value.trim().length > 0;
+      document.getElementById('btn-open-publish').disabled = !(hasContent && hasTitle);
+    });
+
+    // ─── Publish Flow ───
+    document.getElementById('btn-open-publish').addEventListener('click', () => {
+      // Pre-fill excerpt from body
+      const text = quill.getText().trim();
+      document.getElementById('publish-excerpt').value = text.substring(0, 200);
+      document.getElementById('publish-modal').classList.add('open');
+    });
+
+    document.getElementById('btn-cancel-publish').addEventListener('click', () => {
+      document.getElementById('publish-modal').classList.remove('open');
+    });
+
+    document.getElementById('btn-confirm-publish').addEventListener('click', async () => {
+      const user = getCurrentUser();
+      if (!user) return;
+
+      const post = {
+        title: document.getElementById('write-title').value.trim(),
+        subtitle: document.getElementById('write-subtitle').value.trim(),
+        body: quill.root.innerHTML,
+        tags: document.getElementById('publish-tags').value.trim(),
+        excerpt: document.getElementById('publish-excerpt').value.trim(),
+        authorId: user.uid,
+        authorName: user.name,
+        authorEmail: user.email,
+        createdAt: new Date().toISOString()
+      };
+
+      await publishPost(post);
+      window.location.href = 'the-writers-room.html';
+    });
+  </script>
+</body>
+</html>
