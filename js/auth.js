@@ -215,6 +215,19 @@ function updateNavbarAuth(user) {
   }
 }
 
+// Ensure icon always opens modal if still pointing to '#' (fallback for slow Firebase init)
+document.addEventListener('DOMContentLoaded', () => {
+  const icon = document.getElementById('nav-account-icon');
+  if (icon) {
+    icon.addEventListener('click', (e) => {
+      if (icon.getAttribute('href') === '#') {
+        e.preventDefault();
+        openAuthModal();
+      }
+    });
+  }
+});
+
 function getPathPrefix() {
   const path = window.location.pathname;
   if (path.includes('/post/') || path.includes('/past-reads/')) return '../';
@@ -712,11 +725,22 @@ document.addEventListener('DOMContentLoaded', () => {
   initFirebase();
   injectAuthModal();
 
+  // Wire account icon immediately so it works even before Firebase resolves
+  const icon = document.getElementById('nav-account-icon');
+  if (icon && icon.getAttribute('href') === '#') {
+    icon.addEventListener('click', (e) => {
+      e.preventDefault();
+      openAuthModal();
+    });
+  }
+
   // Check existing session
   const user = getCurrentUser();
   if (user) {
     currentUser = user;
     onAuthChange(user);
+  } else {
+    updateNavbarAuth(null);
   }
 
   // Firebase real-time auth listener
@@ -732,8 +756,10 @@ document.addEventListener('DOMContentLoaded', () => {
           photo: firebaseUser.photoURL || userData.photo,
           role: userData.role || 'user'
         };
+        localStorage.setItem('nebula_current_user', JSON.stringify(currentUser));
         onAuthChange(currentUser);
       } else {
+        localStorage.removeItem('nebula_current_user');
         onAuthChange(null);
       }
     });
