@@ -67,16 +67,13 @@ async function signUp(name, email, password) {
   if (USE_FIREBASE && auth) {
     const cred = await auth.createUserWithEmailAndPassword(email, password);
     await cred.user.updateProfile({ displayName: name });
-    // Send email verification
-    await cred.user.sendEmailVerification();
     // Store user profile in Firestore
     await db.collection('users').doc(cred.user.uid).set({
       name: name,
       email: email,
       role: ADMIN_EMAILS.includes(email.toLowerCase()) ? 'admin' : 'user',
       joined: new Date().toISOString(),
-      photo: null,
-      emailVerified: false
+      photo: null
     });
     return getCurrentUser();
   }
@@ -362,28 +359,10 @@ function injectAuthModal() {
     try {
       if (isSignUpMode) {
         await signUp(name, email, password);
-        // Show verification notice instead of closing
-        const card = document.querySelector('.nebula-auth-card');
-        card.innerHTML = `
-          <div style="text-align:center; padding: 1rem 0;">
-            <div style="font-size:3rem; margin-bottom:1rem;">📬</div>
-            <h2 style="font-family:var(--font-primary,'Cormorant Garamond');font-size:1.75rem;margin-bottom:0.75rem;">Check Your Email</h2>
-            <p style="color:#aaa;font-size:0.95rem;line-height:1.6;margin-bottom:1.5rem;">
-              We've sent a verification link to <strong style="color:#fff;">${email}</strong>.<br>
-              Please verify your email before signing in.
-            </p>
-            <button class="nebula-auth-btn nebula-auth-btn--primary" onclick="closeAuthModal()" style="margin-bottom:0.75rem;">Got it</button>
-            <p style="color:#666;font-size:0.85rem;margin-top:1rem;">
-              Didn't receive it? 
-              <a href="#" onclick="resendVerificationEmail(event)" style="color:#fff;text-decoration:underline;">Resend email</a>
-            </p>
-          </div>
-        `;
-        document.body.style.overflow = '';
       } else {
         await signIn(email, password);
-        closeAuthModal();
       }
+      closeAuthModal();
     } catch (err) {
       showAuthError(err.message);
     }
@@ -423,26 +402,6 @@ function closeAuthModal() {
     document.body.style.overflow = '';
     hideAuthError();
   }
-}
-
-// ─── EMAIL VERIFICATION HELPERS ─────────────
-async function resendVerificationEmail(e) {
-  if (e) e.preventDefault();
-  if (USE_FIREBASE && auth && auth.currentUser) {
-    try {
-      await auth.currentUser.sendEmailVerification();
-      alert('Verification email resent! Please check your inbox.');
-    } catch (err) {
-      alert('Could not resend email: ' + err.message);
-    }
-  }
-}
-
-function isEmailVerified() {
-  if (USE_FIREBASE && auth && auth.currentUser) {
-    return auth.currentUser.emailVerified;
-  }
-  return true; // localStorage fallback — no verification
 }
 
 function showAuthError(msg) {
@@ -507,48 +466,6 @@ async function getAllPosts() {
     return snap.docs.map(d => ({ id: d.id, ...d.data() }));
   }
   return JSON.parse(localStorage.getItem('nebula_posts')) || [];
-}
-
-async function getPublishedPosts() {
-  if (USE_FIREBASE && db) {
-    const snap = await db.collection('posts')
-      .where('status', '==', 'published')
-      .orderBy('createdAt', 'desc').get();
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  }
-  const posts = JSON.parse(localStorage.getItem('nebula_posts')) || [];
-  return posts.filter(p => !p.status || p.status === 'published');
-}
-
-async function getPendingPosts() {
-  if (USE_FIREBASE && db) {
-    const snap = await db.collection('posts')
-      .where('status', '==', 'pending')
-      .orderBy('createdAt', 'desc').get();
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  }
-  const posts = JSON.parse(localStorage.getItem('nebula_posts')) || [];
-  return posts.filter(p => p.status === 'pending');
-}
-
-async function approvePost(postId) {
-  if (USE_FIREBASE && db) {
-    await db.collection('posts').doc(postId).update({ status: 'published', approvedAt: new Date().toISOString() });
-    return;
-  }
-  const posts = JSON.parse(localStorage.getItem('nebula_posts')) || [];
-  const idx = posts.findIndex(p => p.id === postId);
-  if (idx !== -1) { posts[idx].status = 'published'; localStorage.setItem('nebula_posts', JSON.stringify(posts)); }
-}
-
-async function rejectPost(postId, reason = '') {
-  if (USE_FIREBASE && db) {
-    await db.collection('posts').doc(postId).update({ status: 'rejected', rejectedAt: new Date().toISOString(), rejectReason: reason });
-    return;
-  }
-  const posts = JSON.parse(localStorage.getItem('nebula_posts')) || [];
-  const idx = posts.findIndex(p => p.id === postId);
-  if (idx !== -1) { posts[idx].status = 'rejected'; posts[idx].rejectReason = reason; localStorage.setItem('nebula_posts', JSON.stringify(posts)); }
 }
 
 async function deletePost(postId) {

@@ -88,16 +88,39 @@
   <section class="section section--dark" style="padding-top: calc(var(--space-4xl) + 80px); min-height: 100vh;">
     <div class="container container--narrow">
 
+      <!-- Email verification banner -->
+      <div id="verify-banner" style="display:none; background:rgba(255,200,0,0.08); border:1px solid rgba(255,200,0,0.25); border-radius:8px; padding:1rem 1.25rem; margin-bottom:1.5rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
+        <p style="color:#f5c518; font-size:0.9rem; margin:0;">⚠️ Your email is not verified. Some features may be restricted.</p>
+        <button onclick="resendVerificationEmail(event)" style="background:none; border:1px solid #f5c518; color:#f5c518; padding:0.4rem 1rem; border-radius:4px; cursor:pointer; font-size:0.85rem;">Resend Email</button>
+      </div>
+
       <div class="profile-card reveal" id="profile-card">
         <div class="profile-header">
-          <div class="profile-avatar" id="profile-avatar" style="cursor:pointer;" title="In a full backend, this would open a file picker to upload a new avatar.">?</div>
+          <!-- Avatar with upload -->
+          <div style="position:relative; display:inline-block;">
+            <div class="profile-avatar" id="profile-avatar" title="Click to change photo" style="cursor:pointer; overflow:hidden;">?</div>
+            <label for="avatar-upload" style="position:absolute; bottom:0; right:0; background:#fff; color:#000; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:0.7rem; font-weight:700; box-shadow:0 2px 6px rgba(0,0,0,0.4);" title="Upload photo">✎</label>
+            <input type="file" id="avatar-upload" accept="image/*" style="display:none;">
+          </div>
           <div style="flex:1;">
-            <div class="profile-name" id="profile-name">Loading...</div>
+            <!-- Editable name -->
+            <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.4rem;">
+              <div class="profile-name" id="profile-name" style="cursor:pointer;" title="Click to edit name">Loading...</div>
+              <button id="btn-edit-name" style="background:none; border:1px solid rgba(255,255,255,0.15); color:var(--text-muted); padding:0.2rem 0.6rem; border-radius:4px; font-size:0.75rem; cursor:pointer;">Edit</button>
+            </div>
+            <div id="name-edit-group" style="display:none; margin-bottom:0.5rem; display:none;">
+              <input type="text" id="input-name" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; padding:0.5rem 0.75rem; font-size:1rem; font-family:inherit; outline:none; margin-right:0.5rem;">
+              <button id="btn-save-name" class="btn btn--secondary" style="padding:0.5rem 1rem;">Save</button>
+              <button id="btn-cancel-name" style="background:none; border:none; color:var(--text-muted); cursor:pointer; padding:0.5rem;">Cancel</button>
+            </div>
             <div class="profile-email" id="profile-email"></div>
             <div class="profile-joined" id="profile-joined"></div>
           </div>
         </div>
         
+        <!-- Upload progress -->
+        <div id="avatar-upload-status" style="display:none; font-size:0.85rem; color:#4caf50; margin-bottom:1rem;"></div>
+
         <div style="margin-bottom:var(--space-xl);">
           <label style="display:block; color:var(--text-muted); font-size:0.85rem; margin-bottom:0.5rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">Bio</label>
           <div style="display:flex; gap:1rem;">
@@ -138,53 +161,126 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-storage-compat.js"></script>
   <script src="js/main.js"></script>
   <script src="js/auth.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
       setTimeout(async () => {
         const user = getCurrentUser();
-        if (!user) {
-          window.location.href = 'index.html';
-          return;
+        if (!user) { window.location.href = 'index.html'; return; }
+
+        // Show verify banner if not verified
+        if (typeof isEmailVerified === 'function' && !isEmailVerified()) {
+          const banner = document.getElementById('verify-banner');
+          if (banner) banner.style.display = 'flex';
         }
 
-        // Fetch full user doc for custom fields like bio
+        // Fetch full user doc
         let userData = user;
-        if (typeof db !== 'undefined' && db && user.uid && window.USE_FIREBASE) {
-          const doc = await db.collection('users').doc(user.uid).get();
-          if (doc.exists) userData = { ...user, ...doc.data() };
-        } else {
-           const localUsers = JSON.parse(localStorage.getItem('nebula_users')) || {};
-           if (localUsers[user.uid]) userData = localUsers[user.uid];
+        if (typeof db !== 'undefined' && db && user.uid) {
+          try {
+            const doc = await db.collection('users').doc(user.uid).get();
+            if (doc.exists) userData = { ...user, ...doc.data() };
+          } catch(e) {}
         }
 
-        // Populate profile
-        document.getElementById('profile-avatar').textContent = (userData.name || userData.email)[0].toUpperCase();
+        // ─── Populate profile ───
+        const avatarEl = document.getElementById('profile-avatar');
+
+        function setAvatar(photoURL, name) {
+          if (photoURL) {
+            avatarEl.innerHTML = `<img src="${photoURL}" alt="${name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+          } else {
+            avatarEl.textContent = (name || 'U')[0].toUpperCase();
+          }
+        }
+
+        setAvatar(userData.photo, userData.name);
         document.getElementById('profile-name').textContent = userData.name || 'Writer';
         document.getElementById('profile-email').textContent = userData.email;
-        document.getElementById('profile-joined').textContent = userData.joined ? `Joined ${new Date(userData.joined).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}` : '';
+        document.getElementById('profile-joined').textContent = userData.joined
+          ? `Joined ${new Date(userData.joined).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`
+          : '';
         document.getElementById('profile-bio').value = userData.bio || '';
+        document.getElementById('input-name').value = userData.name || '';
 
-        // Save bio
+        // ─── Edit Name ───
+        document.getElementById('btn-edit-name').addEventListener('click', () => {
+          document.getElementById('name-edit-group').style.display = 'flex';
+          document.getElementById('btn-edit-name').style.display = 'none';
+          document.getElementById('input-name').focus();
+        });
+
+        document.getElementById('btn-cancel-name').addEventListener('click', () => {
+          document.getElementById('name-edit-group').style.display = 'none';
+          document.getElementById('btn-edit-name').style.display = 'inline-block';
+        });
+
+        document.getElementById('btn-save-name').addEventListener('click', async () => {
+          const newName = document.getElementById('input-name').value.trim();
+          if (!newName) return;
+          const btn = document.getElementById('btn-save-name');
+          btn.textContent = 'Saving...'; btn.disabled = true;
+          await updateUserProfile(user.uid, { name: newName });
+          if (typeof auth !== 'undefined' && auth && auth.currentUser) {
+            await auth.currentUser.updateProfile({ displayName: newName });
+          }
+          document.getElementById('profile-name').textContent = newName;
+          document.getElementById('name-edit-group').style.display = 'none';
+          document.getElementById('btn-edit-name').style.display = 'inline-block';
+          btn.textContent = 'Save'; btn.disabled = false;
+        });
+
+        // ─── Save Bio ───
         document.getElementById('btn-save-bio').addEventListener('click', async () => {
           const btn = document.getElementById('btn-save-bio');
           const bio = document.getElementById('profile-bio').value.trim();
-          btn.textContent = 'Saving...';
-          btn.disabled = true;
-          
+          btn.textContent = 'Saving...'; btn.disabled = true;
           await updateUserProfile(user.uid, { bio });
-          
-          btn.textContent = 'Save';
-          btn.disabled = false;
+          btn.textContent = 'Save'; btn.disabled = false;
           const msg = document.getElementById('bio-success');
           msg.style.display = 'block';
           setTimeout(() => msg.style.display = 'none', 3000);
         });
 
-        // Load user's posts
-        const allPosts = await getAllPosts();
-        const myPosts = allPosts.filter(p => p.authorEmail === user.email);
+        // ─── Photo Upload ───
+        document.getElementById('avatar-upload').addEventListener('change', async (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const status = document.getElementById('avatar-upload-status');
+          status.style.display = 'block'; status.style.color = '#aaa';
+          status.textContent = 'Uploading photo...';
+          try {
+            let photoURL = null;
+            if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length && firebase.storage) {
+              const storageRef = firebase.storage().ref(`avatars/${user.uid}`);
+              await storageRef.put(file);
+              photoURL = await storageRef.getDownloadURL();
+            } else {
+              photoURL = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (ev) => resolve(ev.target.result);
+                reader.readAsDataURL(file);
+              });
+            }
+            await updateUserProfile(user.uid, { photo: photoURL });
+            if (typeof auth !== 'undefined' && auth && auth.currentUser) {
+              await auth.currentUser.updateProfile({ photoURL });
+            }
+            setAvatar(photoURL, userData.name);
+            status.style.color = '#4caf50';
+            status.textContent = 'Photo updated!';
+            setTimeout(() => { status.style.display = 'none'; }, 3000);
+          } catch (err) {
+            status.style.color = '#e55';
+            status.textContent = 'Upload failed: ' + err.message;
+          }
+        });
+
+        // ─── Load published stories ───
+        const allPosts = typeof getPublishedPosts === 'function' ? await getPublishedPosts() : await getAllPosts();
+        const myPosts = allPosts.filter(p => p.authorEmail === user.email || p.authorId === user.uid);
         document.getElementById('profile-post-count').textContent = myPosts.length;
 
         const container = document.getElementById('profile-posts');
@@ -197,7 +293,7 @@
           `).join('');
         }
 
-        // Sign out
+        // ─── Sign out ───
         document.getElementById('btn-signout').addEventListener('click', async () => {
           await signOut();
           window.location.href = 'index.html';

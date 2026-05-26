@@ -275,17 +275,22 @@
       // ─── Write Button Auth Guard ───
       document.getElementById('btn-write').addEventListener('click', () => {
         const user = getCurrentUser();
-        if (user) {
-          window.location.href = 'write.html';
-        } else {
+        if (!user) {
           openAuthModal();
-          // After successful auth, redirect
           window.addEventListener('nebula-auth-change', function handler(e) {
             if (e.detail.user) {
               window.removeEventListener('nebula-auth-change', handler);
+              if (!isEmailVerified()) {
+                alert('Please verify your email before writing. Check your inbox for the verification link.');
+                return;
+              }
               window.location.href = 'write.html';
             }
           });
+        } else if (!isEmailVerified()) {
+          alert('Please verify your email before writing. Check your inbox for the verification link.');
+        } else {
+          window.location.href = 'write.html';
         }
       });
 
@@ -309,7 +314,7 @@
     async function loadFeed() {
       const feed = document.getElementById('wr-feed');
       const empty = document.getElementById('wr-empty-state');
-      const posts = await getAllPosts();
+      const posts = await getPublishedPosts();
       const user = getCurrentUser();
       const userIsAdmin = user && isAdmin(user);
 

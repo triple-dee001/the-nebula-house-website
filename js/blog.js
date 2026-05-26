@@ -206,6 +206,15 @@ async function initComments(postId) {
     if (!text) return;
 
     const user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+    if (!user) {
+      if (typeof openAuthModal === 'function') openAuthModal();
+      return;
+    }
+    if (typeof isEmailVerified === 'function' && !isEmailVerified()) {
+      alert('Please verify your email before posting a comment.');
+      return;
+    }
+
     const authorName = user && user.name ? user.name : 'Guest Reader';
 
     const newComment = {

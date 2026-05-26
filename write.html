@@ -230,6 +230,10 @@
       const user = getCurrentUser();
       if (!user) return;
 
+      const btn = document.getElementById('btn-confirm-publish');
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+
       const post = {
         title: document.getElementById('write-title').value.trim(),
         subtitle: document.getElementById('write-subtitle').value.trim(),
@@ -239,11 +243,23 @@
         authorId: user.uid,
         authorName: user.name,
         authorEmail: user.email,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        status: 'pending'  // Requires admin approval before going live
       };
 
       await publishPost(post);
-      window.location.href = 'the-writers-room.html';
+
+      // Show pending message instead of going straight to feed
+      document.getElementById('publish-modal').innerHTML = `
+        <div class="publish-card" style="text-align:center;">
+          <div style="font-size:3rem; margin-bottom:1rem;">🎉</div>
+          <h2 style="font-family:var(--font-primary);">Story Submitted!</h2>
+          <p style="color:#aaa; margin: 1rem 0 1.5rem; line-height:1.6;">
+            Your story is pending review. Once approved by our admin, it will appear in The Writer's Room.
+          </p>
+          <a href="the-writers-room.html" class="btn-go" style="display:inline-block; padding:0.65rem 2rem; border-radius:6px; text-decoration:none; background:#4caf50; color:#fff; font-weight:600;">Back to the Room</a>
+        </div>
+      `;
     });
   </script>
 </body>
