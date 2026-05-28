@@ -30,13 +30,20 @@ let db = null;
 function initFirebase() {
   if (!USE_FIREBASE) return;
   try {
-    if (typeof firebase !== 'undefined') {
+    if (typeof firebase === 'undefined') return;
+    // Avoid re-initializing if already done
+    if (firebase.apps.length === 0) {
       firebase.initializeApp(firebaseConfig);
+    }
+    auth = firebase.auth();
+    db = firebase.firestore();
+  } catch (e) {
+    console.warn('Firebase init error:', e);
+    // Try to get existing app
+    try {
       auth = firebase.auth();
       db = firebase.firestore();
-    }
-  } catch (e) {
-    console.warn('Firebase init failed:', e);
+    } catch(e2) {}
   }
 }
 
@@ -246,18 +253,6 @@ function updateNavbarAuth(user) {
   }
 }
 
-// Ensure icon always opens modal if still pointing to '#' (fallback for slow Firebase init)
-document.addEventListener('DOMContentLoaded', () => {
-  const icon = document.getElementById('nav-account-icon');
-  if (icon) {
-    icon.addEventListener('click', (e) => {
-      if (icon.getAttribute('href') === '#') {
-        e.preventDefault();
-        openAuthModal();
-      }
-    });
-  }
-});
 
 function getPathPrefix() {
   const path = window.location.pathname;
@@ -756,44 +751,56 @@ document.addEventListener('DOMContentLoaded', () => {
   initFirebase();
   injectAuthModal();
 
-  // Wire account icon immediately so it works even before Firebase resolves
+  // Wire account icon — single reliable handler
   const icon = document.getElementById('nav-account-icon');
-  if (icon && icon.getAttribute('href') === '#') {
+  if (icon) {
     icon.addEventListener('click', (e) => {
-      e.preventDefault();
-      openAuthModal();
+      const href = icon.getAttribute('href');
+      // If href is '#' or empty, open auth modal
+      if (!href || href === '#') {
+        e.preventDefault();
+        openAuthModal();
+      }
+      // Otherwise it's a real link (profile/admin), let it navigate naturally
     });
   }
 
-  // Check existing session
-  const user = getCurrentUser();
-  if (user) {
-    currentUser = user;
-    onAuthChange(user);
-  } else {
-    updateNavbarAuth(null);
+  // Check existing localStorage session immediately
+  const storedUser = localStorage.getItem('nebula_current_user');
+  if (storedUser) {
+    try {
+      currentUser = JSON.parse(storedUser);
+      updateNavbarAuth(currentUser);
+    } catch(e) {}
   }
 
-  // Firebase real-time auth listener
+  // Firebase real-time auth listener — this is the source of truth
   if (USE_FIREBASE && auth) {
     auth.onAuthStateChanged(async (firebaseUser) => {
       if (firebaseUser) {
-        const doc = await db.collection('users').doc(firebaseUser.uid).get();
-        const userData = doc.exists ? doc.data() : {};
+        let userData = {};
+        try {
+          const doc = await db.collection('users').doc(firebaseUser.uid).get();
+          if (doc.exists) userData = doc.data();
+        } catch(e) {}
         currentUser = {
           uid: firebaseUser.uid,
           name: firebaseUser.displayName || userData.name || firebaseUser.email.split('@')[0],
           email: firebaseUser.email,
-          photo: firebaseUser.photoURL || userData.photo,
+          photo: firebaseUser.photoURL || userData.photo || null,
           role: userData.role || (ADMIN_EMAILS.includes(firebaseUser.email.toLowerCase()) ? 'admin' : 'user'),
           emailVerified: firebaseUser.emailVerified
         };
         localStorage.setItem('nebula_current_user', JSON.stringify(currentUser));
         onAuthChange(currentUser);
       } else {
+        currentUser = null;
         localStorage.removeItem('nebula_current_user');
         onAuthChange(null);
       }
     });
+  } else {
+    // No Firebase — use localStorage state
+    updateNavbarAuth(currentUser);
   }
 });
