@@ -336,10 +336,8 @@
 </div>
 
 <!-- Scripts -->
-<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
-<script src="js/auth.js"></script>
+<script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
 <script>
   let allUsersCache = [];
   let allArticlesCache = [];
@@ -401,33 +399,45 @@
   }
 
   async function loadDashboard() {
-    const [users, posts, subs, noms, pending] = await Promise.all([
-      getAllUsers(), getAllPosts(), getNewsletterSubs(), getAllNominations(), getPendingPosts()
+    const [statsData, usersData, postsData, subsData, nomsData, pendingData] = await Promise.all([
+      adminGetStats(),
+      adminGetUsers({ limit: 100 }),
+      adminGetPosts({ limit: 100 }),
+      adminGetNewsletter(),
+      adminGetNominations(),
+      adminGetPosts({ status: 'PENDING', limit: 100 }),
     ]);
+
+    const users = usersData.users || [];
+    const posts = postsData.posts || [];
+    const subs = Array.isArray(subsData) ? subsData : [];
+    const noms = Array.isArray(nomsData) ? nomsData : [];
+    const pending = pendingData.posts || [];
 
     allUsersCache = users;
     allArticlesCache = posts;
 
     // Stats
-    document.getElementById('stat-users').textContent = users.length;
-    document.getElementById('stat-articles').textContent = posts.filter(p => !p.status || p.status === 'published').length;
-    document.getElementById('stat-pending').textContent = pending.length;
-    document.getElementById('stat-newsletter').textContent = subs.length;
+    document.getElementById('stat-users').textContent = statsData.users?.total || users.length;
+    document.getElementById('stat-articles').textContent = statsData.posts?.published || 0;
+    document.getElementById('stat-pending').textContent = statsData.posts?.pending || pending.length;
+    document.getElementById('stat-newsletter').textContent = statsData.newsletter || subs.length;
 
     // Pending badge
     const badge = document.getElementById('pending-badge');
-    if (pending.length > 0) { badge.textContent = pending.length; badge.style.display = ''; }
+    const pendingCount = statsData.posts?.pending || pending.length;
+    if (pendingCount > 0) { badge.textContent = pendingCount; badge.style.display = ''; }
     else { badge.style.display = 'none'; }
 
     // Overview: Recent 5 users
     const ovUsers = document.getElementById('overview-users');
-    const recentUsers = [...users].sort((a,b) => new Date(b.joined||0) - new Date(a.joined||0)).slice(0,5);
+    const recentUsers = [...users].sort((a,b) => new Date(b.createdAt||0) - new Date(a.createdAt||0)).slice(0,5);
     ovUsers.innerHTML = recentUsers.length ? recentUsers.map(u => `
       <tr>
         <td style="font-weight:500;">${u.name || 'N/A'}</td>
         <td>${u.email}</td>
         <td><span class="badge badge--${u.emailVerified ? 'verified' : 'unverified'}">${u.emailVerified ? 'Verified' : 'Unverified'}</span></td>
-        <td>${u.joined ? new Date(u.joined).toLocaleDateString() : '—'}</td>
+        <td>${u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—'}</td>
       </tr>`).join('') : '';
     document.getElementById('overview-users-empty').style.display = recentUsers.length ? 'none' : 'block';
 
@@ -437,8 +447,8 @@
     ovPosts.innerHTML = recentPosts.length ? recentPosts.map(p => `
       <tr>
         <td style="font-weight:500;">${p.title || 'Untitled'}</td>
-        <td>${p.authorName || '—'}</td>
-        <td><span class="badge badge--${p.status || 'published'}">${p.status || 'published'}</span></td>
+        <td>${p.author?.name || '—'}</td>
+        <td><span class="badge badge--${(p.status||'PUBLISHED').toLowerCase()}">${p.status||'PUBLISHED'}</span></td>
         <td>${p.createdAt ? new Date(p.createdAt).toLocaleDateString() : '—'}</td>
       </tr>`).join('') : '';
     document.getElementById('overview-posts-empty').style.display = recentPosts.length ? 'none' : 'block';
@@ -459,26 +469,26 @@
       <tr>
         <td style="font-weight:500;">${u.name || 'N/A'}</td>
         <td>${u.email}</td>
-        <td><span class="badge badge--${u.role === 'admin' ? 'admin' : 'user'}">${u.role || 'user'}</span></td>
+        <td><span class="badge badge--${u.role === 'ADMIN' || u.role === 'SUPER_ADMIN' ? 'admin' : 'user'}">${u.role || 'USER'}</span></td>
         <td><span class="badge badge--${u.emailVerified ? 'verified' : 'unverified'}">${u.emailVerified ? '✓' : '—'}</span></td>
-        <td>${u.joined ? new Date(u.joined).toLocaleDateString() : '—'}</td>
+        <td>${u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—'}</td>
         <td style="display:flex; gap:0.4rem; flex-wrap:wrap;">
-          ${u.role !== 'admin' ? `<button class="btn-make-admin" onclick="grantAdmin('${u.id}','${u.email}')">Make Admin</button>` : `<button class="btn-reject" onclick="revokeAdmin('${u.id}','${u.email}')">Revoke</button>`}
+          ${u.role === 'USER' ? `<button class="btn-make-admin" onclick="grantAdmin('${u.id}','${u.email}')">Make Admin</button>` : `<button class="btn-reject" onclick="revokeAdmin('${u.id}','${u.email}')">Revoke</button>`}
           <button class="btn-delete" onclick="deleteUserAdmin('${u.id}')">Delete</button>
         </td>
       </tr>`).join('');
   }
 
   function renderAdminsTable(users) {
-    const admins = users.filter(u => u.role === 'admin');
+    const admins = users.filter(u => u.role === 'ADMIN' || u.role === 'SUPER_ADMIN');
     const tbody = document.getElementById('admins-list');
     document.getElementById('admins-empty').style.display = admins.length ? 'none' : 'block';
     const currentUser = getCurrentUser();
     tbody.innerHTML = admins.map(u => `
       <tr>
         <td style="font-weight:500;">${u.name || 'N/A'}</td>
-        <td>${u.email}</td>
-        <td>${u.joined ? new Date(u.joined).toLocaleDateString() : '—'}</td>
+        <td>${u.email} ${u.role === 'SUPER_ADMIN' ? '<span class="badge badge--admin" style="font-size:0.65rem;">SUPER</span>' : ''}</td>
+        <td>${u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—'}</td>
         <td>${u.email !== currentUser?.email ? `<button class="btn-reject" onclick="revokeAdmin('${u.id}','${u.email}')">Revoke Admin</button>` : '<span style="color:var(--admin-muted);font-size:0.8rem;">You</span>'}</td>
       </tr>`).join('');
   }
@@ -489,12 +499,12 @@
     tbody.innerHTML = pending.map(p => `
       <tr>
         <td style="font-weight:500; max-width:180px;">${p.title || 'Untitled'}</td>
-        <td>${p.authorName || p.authorEmail || '—'}</td>
+        <td>${p.author?.name || p.author?.email || '—'}</td>
         <td style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${p.excerpt||''}">${p.excerpt || '—'}</td>
         <td>${p.createdAt ? new Date(p.createdAt).toLocaleDateString() : '—'}</td>
         <td style="display:flex; gap:0.4rem;">
-          <button class="btn-approve" onclick="adminApprovePost('${p.id}')">Approve</button>
-          <button class="btn-reject" onclick="adminRejectPost('${p.id}')">Reject</button>
+          <button class="btn-approve" onclick="doApprovePost('${p.id}')">Approve</button>
+          <button class="btn-reject" onclick="doRejectPost('${p.id}')">Reject</button>
         </td>
       </tr>`).join('');
   }
@@ -505,10 +515,10 @@
     tbody.innerHTML = posts.map(p => `
       <tr>
         <td style="font-weight:500;">${p.title || 'Untitled'}</td>
-        <td>${p.authorName || p.authorEmail || '—'}</td>
-        <td><span class="badge badge--${p.status||'published'}">${p.status||'published'}</span></td>
+        <td>${p.author?.name || '—'}</td>
+        <td><span class="badge badge--${(p.status||'PUBLISHED').toLowerCase()}">${p.status||'PUBLISHED'}</span></td>
         <td>${p.createdAt ? new Date(p.createdAt).toLocaleDateString() : '—'}</td>
-        <td><button class="btn-delete" onclick="adminDeletePost('${p.id}')">Delete</button></td>
+        <td><button class="btn-delete" onclick="doDeletePost('${p.id}')">Delete</button></td>
       </tr>`).join('');
   }
 
@@ -527,12 +537,26 @@
     document.getElementById('nominations-empty').style.display = noms.length ? 'none' : 'block';
     tbody.innerHTML = noms.map(n => `
       <tr>
-        <td style="font-weight:500;">${n.title}</td>
-        <td>${n.author}</td>
+        <td style="font-weight:500;">${n.bookTitle}</td>
+        <td>${n.bookAuthor}</td>
         <td style="max-width:250px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${n.reason||''}">${n.reason||'—'}</td>
-        <td>${n.submitterEmail||'—'}</td>
+        <td>${n.submitter?.name || n.submitter?.email || '—'}</td>
         <td>${n.submittedAt ? new Date(n.submittedAt).toLocaleDateString() : '—'}</td>
       </tr>`).join('');
+  }
+
+  // Rename to avoid conflict with api.js function names
+  async function doApprovePost(postId) {
+    if (!confirm("Approve this article? It will go live in the Writer's Room.")) return;
+    try { await adminApprovePost(postId); await loadDashboard(); } catch(err) { alert(err.message); }
+  }
+  async function doRejectPost(postId) {
+    const reason = prompt('Reason for rejection (optional):') || '';
+    try { await adminRejectPost(postId, reason); await loadDashboard(); } catch(err) { alert(err.message); }
+  }
+  async function doDeletePost(postId) {
+    if (!confirm('Permanently delete this article?')) return;
+    try { await adminDeletePost(postId); await loadDashboard(); } catch(err) { alert(err.message); }
   }
 
   // ─── Admin Management ───
@@ -540,75 +564,79 @@
     const email = document.getElementById('new-admin-email').value.trim().toLowerCase();
     const msg = document.getElementById('add-admin-msg');
     if (!email) return;
-    msg.style.display = 'block';
-    msg.style.color = 'var(--admin-muted)';
+    msg.style.display = 'block'; msg.style.color = 'var(--admin-muted)';
     msg.textContent = 'Looking up user...';
-
-    if (USE_FIREBASE && db) {
-      const snap = await db.collection('users').where('email', '==', email).limit(1).get();
-      if (snap.empty) {
+    try {
+      const { users } = await adminGetUsers({ search: email, limit: 5 });
+      const target = users.find(u => u.email === email);
+      if (!target) {
         msg.style.color = 'var(--admin-danger)';
         msg.textContent = 'No registered user found with that email.';
         return;
       }
-      const doc = snap.docs[0];
-      await db.collection('users').doc(doc.id).update({ role: 'admin' });
+      await adminUpdateUserRole(target.id, 'ADMIN');
       msg.style.color = 'var(--admin-success)';
       msg.textContent = `✓ ${email} is now an admin.`;
       document.getElementById('new-admin-email').value = '';
       await loadDashboard();
+    } catch (err) {
+      msg.style.color = 'var(--admin-danger)';
+      msg.textContent = err.message;
     }
   }
 
   async function grantAdmin(uid, email) {
     if (!confirm(`Grant admin access to ${email}?`)) return;
-    if (USE_FIREBASE && db) {
-      await db.collection('users').doc(uid).update({ role: 'admin' });
+    try {
+      await adminUpdateUserRole(uid, 'ADMIN');
       await loadDashboard();
-    }
+    } catch (err) { alert(err.message); }
   }
 
   async function revokeAdmin(uid, email) {
-    const currentUser = getCurrentUser();
-    if (email === currentUser?.email) { alert("You can't revoke your own admin access."); return; }
     if (!confirm(`Revoke admin access from ${email}?`)) return;
-    if (USE_FIREBASE && db) {
-      await db.collection('users').doc(uid).update({ role: 'user' });
+    try {
+      await adminUpdateUserRole(uid, 'USER');
       await loadDashboard();
-    }
+    } catch (err) { alert(err.message); }
   }
 
   // ─── Content Actions ───
   async function adminApprovePost(postId) {
-    if (!confirm('Approve this article? It will go live in the Writer\'s Room.')) return;
-    await approvePost(postId);
-    await loadDashboard();
+    if (!confirm("Approve this article? It will go live in the Writer's Room.")) return;
+    try {
+      await adminApprovePost(postId);
+      await loadDashboard();
+    } catch (err) { alert(err.message); }
   }
 
   async function adminRejectPost(postId) {
     const reason = prompt('Reason for rejection (optional, will be visible to author):') || '';
-    await rejectPost(postId, reason);
-    await loadDashboard();
+    try {
+      await adminRejectPost(postId, reason);
+      await loadDashboard();
+    } catch (err) { alert(err.message); }
   }
 
   async function adminDeletePost(postId) {
     if (!confirm('Permanently delete this article? This cannot be undone.')) return;
-    await deletePost(postId);
-    await loadDashboard();
+    try {
+      await adminDeletePost(postId);
+      await loadDashboard();
+    } catch (err) { alert(err.message); }
   }
 
   async function deleteUserAdmin(uid) {
     if (!confirm('Delete this user account? This cannot be undone.')) return;
-    if (USE_FIREBASE && db) {
-      await db.collection('users').doc(uid).delete();
+    try {
+      await adminDeleteUser(uid);
       await loadDashboard();
-    }
+    } catch (err) { alert(err.message); }
   }
 
   // ─── Export Newsletter CSV ───
   function exportNewsletter() {
     const rows = [['Email', 'Subscribed At']];
-    allUsersCache; // just for reference
     document.querySelectorAll('#newsletter-list tr').forEach(tr => {
       const cells = tr.querySelectorAll('td');
       if (cells.length >= 2) rows.push([cells[0].textContent, cells[1].textContent]);

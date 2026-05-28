@@ -157,20 +157,135 @@
   <footer class="footer">
     <div class="container"><div class="footer__grid"><div class="footer__brand"><a href="index.html"><img src="assets/images/room-icon.png" alt="The Nebula House" class="footer__logo-img"></a><p class="footer__brand-tagline">From Imagination to Infinity.</p><p class="footer__brand-tagline">A digital literary ecosystem.</p></div><div class="footer__rooms"><h4 class="footer__heading">Rooms</h4><a href="the-chapter-room.html" class="footer__link">The Chapter Room</a><a href="the-writers-room.html" class="footer__link">The Writer's Room</a><a href="the-nebula-academy.html" class="footer__link">The Nebula Academy</a><a href="the-publishing-room.html" class="footer__link">The Publishing Room</a><a href="the-opinion-yard.html" class="footer__link">The Opinion Yard</a><a href="my-thoughts.html" class="footer__link">My Thoughts</a></div><div class="footer__connect"><h4 class="footer__heading">Connect</h4><a href="mailto:kelechioji@thenebulahouse.com" class="footer__link">Email</a><a href="https://www.instagram.com/the_nebula_house" target="_blank" rel="noopener" class="footer__link">Instagram</a><a href="https://youtube.com/@kelechi_oji" target="_blank" rel="noopener" class="footer__link">YouTube</a></div></div><div class="footer__bottom"><p>&copy; 2026 The Nebula House. All Rights Reserved.</p></div></div>
   </footer>
-
-  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-storage-compat.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/api.js"></script>
   <script src="js/auth.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      const user = await waitForAuth();
+      const user = getCurrentUser();
       if (!user) { window.location.href = 'index.html'; return; }
-
-      // Redirect admin to admin room
       if (isAdmin(user)) { window.location.href = 'the-admin-room.html'; return; }
+
+      // Show verify banner if not verified
+      if (!user.emailVerified) {
+        const banner = document.getElementById('verify-banner');
+        if (banner) banner.style.display = 'flex';
+      }
+
+      // Fetch fresh data from server
+      let userData = user;
+      try { userData = await nebulaGetMe() || user; } catch(e) {}
+
+      // ─── Populate profile ───
+      const avatarEl = document.getElementById('profile-avatar');
+      function setAvatar(photo, name) {
+        if (photo) {
+          avatarEl.innerHTML = `<img src="${photo}" alt="${name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+        } else {
+          avatarEl.textContent = (name || 'U')[0].toUpperCase();
+        }
+      }
+
+      setAvatar(userData.photo, userData.name);
+      document.getElementById('profile-name').textContent = userData.name || 'Writer';
+      document.getElementById('profile-email').textContent = userData.email;
+      document.getElementById('profile-joined').textContent = userData.createdAt
+        ? `Joined ${new Date(userData.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`
+        : '';
+      document.getElementById('profile-bio').value = userData.bio || '';
+      document.getElementById('input-name').value = userData.name || '';
+
+      // ─── Edit Name ───
+      document.getElementById('btn-edit-name').addEventListener('click', () => {
+        document.getElementById('name-edit-group').style.display = 'flex';
+        document.getElementById('btn-edit-name').style.display = 'none';
+        document.getElementById('input-name').focus();
+      });
+      document.getElementById('btn-cancel-name').addEventListener('click', () => {
+        document.getElementById('name-edit-group').style.display = 'none';
+        document.getElementById('btn-edit-name').style.display = 'inline-block';
+      });
+      document.getElementById('btn-save-name').addEventListener('click', async () => {
+        const newName = document.getElementById('input-name').value.trim();
+        if (!newName) return;
+        const btn = document.getElementById('btn-save-name');
+        btn.textContent = 'Saving...'; btn.disabled = true;
+        try {
+          await nebulaUpdateProfile({ name: newName });
+          document.getElementById('profile-name').textContent = newName;
+          document.getElementById('name-edit-group').style.display = 'none';
+          document.getElementById('btn-edit-name').style.display = 'inline-block';
+        } catch(err) { alert(err.message); }
+        btn.textContent = 'Save'; btn.disabled = false;
+      });
+
+      // ─── Save Bio ───
+      document.getElementById('btn-save-bio').addEventListener('click', async () => {
+        const btn = document.getElementById('btn-save-bio');
+        const bio = document.getElementById('profile-bio').value.trim();
+        btn.textContent = 'Saving...'; btn.disabled = true;
+        try {
+          await nebulaUpdateProfile({ bio });
+          const msg = document.getElementById('bio-success');
+          msg.style.display = 'block';
+          setTimeout(() => msg.style.display = 'none', 3000);
+        } catch(err) { alert(err.message); }
+        btn.textContent = 'Save'; btn.disabled = false;
+      });
+
+      // ─── Photo Upload ───
+      document.getElementById('avatar-upload').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const status = document.getElementById('avatar-upload-status');
+        status.style.display = 'block'; status.style.color = '#aaa';
+        status.textContent = 'Uploading photo...';
+        try {
+          const photoUrl = await nebulaUploadPhoto(file);
+          setAvatar(photoUrl, userData.name);
+          status.style.color = '#4caf50';
+          status.textContent = 'Photo updated!';
+          setTimeout(() => status.style.display = 'none', 3000);
+        } catch(err) {
+          status.style.color = '#e55';
+          status.textContent = 'Upload failed: ' + err.message;
+        }
+      });
+
+      // ─── Resend verification ───
+      const resendBtn = document.querySelector('[onclick*="resendVerification"]');
+      if (resendBtn) {
+        resendBtn.onclick = async (e) => {
+          e.preventDefault();
+          try {
+            await nebulaResendVerification(userData.email);
+            alert('Verification email sent! Check your inbox.');
+          } catch(err) { alert(err.message); }
+        };
+      }
+
+      // ─── Load published stories ───
+      try {
+        const posts = await nebulaGetMyPosts();
+        const published = posts.filter(p => p.status === 'PUBLISHED');
+        document.getElementById('profile-post-count').textContent = published.length;
+        const container = document.getElementById('profile-posts');
+        if (published.length > 0) {
+          container.innerHTML = published.map(p => `
+            <div class="profile-post">
+              <div class="profile-post__title">${p.title}</div>
+              <div class="profile-post__meta">${new Date(p.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+            </div>`).join('');
+        }
+      } catch(e) {}
+
+      // ─── Sign out ───
+      document.getElementById('btn-signout').addEventListener('click', async () => {
+        await signOut();
+        window.location.href = 'index.html';
+      });
+    });
+  </script>
 
         // Show verify banner if not verified
         if (typeof isEmailVerified === 'function' && !isEmailVerified()) {
