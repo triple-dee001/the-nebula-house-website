@@ -166,9 +166,11 @@
   <script src="js/auth.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      setTimeout(async () => {
-        const user = getCurrentUser();
-        if (!user) { window.location.href = 'index.html'; return; }
+      const user = await waitForAuth();
+      if (!user) { window.location.href = 'index.html'; return; }
+
+      // Redirect admin to admin room
+      if (isAdmin(user)) { window.location.href = 'the-admin-room.html'; return; }
 
         // Show verify banner if not verified
         if (typeof isEmailVerified === 'function' && !isEmailVerified()) {
@@ -298,7 +300,6 @@
           await signOut();
           window.location.href = 'index.html';
         });
-      }, 300);
     });
   </script>
 </body>

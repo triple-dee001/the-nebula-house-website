@@ -59,7 +59,38 @@ function getCurrentUser() {
 
 function isAdmin(user) {
   if (!user) return false;
-  return ADMIN_EMAILS.includes(user.email.toLowerCase());
+  // Check hardcoded list OR role stored in Firestore
+  return ADMIN_EMAILS.includes(user.email.toLowerCase()) || user.role === 'admin';
+}
+
+// Returns a Promise that resolves with the user (or null) once Firebase auth is ready
+function waitForAuth() {
+  return new Promise((resolve) => {
+    if (!USE_FIREBASE || !auth) {
+      resolve(getCurrentUser());
+      return;
+    }
+    const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
+      unsubscribe();
+      if (firebaseUser) {
+        let userData = {};
+        try {
+          const doc = await db.collection('users').doc(firebaseUser.uid).get();
+          if (doc.exists) userData = doc.data();
+        } catch(e) {}
+        resolve({
+          uid: firebaseUser.uid,
+          name: firebaseUser.displayName || userData.name || firebaseUser.email.split('@')[0],
+          email: firebaseUser.email,
+          photo: firebaseUser.photoURL || userData.photo,
+          role: userData.role || 'user',
+          emailVerified: firebaseUser.emailVerified
+        });
+      } else {
+        resolve(null);
+      }
+    });
+  });
 }
 
 // ─── SIGN UP ─────────────────────────────────
@@ -754,7 +785,8 @@ document.addEventListener('DOMContentLoaded', () => {
           name: firebaseUser.displayName || userData.name || firebaseUser.email.split('@')[0],
           email: firebaseUser.email,
           photo: firebaseUser.photoURL || userData.photo,
-          role: userData.role || 'user'
+          role: userData.role || (ADMIN_EMAILS.includes(firebaseUser.email.toLowerCase()) ? 'admin' : 'user'),
+          emailVerified: firebaseUser.emailVerified
         };
         localStorage.setItem('nebula_current_user', JSON.stringify(currentUser));
         onAuthChange(currentUser);
