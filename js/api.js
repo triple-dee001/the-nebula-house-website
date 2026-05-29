@@ -1,5 +1,5 @@
 // ─── NEBULA HOUSE API CLIENT ──────────────────
-const API_BASE = 'https://motivated-charisma-production-8bb3.up.railway.app/api';
+const API_BASE = 'https://the-nebula-house-backend-production-8bb3.up.railway.app/api';
 // For local dev use: const API_BASE = 'http://localhost:3000/api';
 
 // ─── TOKEN MANAGEMENT ────────────────────────
