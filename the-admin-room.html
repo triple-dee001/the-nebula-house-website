@@ -343,8 +343,27 @@
   let allArticlesCache = [];
 
   document.addEventListener('DOMContentLoaded', async () => {
-    const user = await waitForAuth();
-    if (!user || !isAdmin(user)) {
+    // Clear any old Firebase session data
+    if (localStorage.getItem('nebula_current_user')) {
+      localStorage.removeItem('nebula_current_user');
+    }
+
+    // Get current user from new backend
+    const user = getCurrentUser();
+    if (!user || !getToken()) {
+      // Not logged in — show sign in modal
+      openAuthModal();
+      // After sign in, reload page
+      window.addEventListener('nebula-auth-change', (e) => {
+        if (e.detail.user && isAdmin(e.detail.user)) {
+          window.location.reload();
+        } else if (e.detail.user) {
+          window.location.href = 'index.html';
+        }
+      });
+      return;
+    }
+    if (!isAdmin(user)) {
       window.location.href = 'index.html';
       return;
     }
