@@ -1,6 +1,5 @@
 // ─── NEBULA HOUSE API CLIENT ──────────────────
-// Replace this with your Railway backend URL after deployment
-const API_BASE = 'https://your-backend.railway.app/api';
+const API_BASE = 'https://motivated-charisma-production-8bb3.up.railway.app/api';
 // For local dev use: const API_BASE = 'http://localhost:3000/api';
 
 // ─── TOKEN MANAGEMENT ────────────────────────
