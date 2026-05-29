@@ -211,13 +211,15 @@ function injectAuthModal() {
 
   // Google sign in
   document.getElementById('auth-google').addEventListener('click', async () => {
+    // Check if Google Client ID is configured
+    if (!window.GOOGLE_CLIENT_ID) {
+      showAuthError('Google sign-in is not configured yet. Please use email and password.');
+      return;
+    }
     try {
-      // Load Google Identity Services if not already loaded
-      if (!window.google) {
-        await loadGoogleScript();
-      }
+      if (!window.google) await loadGoogleScript();
       google.accounts.id.initialize({
-        client_id: window.GOOGLE_CLIENT_ID || '',
+        client_id: window.GOOGLE_CLIENT_ID,
         callback: async (response) => {
           try {
             const user = await nebulaGoogleLogin(response.credential);
@@ -231,7 +233,7 @@ function injectAuthModal() {
       });
       google.accounts.id.prompt();
     } catch (err) {
-      showAuthError('Google sign-in failed. Please try email instead.');
+      showAuthError('Google sign-in failed. Please use email and password.');
     }
   });
 
