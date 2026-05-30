@@ -141,51 +141,36 @@ function initStarField() {
 }
 
 
-/* --- Newsletter Form (Mailchimp Ready) --- */
+/* --- Newsletter Form --- */
 function initNewsletterForm() {
   const forms = document.querySelectorAll('.newsletter__form, .coming-soon__form');
 
-  // Check if already subscribed to hide form visually
-  if (localStorage.getItem('nebula_newsletter_subscribed') === 'true') {
-    forms.forEach(form => {
-      const parent = form.closest('.newsletter__content') || form.parentElement;
-      if (parent) {
-        parent.innerHTML = '<p style="color: #4caf50; font-size: 1.1rem; font-family: var(--font-secondary); padding: 1rem 0;">You are subscribed to the Nebula newsletter. Thank you.</p>';
-      }
-    });
-    return;
-  }
-
   forms.forEach(form => {
-    form.addEventListener('submit', (e) => {
-      // If we are wired to Mailchimp (form has action), we DO NOT prevent default.
-      // We let it submit, but we flag the local storage.
-      const action = form.getAttribute('action');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
       const input = form.querySelector('input[type="email"]');
+      const btn = form.querySelector('button[type="submit"], .newsletter__submit');
       const successMsg = form.parentElement.querySelector('.newsletter__success');
-      
-      if (input && input.value) {
-        // Save via auth.js locally & Firebase (if enabled)
-        if (typeof saveNewsletterEmail === 'function') {
-          saveNewsletterEmail(input.value);
-        }
+      const email = input ? input.value.trim() : '';
+      if (!email) return;
 
-        // Set the hidden flag
-        localStorage.setItem('nebula_newsletter_subscribed', 'true');
+      if (btn) { btn.disabled = true; btn.textContent = 'Subscribing...'; }
 
-        if (!action || action === '#') {
-          // If no Mailchimp action yet, block submission and just show JS message
-          e.preventDefault();
-          input.value = '';
-          if (successMsg) {
-            successMsg.classList.add('visible');
-            setTimeout(() => {
-              successMsg.classList.remove('visible');
-            }, 4000);
-          }
+      try {
+        await nebulaSubscribeNewsletter(email);
+        if (input) input.value = '';
+        if (successMsg) {
+          successMsg.classList.add('visible');
+          setTimeout(() => successMsg.classList.remove('visible'), 4000);
+        } else {
+          const parent = form.closest('.newsletter__content') || form.parentElement;
+          if (parent) parent.innerHTML = '<p style="color:#4caf50;font-size:1.1rem;font-family:var(--font-secondary);padding:1rem 0;">You are now subscribed. Thank you! ✓</p>';
         }
-        // If action exists, browser will POST to Mailchimp and redirect user properly.
+      } catch (err) {
+        alert(err.message || 'Could not subscribe. Please try again.');
       }
+
+      if (btn) { btn.disabled = false; btn.textContent = 'Subscribe'; }
     });
   });
 }

@@ -238,16 +238,11 @@
         body: quill.root.innerHTML,
         tags: document.getElementById('publish-tags').value.trim(),
         excerpt: document.getElementById('publish-excerpt').value.trim(),
-        authorId: user.uid,
-        authorName: user.name,
-        authorEmail: user.email,
-        createdAt: new Date().toISOString(),
-        status: 'pending'  // Requires admin approval before going live
       };
 
-      await publishPost(post);
+      await nebulaCreatePost(post);
 
-      // Show pending message instead of going straight to feed
+      // Show pending message
       document.getElementById('publish-modal').innerHTML = `
         <div class="publish-card" style="text-align:center;">
           <div style="font-size:3rem; margin-bottom:1rem;">🎉</div>

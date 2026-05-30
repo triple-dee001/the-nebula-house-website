@@ -377,22 +377,7 @@
           status.style.display = 'block'; status.style.color = '#aaa';
           status.textContent = 'Uploading photo...';
           try {
-            let photoURL = null;
-            if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length && firebase.storage) {
-              const storageRef = firebase.storage().ref(`avatars/${user.uid}`);
-              await storageRef.put(file);
-              photoURL = await storageRef.getDownloadURL();
-            } else {
-              photoURL = await new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onload = (ev) => resolve(ev.target.result);
-                reader.readAsDataURL(file);
-              });
-            }
-            await updateUserProfile(user.uid, { photo: photoURL });
-            if (typeof auth !== 'undefined' && auth && auth.currentUser) {
-              await auth.currentUser.updateProfile({ photoURL });
-            }
+            const photoURL = await nebulaUploadPhoto(file);
             setAvatar(photoURL, userData.name);
             status.style.color = '#4caf50';
             status.textContent = 'Photo updated!';
