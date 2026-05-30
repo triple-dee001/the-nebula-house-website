@@ -288,7 +288,10 @@ function showSuccessView(icon, title, body) {
 
 // ─── SIGN OUT ─────────────────────────────────
 async function signOut() {
+  // Clear new backend session
   await nebulaLogout();
+  // Clear any old Firebase/legacy keys
+  ['nebula_current_user', 'nebula_posts', 'nebula_users', 'nebula_newsletter_subscribed'].forEach(k => localStorage.removeItem(k));
   updateNavbarAuth(null);
   window.dispatchEvent(new CustomEvent('nebula-auth-change', { detail: { user: null } }));
 }

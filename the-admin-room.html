@@ -343,17 +343,16 @@
   let allArticlesCache = [];
 
   document.addEventListener('DOMContentLoaded', async () => {
-    // Clear any old Firebase session data
-    if (localStorage.getItem('nebula_current_user')) {
-      localStorage.removeItem('nebula_current_user');
-    }
+    // Aggressively clear ALL old Firebase/legacy session keys
+    ['nebula_current_user', 'nebula_posts', 'nebula_users', 'nebula_newsletter_subscribed'].forEach(k => localStorage.removeItem(k));
 
     // Get current user from new backend
     const user = getCurrentUser();
-    if (!user || !getToken()) {
+    const token = getToken();
+
+    if (!user || !token) {
       // Not logged in — show sign in modal
       openAuthModal();
-      // After sign in, reload page
       window.addEventListener('nebula-auth-change', (e) => {
         if (e.detail.user && isAdmin(e.detail.user)) {
           window.location.reload();
@@ -363,6 +362,7 @@
       });
       return;
     }
+
     if (!isAdmin(user)) {
       window.location.href = 'index.html';
       return;

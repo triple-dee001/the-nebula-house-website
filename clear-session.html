@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Signing out... | The Nebula House</title>
+  <style>
+    body { background: #0a0a0a; color: #fff; font-family: Georgia, serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+    .msg { text-align: center; }
+    h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    p { color: #aaa; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <div class="msg">
+    <h2>Clearing session...</h2>
+    <p>Redirecting you to the homepage.</p>
+  </div>
+  <script>
+    // Wipe ALL storage — old Firebase keys and new backend keys
+    const keysToRemove = [
+      'nebula_current_user',
+      'nebula_user',
+      'nebula_token',
+      'nebula_posts',
+      'nebula_newsletter_subscribed',
+      'nebula_users',
+    ];
+    keysToRemove.forEach(k => localStorage.removeItem(k));
+    // Also clear any session storage
+    sessionStorage.clear();
+    // Redirect after short delay
+    setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+  </script>
+</body>
+</html>
