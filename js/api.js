@@ -176,10 +176,10 @@ async function nebulaGetMyPosts() {
 }
 
 // ─── NEWSLETTER ───────────────────────────────
-async function nebulaSubscribeNewsletter(email) {
+async function nebulaSubscribeNewsletter(email, name = '') {
   return apiRequest('/newsletter/subscribe', {
     method: 'POST',
-    body: JSON.stringify({ email }),
+    body: JSON.stringify({ email, name }),
   });
 }
 
