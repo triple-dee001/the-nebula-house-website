@@ -174,15 +174,15 @@
       }
       if (isAdmin(user)) { window.location.href = 'the-admin-room.html'; return; }
 
-      // Show verify banner if not verified
-      if (!user.emailVerified) {
+      // Fetch fresh data from server first
+      let userData = user;
+      try { userData = await nebulaGetMe() || user; } catch(e) {}
+
+      // Show verify banner only if server says not verified
+      if (!userData.emailVerified) {
         const banner = document.getElementById('verify-banner');
         if (banner) banner.style.display = 'flex';
       }
-
-      // Fetch fresh data from server
-      let userData = user;
-      try { userData = await nebulaGetMe() || user; } catch(e) {}
 
       // ─── Populate profile ───
       const avatarEl = document.getElementById('profile-avatar');
@@ -389,19 +389,20 @@
         });
 
         // ─── Load published stories ───
-        const allPosts = typeof getPublishedPosts === 'function' ? await getPublishedPosts() : await getAllPosts();
-        const myPosts = allPosts.filter(p => p.authorEmail === user.email || p.authorId === user.uid);
-        document.getElementById('profile-post-count').textContent = myPosts.length;
-
-        const container = document.getElementById('profile-posts');
-        if (myPosts.length > 0) {
-          container.innerHTML = myPosts.map(p => `
-            <div class="profile-post">
-              <div class="profile-post__title">${p.title}</div>
-              <div class="profile-post__meta">${new Date(p.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} · ${Math.max(1, Math.ceil((p.body||'').split(/\s+/).length / 200))} min read</div>
-            </div>
-          `).join('');
-        }
+        try {
+          const posts = await nebulaGetMyPosts();
+          const published = (posts || []).filter(p => p.status === 'PUBLISHED');
+          document.getElementById('profile-post-count').textContent = published.length;
+          const container = document.getElementById('profile-posts');
+          if (published.length > 0) {
+            container.innerHTML = published.map(p => `
+              <div class="profile-post">
+                <div class="profile-post__title">${p.title}</div>
+                <div class="profile-post__meta">${new Date(p.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+              </div>
+            `).join('');
+          }
+        } catch(e) {}
 
         // ─── Sign out ───
         document.getElementById('btn-signout').addEventListener('click', async () => {
