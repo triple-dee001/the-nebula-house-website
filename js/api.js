@@ -1,6 +1,7 @@
 // ─── NEBULA HOUSE API CLIENT ──────────────────
-const API_BASE = 'https://the-nebula-house-backend-production-8bb3.up.railway.app/api';
-// For local dev use: const API_BASE = 'http://localhost:3000/api';
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:3000/api'
+  : 'https://the-nebula-house-backend-production-8bb3.up.railway.app/api';
 
 // ─── TOKEN MANAGEMENT ────────────────────────
 function getToken() { return localStorage.getItem('nebula_token'); }
@@ -191,6 +192,53 @@ async function nebulaSubmitNomination(bookTitle, bookAuthor, reason) {
   });
 }
 
+// ─── AI ASSISTANCE ───────────────────────────
+async function nebulaAIAssist(text) {
+  return apiRequest('/ai/ai-assist', {
+    method: 'POST',
+    body: JSON.stringify({ text }),
+  });
+}
+
+// ─── MONTHLY CHALLENGES ───────────────────────
+async function nebulaGetChallenges(activeOnly = false) {
+  return apiRequest(`/challenges?activeOnly=${activeOnly}`);
+}
+
+async function nebulaGetChallenge(id) {
+  return apiRequest(`/challenges/${id}`);
+}
+
+async function adminCreateChallenge(challenge) {
+  return apiRequest('/challenges', {
+    method: 'POST',
+    body: JSON.stringify(challenge),
+  });
+}
+
+// ─── AUTHOR MENTORSHIP ────────────────────────
+async function nebulaGetMentors() {
+  return apiRequest('/mentorship/mentors');
+}
+
+async function nebulaGetMentorshipRequests() {
+  return apiRequest('/mentorship/requests');
+}
+
+async function nebulaRequestMentorship(mentorId, message) {
+  return apiRequest('/mentorship/request', {
+    method: 'POST',
+    body: JSON.stringify({ mentorId, message }),
+  });
+}
+
+async function nebulaRespondMentorshipRequest(requestId, status) {
+  return apiRequest(`/mentorship/requests/${requestId}`, {
+    method: 'PUT',
+    body: JSON.stringify({ status }),
+  });
+}
+
 // ─── ADMIN ────────────────────────────────────
 async function adminGetStats() { return apiRequest('/admin/stats'); }
 async function adminGetUsers(params = {}) {
@@ -200,6 +248,11 @@ async function adminGetUsers(params = {}) {
 async function adminUpdateUserRole(userId, role) {
   return apiRequest(`/admin/users/${userId}/role`, {
     method: 'PUT', body: JSON.stringify({ role }),
+  });
+}
+async function adminToggleMentor(userId, isMentor, mentorBio = null) {
+  return apiRequest(`/admin/users/${userId}/mentor`, {
+    method: 'PUT', body: JSON.stringify({ isMentor, mentorBio }),
   });
 }
 async function adminDeleteUser(userId) {

@@ -123,6 +123,40 @@
       font-size: 0.75rem; cursor: pointer; transition: all 0.2s;
     }
     .wr-article__delete:hover { background: rgba(220,50,50,0.15); border-color: #e55; }
+
+    /* Tabs navigation for feed, challenges, mentorship */
+    .wr-tabs { display: flex; gap: 1.5rem; margin-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.5rem; }
+    .wr-tab { color: var(--text-muted); text-decoration: none; font-family: var(--font-secondary); font-weight: 600; font-size: 0.95rem; padding-bottom: 0.6rem; border-bottom: 2px solid transparent; transition: all 0.2s; }
+    .wr-tab:hover, .wr-tab.active { color: #fff; }
+    .wr-tab.active { border-color: #fff; }
+
+    /* Challenge hero */
+    .challenge-hero { background: linear-gradient(135deg, #181124 0%, #0a0a0a 100%); border: 1px solid rgba(187,134,252,0.15); border-radius: 12px; padding: 2rem; margin-bottom: 2rem; }
+    .challenge-hero__title { font-family: var(--font-primary); font-size: 1.8rem; margin-bottom: 0.5rem; color: #fff; }
+    .challenge-hero__theme { font-size: 0.9rem; color: #bb86fc; font-weight: 600; text-transform: uppercase; margin-bottom: 1rem; }
+    .challenge-hero__desc { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem; }
+
+    /* Mentor grid & card */
+    .mentor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+    .mentor-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; transition: border-color 0.2s; }
+    .mentor-card:hover { border-color: rgba(255,255,255,0.15); }
+    .mentor-card__header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+    .mentor-card__avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background: rgba(255,255,255,0.1); }
+    .mentor-card__name { font-weight: 700; font-size: 1.1rem; color: #fff; }
+    .mentor-card__bio { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.4; }
+    .mentor-card__m-bio { font-size: 0.9rem; color: #ddd; line-height: 1.5; flex: 1; margin-bottom: 1.5rem; }
+    .mentor-card__btn { width: 100%; padding: 0.6rem; background: #fff; color: #000; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.9rem; text-align: center; transition: opacity 0.2s; }
+    .mentor-card__btn:hover { opacity: 0.9; }
+
+    /* Mentorship Requests Modal */
+    .mentor-modal { position: fixed; inset: 0; z-index: 10002; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; }
+    .mentor-modal.open { display: flex; }
+
+    /* Badges for status in table */
+    .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+    .badge--pending { background: #fef3c7; color: #92400e; }
+    .badge--accepted { background: #d1fae5; color: #065f46; }
+    .badge--declined { background: #fee2e2; color: #991b1b; }
   </style>
 </head>
 <body>
@@ -185,11 +219,70 @@
       <!-- Layout: Feed + Sidebar -->
       <div class="wr-layout">
 
-        <!-- Article Feed -->
-        <div id="wr-feed">
-          <div class="wr-empty" id="wr-empty-state">
-            <h3>No stories yet</h3>
-            <p>Be the first to publish. Click "Write" to begin crafting your story.</p>
+        <!-- Main Content Area with Tabs -->
+        <div>
+          <!-- Tab Headers -->
+          <div class="wr-tabs">
+            <a href="#" class="wr-tab active" data-tab="feed">Community Feed</a>
+            <a href="#" class="wr-tab" data-tab="challenges">Monthly Challenges</a>
+            <a href="#" class="wr-tab" data-tab="mentorship">Author Mentorship</a>
+          </div>
+
+          <!-- Feed Container -->
+          <div class="tab-content active" id="cnt-feed">
+            <div id="wr-feed">
+              <div class="wr-empty" id="wr-empty-state">
+                <h3>No stories yet</h3>
+                <p>Be the first to publish. Click "Write" to begin crafting your story.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Challenges Container -->
+          <div class="tab-content" id="cnt-challenges" style="display:none;">
+            <div id="challenges-active">
+              <!-- Loaded by writers-room.js -->
+            </div>
+            <h4 style="font-family:var(--font-primary); font-size:1.4rem; margin:2.5rem 0 1rem; border-top:1px solid rgba(255,255,255,0.08); padding-top:2rem;">Challenge Submissions</h4>
+            <div id="challenges-feed">
+              <div class="wr-empty">No submissions for this challenge yet.</div>
+            </div>
+          </div>
+
+          <!-- Mentorship Container -->
+          <div class="tab-content" id="cnt-mentorship" style="display:none;">
+            <div style="display:flex; gap:1rem; margin-bottom:2rem;">
+              <button class="wr-header__write-btn" id="btn-browse-mentors" style="padding:0.4rem 1.2rem; font-size:0.85rem; background:#fff; color:#000;">Browse Mentors</button>
+              <button class="wr-header__write-btn" id="btn-my-requests" style="padding:0.4rem 1.2rem; font-size:0.85rem;">My Requests</button>
+            </div>
+
+            <!-- Browse Mentors -->
+            <div id="mentorship-browse">
+              <div class="mentor-grid" id="mentors-list">
+                <!-- Loaded by writers-room.js -->
+              </div>
+            </div>
+
+            <!-- My Requests -->
+            <div id="mentorship-requests" style="display:none;">
+              <div style="overflow-x:auto;">
+                <table class="data-table" style="width:100%; border-collapse:collapse;">
+                  <thead>
+                    <tr style="text-align:left; border-bottom:1px solid rgba(255,255,255,0.08);">
+                      <th style="padding:0.8rem; font-size:0.75rem; text-transform:uppercase; color:var(--text-muted); background:none;">Counterpart</th>
+                      <th style="padding:0.8rem; font-size:0.75rem; text-transform:uppercase; color:var(--text-muted); background:none;">Role</th>
+                      <th style="padding:0.8rem; font-size:0.75rem; text-transform:uppercase; color:var(--text-muted); background:none;">Message</th>
+                      <th style="padding:0.8rem; font-size:0.75rem; text-transform:uppercase; color:var(--text-muted); background:none;">Status</th>
+                      <th style="padding:0.8rem; font-size:0.75rem; text-transform:uppercase; color:var(--text-muted); background:none;">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="my-requests-list">
+                    <!-- Loaded by writers-room.js -->
+                  </tbody>
+                </table>
+              </div>
+              <div class="wr-empty" id="requests-empty" style="display:none;">No mentorship requests found.</div>
+            </div>
           </div>
         </div>
 
@@ -264,98 +357,26 @@
     </div>
   </footer>
 
+  <!-- Mentorship Request Modal -->
+  <div class="mentor-modal" id="mentorship-request-modal">
+    <div class="publish-card" style="max-width:450px;">
+      <h2 id="mentor-req-title">Request Mentorship</h2>
+      <p style="color:#aaa; font-size:0.85rem; margin-bottom:1.25rem;">Tell the author why you'd like them as your writing mentor and what your goals are.</p>
+      <input type="hidden" id="mentor-req-id">
+      <label>Introduce yourself & your writing goals</label>
+      <textarea id="mentor-req-message" placeholder="Hi! I love your essays on faith and would like some guidance..." style="width:100%; min-height:120px; box-sizing:border-box; margin-bottom:1.25rem; background:#1a1a1a; border:1px solid #333; color:#fff; border-radius:6px; padding:0.75rem; outline:none; font-family:inherit; font-size:0.95rem;"></textarea>
+      <div class="publish-actions">
+        <button class="btn-cancel" id="btn-close-mentor-modal">Cancel</button>
+        <button class="btn-go" id="btn-submit-mentor-request" style="background:#fff; color:#000;">Send Request</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
   <script src="js/api.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/components.js"></script>
   <script src="js/main.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      // ─── Write Button Auth Guard ───
-      document.getElementById('btn-write').addEventListener('click', () => {
-        const user = getCurrentUser();
-        if (!user) {
-          openAuthModal();
-          window.addEventListener('nebula-auth-change', function handler(e) {
-            if (e.detail.user) {
-              window.removeEventListener('nebula-auth-change', handler);
-              if (!isEmailVerified()) {
-                alert('Please verify your email before writing. Check your inbox for the verification link.');
-                return;
-              }
-              window.location.href = 'write.html';
-            }
-          });
-        } else if (!isEmailVerified()) {
-          alert('Please verify your email before writing. Check your inbox for the verification link.');
-        } else {
-          window.location.href = 'write.html';
-        }
-      });
-
-      // ─── Load Article Feed ───
-      await loadFeed();
-
-      // ─── Newsletter Form ───
-      document.getElementById('wr-newsletter-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const input = e.target.querySelector('input[type="email"]');
-        if (input.value) {
-          await saveNewsletterEmail(input.value);
-          input.value = '';
-          const msg = document.getElementById('wr-newsletter-success');
-          msg.style.display = 'block';
-          setTimeout(() => { msg.style.display = 'none'; }, 3000);
-        }
-      });
-    });
-
-    async function loadFeed() {
-      const feed = document.getElementById('wr-feed');
-      const empty = document.getElementById('wr-empty-state');
-      const posts = await getPublishedPosts();
-      const user = getCurrentUser();
-      const userIsAdmin = user && isAdmin(user);
-
-      if (posts.length === 0) {
-        empty.style.display = 'block';
-        return;
-      }
-      empty.style.display = 'none';
-
-      feed.innerHTML = posts.map(post => {
-        const initial = (post.authorName || 'A')[0].toUpperCase();
-        const date = new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        const readTime = Math.max(1, Math.ceil((post.body || '').split(/\s+/).length / 200));
-        const excerpt = (post.body || '').replace(/<[^>]*>/g, '').substring(0, 180) + '...';
-
-        return `
-          <div class="wr-article">
-            <div>
-              <div class="wr-article__meta">
-                <div class="wr-article__avatar">${initial}</div>
-                <span>${post.authorName || 'Anonymous'}</span>
-              </div>
-              <div class="wr-article__title">${post.title || 'Untitled'}</div>
-              <div class="wr-article__excerpt">${excerpt}</div>
-              <div class="wr-article__footer">
-                <span>${date}</span>
-                <span>·</span>
-                <span>${readTime} min read</span>
-                ${post.tags ? post.tags.split(',').slice(0,2).map(t => `<span style="background:rgba(255,255,255,0.06);padding:0.15rem 0.5rem;border-radius:12px;">${t.trim()}</span>`).join('') : ''}
-                ${userIsAdmin ? `<button class="wr-article__delete" data-id="${post.id}" onclick="handleDelete('${post.id}')">Delete</button>` : ''}
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    async function handleDelete(postId) {
-      if (!confirm('Are you sure you want to delete this article? This cannot be undone.')) return;
-      await deletePost(postId);
-      await loadFeed();
-    }
-  </script>
+  <script src="js/writers-room.js"></script>
 </body>
 </html>

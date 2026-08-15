@@ -128,6 +128,7 @@
       <img src="assets/images/room-icon.png" alt="The Nebula House">
     </a>
     <div class="write-topbar__actions">
+      <button class="write-topbar__draft" id="btn-ai-assist" style="border-color:#bb86fc; color:#bb86fc;">✨ AI Assistant</button>
       <button class="write-topbar__publish" id="btn-open-publish" disabled>Publish</button>
       <div class="write-topbar__user" id="write-user-avatar"></div>
     </div>
@@ -140,14 +141,61 @@
     <div id="quill-editor"></div>
   </div>
 
+  <!-- AI Assistant Modal -->
+  <div class="publish-overlay" id="ai-modal">
+    <div class="publish-card" style="max-width: 600px;">
+      <h2>✨ Nebula AI Assistant</h2>
+      <p style="color:#aaa; font-size:0.9rem; margin-bottom:1.5rem;">We'll analyze your story and suggest improvements for tone, style, and flow.</p>
+      
+      <div id="ai-loading" style="display:none; text-align:center; padding:2rem 0;">
+        <div style="font-size:2rem; margin-bottom:1rem;" class="spin">⏳</div>
+        <p>Analyzing your story with Gemini AI...</p>
+      </div>
+
+      <div id="ai-results" style="display:none;">
+        <div style="background:rgba(255,255,255,0.05); padding:1rem; border-radius:8px; margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-weight:600; color:#fff;">Readability Score:</span>
+          <span id="ai-readability" style="font-size:1.5rem; font-weight:700; color:#bb86fc;">85/100</span>
+        </div>
+
+        <div style="margin-bottom:1.5rem;">
+          <label>Improvement Suggestions:</label>
+          <div id="ai-suggestions-list" style="max-height: 180px; overflow-y: auto; background:#1c1c1c; border-radius:6px; padding:1rem;">
+            <!-- suggestions go here -->
+          </div>
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <label>Preview Optimized Story:</label>
+          <div id="ai-preview-text" style="max-height: 150px; overflow-y: auto; background:#1c1c1c; border-radius:6px; padding:1rem; font-size:0.95rem; line-height:1.6; color:#ddd; white-space: pre-wrap;">
+          </div>
+        </div>
+      </div>
+
+      <div class="publish-actions">
+        <button class="btn-cancel" id="btn-close-ai">Close</button>
+        <button class="btn-go" id="btn-apply-ai" style="background:#bb86fc; display:none; color:#000;">Apply Suggestions</button>
+        <button class="btn-go" id="btn-run-ai">Run AI Check</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Publish Settings Modal -->
   <div class="publish-overlay" id="publish-modal">
     <div class="publish-card">
       <h2>Ready to publish?</h2>
+      
+      <label>Participate in Monthly Challenge? (optional)</label>
+      <select id="publish-challenge" style="width: 100%; padding: 0.75rem; background: #1a1a1a; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 0.95rem; margin-bottom: 1.25rem; outline:none; font-family:inherit;">
+        <option value="">-- No Challenge (Regular Story) --</option>
+      </select>
+
       <label>Tags (comma separated)</label>
       <input type="text" id="publish-tags" placeholder="Philosophy, Faith, Identity">
+      
       <label>Story Preview (excerpt shown in the feed)</label>
       <textarea id="publish-excerpt" placeholder="A short summary of your story..."></textarea>
+      
       <div class="publish-actions">
         <button class="btn-cancel" id="btn-cancel-publish">Cancel</button>
         <button class="btn-go" id="btn-confirm-publish">Publish Now</button>
@@ -161,9 +209,20 @@
   <script src="js/auth.js"></script>
   <script src="js/components.js"></script>
   <script>
-    // ─── Auth Guard ───
-    document.addEventListener('DOMContentLoaded', () => {
-      setTimeout(() => {
+    // Spin animation style injected programmatically
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+      .spin { display: inline-block; animation: spin 1.5s linear infinite; }
+    `;
+    document.head.appendChild(style);
+
+    let aiImprovedText = "";
+
+    // ─── Auth Guard & Active Challenges loader ───
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Small timeout to allow api.js token validation IIFE to resolve
+      setTimeout(async () => {
         const user = getCurrentUser();
         if (!user) {
           window.location.href = 'the-writers-room.html';
@@ -171,9 +230,27 @@
         }
         // Show user avatar
         const avatar = document.getElementById('write-user-avatar');
-        const initial = (user.name || user.email)[0].toUpperCase();
-        avatar.textContent = initial;
-      }, 200);
+        if (avatar) {
+          const initial = (user.name || user.email)[0].toUpperCase();
+          avatar.textContent = initial;
+        }
+
+        // Fetch active challenges to populate challenge select dropdown
+        try {
+          const challenges = await nebulaGetChallenges(true);
+          const select = document.getElementById('publish-challenge');
+          if (challenges && challenges.length > 0) {
+            challenges.forEach(c => {
+              const opt = document.createElement('option');
+              opt.value = c.id;
+              opt.textContent = c.title;
+              select.appendChild(opt);
+            });
+          }
+        } catch (e) {
+          console.error("Error fetching active challenges:", e);
+        }
+      }, 300);
     });
 
     // ─── Auto-resize textareas ───
@@ -213,11 +290,79 @@
       document.getElementById('btn-open-publish').disabled = !(hasContent && hasTitle);
     });
 
+    // ─── AI ASSISTANT FLOW ───
+    document.getElementById('btn-ai-assist').addEventListener('click', () => {
+      document.getElementById('ai-modal').classList.add('open');
+      document.getElementById('ai-results').style.display = 'none';
+      document.getElementById('btn-apply-ai').style.display = 'none';
+      document.getElementById('btn-run-ai').style.display = 'block';
+    });
+
+    document.getElementById('btn-close-ai').addEventListener('click', () => {
+      document.getElementById('ai-modal').classList.remove('open');
+    });
+
+    document.getElementById('btn-run-ai').addEventListener('click', async () => {
+      const text = quill.getText().trim();
+      if (!text) return alert("Please write some content first before analyzing.");
+
+      const runBtn = document.getElementById('btn-run-ai');
+      const loader = document.getElementById('ai-loading');
+      
+      runBtn.disabled = true;
+      runBtn.textContent = 'Analyzing...';
+      loader.style.display = 'block';
+      document.getElementById('ai-results').style.display = 'none';
+
+      try {
+        const results = await nebulaAIAssist(text);
+        loader.style.display = 'none';
+        document.getElementById('ai-results').style.display = 'block';
+        
+        // Populate readability score
+        document.getElementById('ai-readability').textContent = `${results.readabilityScore || 80}/100`;
+        
+        // Populate suggestions
+        const list = document.getElementById('ai-suggestions-list');
+        if (results.suggestions && results.suggestions.length > 0) {
+          list.innerHTML = results.suggestions.map(s => `
+            <div style="margin-bottom:0.8rem; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:0.5rem; line-height: 1.4;">
+              <div style="text-decoration:line-through; color:#f87171; font-size:0.85rem;">"${s.original}"</div>
+              <div style="color:#4ade80; font-size:0.85rem; font-weight:600; margin:0.15rem 0;">→ "${s.replacement}"</div>
+              <div style="color:#9ca3af; font-size:0.8rem; font-style:italic;">Reason: ${s.reason}</div>
+            </div>
+          `).join('');
+        } else {
+          list.innerHTML = '<div style="color:#aaa; font-size:0.88rem;">Your writing looks fantastic! No grammar or style recommendations.</div>';
+        }
+
+        // Preview text
+        aiImprovedText = results.improvedText || text;
+        document.getElementById('ai-preview-text').textContent = aiImprovedText;
+        
+        document.getElementById('btn-apply-ai').style.display = 'block';
+        runBtn.style.display = 'none';
+      } catch (err) {
+        loader.style.display = 'none';
+        alert("AI error: " + err.message);
+      }
+
+      runBtn.disabled = false;
+      runBtn.textContent = 'Run AI Check';
+    });
+
+    document.getElementById('btn-apply-ai').addEventListener('click', () => {
+      if (aiImprovedText) {
+        quill.root.innerHTML = aiImprovedText;
+        document.getElementById('ai-modal').classList.remove('open');
+        alert("Suggestions successfully applied to editor!");
+      }
+    });
+
     // ─── Publish Flow ───
     document.getElementById('btn-open-publish').addEventListener('click', () => {
-      // Pre-fill excerpt from body
       const text = quill.getText().trim();
-      document.getElementById('publish-excerpt').value = text.substring(0, 200);
+      document.getElementById('publish-excerpt').value = text.substring(0, 200) + (text.length > 200 ? '...' : '');
       document.getElementById('publish-modal').classList.add('open');
     });
 
@@ -239,21 +384,27 @@
         body: quill.root.innerHTML,
         tags: document.getElementById('publish-tags').value.trim(),
         excerpt: document.getElementById('publish-excerpt').value.trim(),
+        challengeId: document.getElementById('publish-challenge').value || null,
       };
 
-      await nebulaCreatePost(post);
-
-      // Show pending message
-      document.getElementById('publish-modal').innerHTML = `
-        <div class="publish-card" style="text-align:center;">
-          <div style="font-size:3rem; margin-bottom:1rem;">🎉</div>
-          <h2 style="font-family:var(--font-primary);">Story Submitted!</h2>
-          <p style="color:#aaa; margin: 1rem 0 1.5rem; line-height:1.6;">
-            Your story is pending review. Once approved by our admin, it will appear in The Writer's Room.
-          </p>
-          <a href="the-writers-room.html" class="btn-go" style="display:inline-block; padding:0.65rem 2rem; border-radius:6px; text-decoration:none; background:#4caf50; color:#fff; font-weight:600;">Back to the Room</a>
-        </div>
-      `;
+      try {
+        await nebulaCreatePost(post);
+        // Show pending message
+        document.getElementById('publish-modal').innerHTML = `
+          <div class="publish-card" style="text-align:center;">
+            <div style="font-size:3rem; margin-bottom:1rem;">🎉</div>
+            <h2 style="font-family:var(--font-primary);">Story Submitted!</h2>
+            <p style="color:#aaa; margin: 1rem 0 1.5rem; line-height:1.6;">
+              Your story is pending review. Once approved by our admin, it will appear in The Writer's Room.
+            </p>
+            <a href="the-writers-room.html" class="btn-go" style="display:inline-block; padding:0.65rem 2rem; border-radius:6px; text-decoration:none; background:#4caf50; color:#fff; font-weight:600;">Back to the Room</a>
+          </div>
+        `;
+      } catch (err) {
+        alert("Error publishing post: " + err.message);
+        btn.disabled = false;
+        btn.textContent = 'Publish Now';
+      }
     });
   </script>
 </body>

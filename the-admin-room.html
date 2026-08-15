@@ -7,15 +7,15 @@
   <link rel="stylesheet" href="css/styles.css">
   <style>
     :root {
-      --admin-bg: #f4f5f7;
-      --admin-card: #ffffff;
-      --admin-text: #111;
-      --admin-muted: #6b7280;
-      --admin-border: #e5e7eb;
-      --admin-accent: #111;
-      --admin-danger: #ef4444;
-      --admin-success: #22c55e;
-      --admin-warning: #f59e0b;
+      --admin-bg: #050505;
+      --admin-card: rgba(255, 255, 255, 0.02);
+      --admin-text: #ffffff;
+      --admin-muted: #888888;
+      --admin-border: rgba(255, 255, 255, 0.08);
+      --admin-accent: #ffffff;
+      --admin-danger: #ff6b6b;
+      --admin-success: #4caf50;
+      --admin-warning: #ffb74d;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: var(--admin-bg); color: var(--admin-text); font-family: var(--font-secondary, 'Inter', sans-serif); }
@@ -25,10 +25,11 @@
 
     /* Sidebar */
     .admin-sidebar {
-      background: #0f0f0f; color: #fff;
+      background: #000000; color: #fff;
       padding: 1.75rem 1.25rem;
       display: flex; flex-direction: column;
       position: sticky; top: 0; height: 100vh; overflow-y: auto;
+      border-right: 1px solid var(--admin-border);
     }
     .admin-sidebar__brand { text-align: center; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 1.5rem; }
     .admin-sidebar__brand img { width: 38px; }
@@ -42,7 +43,7 @@
     }
     .admin-nav a:hover { background: rgba(255,255,255,0.07); color: #fff; }
     .admin-nav a.active { background: rgba(255,255,255,0.12); color: #fff; font-weight: 600; }
-    .admin-nav__badge { margin-left: auto; background: #ef4444; color: #fff; font-size: 0.7rem; padding: 0.1rem 0.45rem; border-radius: 20px; font-weight: 700; }
+    .admin-nav__badge { margin-left: auto; background: #ff6b6b; color: #fff; font-size: 0.7rem; padding: 0.1rem 0.45rem; border-radius: 20px; font-weight: 700; }
     .admin-nav__divider { height: 1px; background: rgba(255,255,255,0.08); margin: 0.75rem 0; }
 
     /* Main */
@@ -54,66 +55,93 @@
 
     /* Stat Cards */
     .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-    .stat-card { background: var(--admin-card); border: 1px solid var(--admin-border); border-radius: 12px; padding: 1.25rem; }
+    .stat-card {
+      background: var(--admin-card); border: 1px solid var(--admin-border); border-radius: 12px; padding: 1.25rem;
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    }
     .stat-card__label { font-size: 0.8rem; color: var(--admin-muted); font-weight: 500; margin-bottom: 0.6rem; }
     .stat-card__val { font-size: 2rem; font-weight: 700; }
     .stat-card__sub { font-size: 0.78rem; color: var(--admin-muted); margin-top: 0.3rem; }
 
     /* Panels */
-    .panel { background: var(--admin-card); border: 1px solid var(--admin-border); border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; }
+    .panel {
+      background: var(--admin-card); border: 1px solid var(--admin-border); border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem;
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    }
     .panel__header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--admin-border); display: flex; align-items: center; justify-content: space-between; }
     .panel__title { font-size: 0.95rem; font-weight: 600; }
-    .panel__action { font-size: 0.82rem; color: var(--admin-muted); background: none; border: 1px solid var(--admin-border); padding: 0.35rem 0.75rem; border-radius: 6px; cursor: pointer; transition: all 0.15s; }
-    .panel__action:hover { border-color: #111; color: #111; }
+    .panel__action {
+      font-size: 0.82rem; color: var(--admin-text); background: none; border: 1px solid var(--admin-border); padding: 0.35rem 0.75rem; border-radius: 6px; cursor: pointer; transition: all 0.15s;
+    }
+    .panel__action:hover { border-color: #fff; background: rgba(255,255,255,0.05); }
 
     /* Tables */
     .data-table { width: 100%; border-collapse: collapse; }
     .data-table th, .data-table td { padding: 0.8rem 1.25rem; text-align: left; border-bottom: 1px solid var(--admin-border); font-size: 0.88rem; }
-    .data-table th { background: #f9fafb; color: var(--admin-muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .data-table th { background: rgba(255, 255, 255, 0.03); color: var(--admin-muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
     .data-table tr:last-child td { border-bottom: none; }
-    .data-table tr:hover td { background: #fafafa; }
+    .data-table tr:hover td { background: rgba(255, 255, 255, 0.01); }
     .empty-state { padding: 3rem; text-align: center; color: var(--admin-muted); font-size: 0.9rem; }
 
     /* Badges */
     .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
-    .badge--admin { background: #111; color: #fff; }
-    .badge--user { background: #f3f4f6; color: #555; }
-    .badge--pending { background: #fef3c7; color: #92400e; }
-    .badge--published { background: #d1fae5; color: #065f46; }
-    .badge--rejected { background: #fee2e2; color: #991b1b; }
-    .badge--verified { background: #dbeafe; color: #1e40af; }
-    .badge--unverified { background: #f3f4f6; color: #6b7280; }
+    .badge--admin { background: rgba(255,255,255,0.08); color: #fff; border: 1px solid rgba(255,255,255,0.15); }
+    .badge--user { background: rgba(255,255,255,0.03); color: var(--admin-muted); border: 1px solid var(--admin-border); }
+    .badge--pending { background: rgba(255,183,77,0.1); color: var(--admin-warning); border: 1px solid rgba(255,183,77,0.2); }
+    .badge--published { background: rgba(76,175,80,0.1); color: var(--admin-success); border: 1px solid rgba(76,175,80,0.2); }
+    .badge--rejected { background: rgba(255,107,107,0.1); color: var(--admin-danger); border: 1px solid rgba(255,107,107,0.2); }
+    .badge--verified { background: rgba(76,175,80,0.1); color: var(--admin-success); border: 1px solid rgba(76,175,80,0.2); }
+    .badge--unverified { background: rgba(255,255,255,0.04); color: var(--admin-muted); border: 1px solid var(--admin-border); }
 
     /* Action Buttons */
-    .btn-approve { padding: 0.3rem 0.75rem; background: #22c55e; color: #fff; border: none; border-radius: 5px; font-size: 0.8rem; cursor: pointer; transition: opacity 0.15s; }
-    .btn-approve:hover { opacity: 0.85; }
-    .btn-reject { padding: 0.3rem 0.75rem; background: transparent; color: var(--admin-danger); border: 1px solid rgba(239,68,68,0.3); border-radius: 5px; font-size: 0.8rem; cursor: pointer; transition: all 0.15s; }
-    .btn-reject:hover { background: rgba(239,68,68,0.07); }
-    .btn-delete { padding: 0.3rem 0.75rem; background: transparent; color: var(--admin-danger); border: 1px solid rgba(239,68,68,0.3); border-radius: 5px; font-size: 0.8rem; cursor: pointer; transition: all 0.15s; }
-    .btn-delete:hover { background: rgba(239,68,68,0.07); }
-    .btn-make-admin { padding: 0.3rem 0.75rem; background: transparent; color: #111; border: 1px solid var(--admin-border); border-radius: 5px; font-size: 0.8rem; cursor: pointer; transition: all 0.15s; }
-    .btn-make-admin:hover { background: #111; color: #fff; }
-    .btn-primary { padding: 0.55rem 1.25rem; background: #111; color: #fff; border: none; border-radius: 7px; font-size: 0.88rem; cursor: pointer; transition: opacity 0.15s; font-family: inherit; }
-    .btn-primary:hover { opacity: 0.85; }
-    .btn-logout { padding: 0.5rem 1.1rem; background: transparent; border: 1px solid var(--admin-border); border-radius: 7px; font-size: 0.85rem; cursor: pointer; color: var(--admin-muted); transition: all 0.2s; font-family: inherit; }
-    .btn-logout:hover { border-color: var(--admin-danger); color: var(--admin-danger); }
+    .btn-approve {
+      padding: 0.3rem 0.75rem; background: rgba(76,175,80,0.1); color: #4caf50; border: 1px solid rgba(76,175,80,0.25);
+      border-radius: 5px; font-size: 0.8rem; cursor: pointer; transition: all 0.15s;
+    }
+    .btn-approve:hover { background: #4caf50; color: #fff; }
+    .btn-reject, .btn-delete {
+      padding: 0.3rem 0.75rem; background: rgba(255,107,107,0.1); color: var(--admin-danger); border: 1px solid rgba(255,107,107,0.25);
+      border-radius: 5px; font-size: 0.8rem; cursor: pointer; transition: all 0.15s;
+    }
+    .btn-reject:hover, .btn-delete:hover { background: var(--admin-danger); color: #fff; }
+    .btn-make-admin {
+      padding: 0.3rem 0.75rem; background: transparent; color: #fff; border: 1px solid var(--admin-border);
+      border-radius: 5px; font-size: 0.8rem; cursor: pointer; transition: all 0.15s;
+    }
+    .btn-make-admin:hover { background: #fff; color: #000; border-color: #fff; }
+    .btn-primary {
+      padding: 0.55rem 1.25rem; background: #fff; color: #000; border: none; border-radius: 7px;
+      font-size: 0.88rem; cursor: pointer; transition: opacity 0.15s; font-family: inherit; font-weight: 600;
+    }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-logout {
+      padding: 0.5rem 1.1rem; background: transparent; border: 1px solid var(--admin-border); border-radius: 7px;
+      font-size: 0.85rem; cursor: pointer; color: var(--admin-text); transition: all 0.2s; font-family: inherit;
+    }
+    .btn-logout:hover { border-color: var(--admin-danger); color: var(--admin-danger); background: rgba(255,107,107,0.05); }
 
     /* Search */
     .search-bar { display: flex; gap: 0.75rem; margin-bottom: 1.25rem; }
-    .search-bar input { flex: 1; padding: 0.6rem 1rem; border: 1px solid var(--admin-border); border-radius: 7px; font-size: 0.88rem; font-family: inherit; outline: none; }
-    .search-bar input:focus { border-color: #999; }
+    .search-bar input, .add-admin-form input {
+      flex: 1; padding: 0.6rem 1rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--admin-border);
+      border-radius: 7px; font-size: 0.88rem;
+      font-family: inherit; outline: none;
+      color: #fff;
+      transition: all 0.2s;
+    }
+    .search-bar input:focus, .add-admin-form input:focus { border-color: rgba(255, 255, 255, 0.25); background: rgba(255,255,255,0.05); }
 
     /* Add Admin Form */
     .add-admin-form { display: flex; gap: 0.75rem; flex-wrap: wrap; }
-    .add-admin-form input { flex: 1; min-width: 220px; padding: 0.6rem 1rem; border: 1px solid var(--admin-border); border-radius: 7px; font-size: 0.88rem; font-family: inherit; outline: none; }
-    .add-admin-form input:focus { border-color: #999; }
 
     /* Activity feed */
     .activity-item { display: flex; gap: 1rem; padding: 0.85rem 1.25rem; border-bottom: 1px solid var(--admin-border); align-items: flex-start; }
     .activity-item:last-child { border-bottom: none; }
-    .activity-dot { width: 8px; height: 8px; border-radius: 50%; background: #111; margin-top: 5px; flex-shrink: 0; }
-    .activity-dot--green { background: #22c55e; }
-    .activity-dot--yellow { background: #f59e0b; }
+    .activity-dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; margin-top: 5px; flex-shrink: 0; }
+    .activity-dot--green { background: #4caf50; }
+    .activity-dot--yellow { background: #ffb74d; }
     .activity-text { font-size: 0.88rem; line-height: 1.5; }
     .activity-time { font-size: 0.78rem; color: var(--admin-muted); margin-top: 0.15rem; }
 
@@ -247,7 +275,7 @@
         <div class="panel">
           <div class="panel__header"><span class="panel__title">All Users</span></div>
           <table class="data-table">
-            <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Verified</th><th>Joined</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Verified</th><th>Mentor?</th><th>Joined</th><th>Actions</th></tr></thead>
             <tbody id="all-users-list"></tbody>
           </table>
           <div class="empty-state" id="all-users-empty" style="display:none;">No users yet.</div>
@@ -285,7 +313,7 @@
             <thead><tr><th>Title</th><th>Author</th><th>Excerpt</th><th>Submitted</th><th>Actions</th></tr></thead>
             <tbody id="approvals-list"></tbody>
           </table>
-          <div class="empty-state" id="approvals-empty" style="display:none;">🎉 No articles pending approval.</div>
+          <div class="empty-state" id="approvals-empty" style="display:none;">No articles pending approval.</div>
         </div>
       </div>
 
@@ -485,18 +513,26 @@
   function renderUsersTable(users) {
     const tbody = document.getElementById('all-users-list');
     document.getElementById('all-users-empty').style.display = users.length ? 'none' : 'block';
-    tbody.innerHTML = users.map(u => `
-      <tr>
-        <td style="font-weight:500;">${u.name || 'N/A'}</td>
-        <td>${u.email}</td>
-        <td><span class="badge badge--${u.role === 'ADMIN' || u.role === 'SUPER_ADMIN' ? 'admin' : 'user'}">${u.role || 'USER'}</span></td>
-        <td><span class="badge badge--${u.emailVerified ? 'verified' : 'unverified'}">${u.emailVerified ? '✓' : '—'}</span></td>
-        <td>${u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—'}</td>
-        <td style="display:flex; gap:0.4rem; flex-wrap:wrap;">
-          ${u.role === 'USER' ? `<button class="btn-make-admin" onclick="grantAdmin('${u.id}','${u.email}')">Make Admin</button>` : `<button class="btn-reject" onclick="revokeAdmin('${u.id}','${u.email}')">Revoke</button>`}
-          <button class="btn-delete" onclick="deleteUserAdmin('${u.id}')">Delete</button>
-        </td>
-      </tr>`).join('');
+    tbody.innerHTML = users.map(u => {
+      const mentorBadge = u.isMentor 
+        ? `<span class="badge badge--verified" title="${escapeHtml(u.mentorBio || '')}">Yes</span>`
+        : `<span class="badge badge--unverified">No</span>`;
+
+      return `
+        <tr>
+          <td style="font-weight:500;">${u.name || 'N/A'}</td>
+          <td>${u.email}</td>
+          <td><span class="badge badge--${u.role === 'ADMIN' || u.role === 'SUPER_ADMIN' ? 'admin' : 'user'}">${u.role || 'USER'}</span></td>
+          <td><span class="badge badge--${u.emailVerified ? 'verified' : 'unverified'}">${u.emailVerified ? 'Verified' : 'Unverified'}</span></td>
+          <td>${mentorBadge}</td>
+          <td>${u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—'}</td>
+          <td style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+            ${u.role === 'USER' ? `<button class="btn-make-admin" onclick="grantAdmin('${u.id}','${u.email}')">Make Admin</button>` : `<button class="btn-reject" onclick="revokeAdmin('${u.id}','${u.email}')">Revoke</button>`}
+            ${u.isMentor ? `<button class="btn-reject" onclick="toggleMentor('${u.id}', false)">Revoke Mentor</button>` : `<button class="btn-make-admin" onclick="toggleMentor('${u.id}', true)">Make Mentor</button>`}
+            <button class="btn-delete" onclick="deleteUserAdmin('${u.id}')">Delete</button>
+          </td>
+        </tr>`;
+    }).join('');
   }
 
   function renderAdminsTable(users) {
@@ -596,7 +632,7 @@
       }
       await adminUpdateUserRole(target.id, 'ADMIN');
       msg.style.color = 'var(--admin-success)';
-      msg.textContent = `✓ ${email} is now an admin.`;
+      msg.textContent = `Access granted: ${email} is now an admin.`;
       document.getElementById('new-admin-email').value = '';
       await loadDashboard();
     } catch (err) {
@@ -611,6 +647,30 @@
       await adminUpdateUserRole(uid, 'ADMIN');
       await loadDashboard();
     } catch (err) { alert(err.message); }
+  }
+
+  async function toggleMentor(uid, makeMentor) {
+    if (makeMentor) {
+      const bio = prompt("Enter a mentor bio for this user (tells mentees their expertise):") || "";
+      if (bio === "") return; // Empty or cancelled
+      try {
+        await adminToggleMentor(uid, true, bio);
+        alert("User is now a mentor!");
+        await loadDashboard();
+      } catch (err) { alert(err.message); }
+    } else {
+      if (!confirm("Revoke mentor status from this user?")) return;
+      try {
+        await adminToggleMentor(uid, false);
+        alert("Mentor status revoked.");
+        await loadDashboard();
+      } catch (err) { alert(err.message); }
+    }
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
   async function revokeAdmin(uid, email) {

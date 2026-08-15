@@ -336,17 +336,11 @@
           btn.textContent = 'Submitting...';
 
           try {
-            const nomination = {
-              title: document.getElementById('nom-title').value.trim(),
-              author: document.getElementById('nom-author').value.trim(),
-              reason: document.getElementById('nom-reason').value.trim(),
-              submitterId: user.uid,
-              submitterName: user.name || user.email,
-              submitterEmail: user.email,
-              submittedAt: new Date().toISOString()
-            };
+            const title = document.getElementById('nom-title').value.trim();
+            const author = document.getElementById('nom-author').value.trim();
+            const reason = document.getElementById('nom-reason').value.trim();
 
-            await submitBookNomination(nomination);
+            await nebulaSubmitNomination(title, author, reason);
             
             form.reset();
             successMsg.style.display = 'block';

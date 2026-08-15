@@ -90,7 +90,10 @@
 
       <!-- Email verification banner -->
       <div id="verify-banner" style="display:none; background:rgba(255,200,0,0.08); border:1px solid rgba(255,200,0,0.25); border-radius:8px; padding:1rem 1.25rem; margin-bottom:1.5rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
-        <p style="color:#f5c518; font-size:0.9rem; margin:0;">⚠️ Your email is not verified. Some features may be restricted.</p>
+        <p style="color:#f5c518; font-size:0.9rem; margin:0; display:flex; align-items:center; gap:0.5rem;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="flex-shrink:0;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Your email is not verified. Some features may be restricted.
+        </p>
         <button onclick="resendVerificationEmail(event)" style="background:none; border:1px solid #f5c518; color:#f5c518; padding:0.4rem 1rem; border-radius:4px; cursor:pointer; font-size:0.85rem;">Resend Email</button>
       </div>
 
@@ -98,17 +101,24 @@
         <div class="profile-header">
           <!-- Avatar with upload -->
           <div style="position:relative; display:inline-block;">
-            <div class="profile-avatar" id="profile-avatar" title="Click to change photo" style="cursor:pointer; overflow:hidden;">?</div>
-            <label for="avatar-upload" style="position:absolute; bottom:0; right:0; background:#fff; color:#000; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:0.7rem; font-weight:700; box-shadow:0 2px 6px rgba(0,0,0,0.4);" title="Upload photo">✎</label>
+            <div class="profile-avatar" id="profile-avatar" title="Click to change photo" style="cursor:pointer; overflow:hidden; display:flex; align-items:center; justify-content:center;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32" style="color:rgba(255,255,255,0.4);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <label for="avatar-upload" style="position:absolute; bottom:0; right:0; background:#fff; color:#000; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.4);" title="Upload photo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="10" height="10"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </label>
             <input type="file" id="avatar-upload" accept="image/*" style="display:none;">
           </div>
           <div style="flex:1;">
             <!-- Editable name -->
             <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.4rem;">
               <div class="profile-name" id="profile-name" style="cursor:pointer;" title="Click to edit name">Loading...</div>
-              <button id="btn-edit-name" style="background:none; border:1px solid rgba(255,255,255,0.15); color:var(--text-muted); padding:0.2rem 0.6rem; border-radius:4px; font-size:0.75rem; cursor:pointer;">Edit</button>
+              <button id="btn-edit-name" style="background:none; border:1px solid rgba(255,255,255,0.15); color:var(--text-muted); padding:0.2rem 0.6rem; border-radius:4px; font-size:0.75rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.25rem;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="10" height="10"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                Edit
+              </button>
             </div>
-            <div id="name-edit-group" style="display:none; margin-bottom:0.5rem; display:none;">
+            <div id="name-edit-group" style="display:none; margin-bottom:0.5rem;">
               <input type="text" id="input-name" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; padding:0.5rem 0.75rem; font-size:1rem; font-family:inherit; outline:none; margin-right:0.5rem;">
               <button id="btn-save-name" class="btn btn--secondary" style="padding:0.5rem 1rem;">Save</button>
               <button id="btn-cancel-name" style="background:none; border:none; color:var(--text-muted); cursor:pointer; padding:0.5rem;">Cancel</button>
@@ -120,7 +130,7 @@
         
         <!-- Upload progress -->
         <div id="avatar-upload-status" style="display:none; font-size:0.85rem; color:#4caf50; margin-bottom:1rem;"></div>
-
+ 
         <div style="margin-bottom:var(--space-xl);">
           <label style="display:block; color:var(--text-muted); font-size:0.85rem; margin-bottom:0.5rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">Bio</label>
           <div style="display:flex; gap:1rem;">
@@ -129,7 +139,7 @@
           </div>
           <div id="bio-success" style="color:#4caf50; font-size:0.85rem; margin-top:0.5rem; display:none;">Bio updated successfully!</div>
         </div>
-
+ 
         <div class="profile-stats">
           <div class="profile-stat">
             <div class="profile-stat__value" id="profile-post-count">0</div>
@@ -137,7 +147,12 @@
           </div>
         </div>
         <div class="profile-actions">
-          <a href="write.html" class="btn"><span>Write a Story</span> <span class="arrow">→</span></a>
+          <a href="write.html" class="btn">
+            <span>Write a Story</span> 
+            <span class="arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12" style="display:inline-block; margin-left:0.25rem; vertical-align:middle;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </span>
+          </a>
           <button class="btn-signout" id="btn-signout">Sign Out</button>
         </div>
       </div>
@@ -293,123 +308,6 @@
         await signOut();
         window.location.href = 'index.html';
       });
-    });
-  </script>
-
-        // Show verify banner if not verified
-        if (typeof isEmailVerified === 'function' && !isEmailVerified()) {
-          const banner = document.getElementById('verify-banner');
-          if (banner) banner.style.display = 'flex';
-        }
-
-        // Fetch full user doc
-        let userData = user;
-        if (typeof db !== 'undefined' && db && user.uid) {
-          try {
-            const doc = await db.collection('users').doc(user.uid).get();
-            if (doc.exists) userData = { ...user, ...doc.data() };
-          } catch(e) {}
-        }
-
-        // ─── Populate profile ───
-        const avatarEl = document.getElementById('profile-avatar');
-
-        function setAvatar(photoURL, name) {
-          if (photoURL) {
-            avatarEl.innerHTML = `<img src="${photoURL}" alt="${name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-          } else {
-            avatarEl.textContent = (name || 'U')[0].toUpperCase();
-          }
-        }
-
-        setAvatar(userData.photo, userData.name);
-        document.getElementById('profile-name').textContent = userData.name || 'Writer';
-        document.getElementById('profile-email').textContent = userData.email;
-        document.getElementById('profile-joined').textContent = userData.joined
-          ? `Joined ${new Date(userData.joined).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`
-          : '';
-        document.getElementById('profile-bio').value = userData.bio || '';
-        document.getElementById('input-name').value = userData.name || '';
-
-        // ─── Edit Name ───
-        document.getElementById('btn-edit-name').addEventListener('click', () => {
-          document.getElementById('name-edit-group').style.display = 'flex';
-          document.getElementById('btn-edit-name').style.display = 'none';
-          document.getElementById('input-name').focus();
-        });
-
-        document.getElementById('btn-cancel-name').addEventListener('click', () => {
-          document.getElementById('name-edit-group').style.display = 'none';
-          document.getElementById('btn-edit-name').style.display = 'inline-block';
-        });
-
-        document.getElementById('btn-save-name').addEventListener('click', async () => {
-          const newName = document.getElementById('input-name').value.trim();
-          if (!newName) return;
-          const btn = document.getElementById('btn-save-name');
-          btn.textContent = 'Saving...'; btn.disabled = true;
-          await updateUserProfile(user.uid, { name: newName });
-          if (typeof auth !== 'undefined' && auth && auth.currentUser) {
-            await auth.currentUser.updateProfile({ displayName: newName });
-          }
-          document.getElementById('profile-name').textContent = newName;
-          document.getElementById('name-edit-group').style.display = 'none';
-          document.getElementById('btn-edit-name').style.display = 'inline-block';
-          btn.textContent = 'Save'; btn.disabled = false;
-        });
-
-        // ─── Save Bio ───
-        document.getElementById('btn-save-bio').addEventListener('click', async () => {
-          const btn = document.getElementById('btn-save-bio');
-          const bio = document.getElementById('profile-bio').value.trim();
-          btn.textContent = 'Saving...'; btn.disabled = true;
-          await updateUserProfile(user.uid, { bio });
-          btn.textContent = 'Save'; btn.disabled = false;
-          const msg = document.getElementById('bio-success');
-          msg.style.display = 'block';
-          setTimeout(() => msg.style.display = 'none', 3000);
-        });
-
-        // ─── Photo Upload ───
-        document.getElementById('avatar-upload').addEventListener('change', async (e) => {
-          const file = e.target.files[0];
-          if (!file) return;
-          const status = document.getElementById('avatar-upload-status');
-          status.style.display = 'block'; status.style.color = '#aaa';
-          status.textContent = 'Uploading photo...';
-          try {
-            const photoURL = await nebulaUploadPhoto(file);
-            setAvatar(photoURL, userData.name);
-            status.style.color = '#4caf50';
-            status.textContent = 'Photo updated!';
-            setTimeout(() => { status.style.display = 'none'; }, 3000);
-          } catch (err) {
-            status.style.color = '#e55';
-            status.textContent = 'Upload failed: ' + err.message;
-          }
-        });
-
-        // ─── Load published stories ───
-        try {
-          const posts = await nebulaGetMyPosts();
-          const published = (posts || []).filter(p => p.status === 'PUBLISHED');
-          document.getElementById('profile-post-count').textContent = published.length;
-          const container = document.getElementById('profile-posts');
-          if (published.length > 0) {
-            container.innerHTML = published.map(p => `
-              <div class="profile-post">
-                <div class="profile-post__title">${p.title}</div>
-                <div class="profile-post__meta">${new Date(p.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
-              </div>
-            `).join('');
-          }
-        } catch(e) {}
-
-        // ─── Sign out ───
-        document.getElementById('btn-signout').addEventListener('click', async () => {
-          await signOut();
-          window.location.href = 'index.html';
-        });
     });
   </script>
 </body>
