@@ -58,26 +58,52 @@
     }
     .write-subtitle::placeholder { color: rgba(255,255,255,0.15); }
 
-    /* Quill overrides for distraction-free look */
+    /* Complete overrides to force Quill to blend with dark mode */
     .ql-toolbar.ql-snow {
-      border: none !important; border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+      background: transparent !important;
+      border: none !important;
+      border-bottom: 1px solid rgba(255,255,255,0.08) !important;
       padding: 0.5rem 0 !important;
     }
-    .ql-toolbar .ql-stroke { stroke: rgba(255,255,255,0.4) !important; }
-    .ql-toolbar .ql-fill { fill: rgba(255,255,255,0.4) !important; }
-    .ql-toolbar .ql-picker-label { color: rgba(255,255,255,0.4) !important; }
-    .ql-toolbar button:hover .ql-stroke { stroke: #fff !important; }
-    .ql-toolbar button:hover .ql-fill { fill: #fff !important; }
     .ql-container.ql-snow {
-      border: none !important; font-family: var(--font-primary);
-      font-size: 1.2rem; color: rgba(255,255,255,0.85);
-      min-height: 400px; line-height: 1.8;
+      background: transparent !important;
+      border: none !important;
+      font-family: var(--font-primary);
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.85) !important;
+      min-height: 400px;
+      line-height: 1.8;
     }
-    .ql-editor { padding: 1rem 0 !important; }
+    .ql-editor {
+      background: transparent !important;
+      color: #ffffff !important;
+      padding: 1rem 0 !important;
+    }
     .ql-editor::before { color: rgba(255,255,255,0.15) !important; font-style: normal !important; }
     .ql-editor blockquote {
       border-left: 3px solid rgba(255,255,255,0.2) !important;
       color: rgba(255,255,255,0.6) !important;
+    }
+    /* Toolbar button colors */
+    .ql-snow .ql-stroke { stroke: rgba(255,255,255,0.6) !important; }
+    .ql-snow .ql-fill { fill: rgba(255,255,255,0.6) !important; }
+    .ql-snow .ql-picker { color: rgba(255,255,255,0.6) !important; }
+    .ql-snow .ql-picker-label { color: rgba(255,255,255,0.6) !important; }
+    .ql-snow .ql-picker-options {
+      background-color: #151515 !important;
+      border: 1px solid rgba(255,255,255,0.1) !important;
+    }
+    .ql-snow .ql-picker-item { color: rgba(255,255,255,0.6) !important; }
+    .ql-snow .ql-picker-item:hover, .ql-snow .ql-picker-item.ql-selected {
+      color: #fff !important;
+    }
+    .ql-snow.ql-toolbar button:hover .ql-stroke,
+    .ql-snow.ql-toolbar button.ql-active .ql-stroke {
+      stroke: #bb86fc !important;
+    }
+    .ql-snow.ql-toolbar button:hover .ql-fill,
+    .ql-snow.ql-toolbar button.ql-active .ql-fill {
+      fill: #bb86fc !important;
     }
 
     /* ─── Publish Modal ─── */
