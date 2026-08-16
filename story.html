@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Read Story | The Nebula House</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar__inner">
+      <div class="navbar__logo"><a href="index.html"><img src="assets/images/room-icon.png" alt="The Nebula House" class="navbar__logo-img"></a></div>
+      <div class="navbar__links">
+        <a href="index.html" class="navbar__link">Home</a>
+        <a href="about.html" class="navbar__link">About</a>
+        <div class="navbar__dropdown">
+          <span class="navbar__link navbar__dropdown-trigger">Our Rooms <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+          <div class="navbar__dropdown-menu">
+            <a href="the-chapter-room.html" class="navbar__dropdown-item">The Chapter Room</a>
+            <a href="my-thoughts.html" class="navbar__dropdown-item">My Thoughts</a>
+            <a href="the-writers-room.html" class="navbar__dropdown-item">The Writer's Room</a>
+            <a href="the-publishing-room.html" class="navbar__dropdown-item">The Publishing Room</a>
+            <a href="the-opinion-yard.html" class="navbar__dropdown-item">The Opinion Yard</a>
+            <a href="the-nebula-academy.html" class="navbar__dropdown-item">The Nebula Academy</a>
+          </div>
+        </div>
+      </div>
+      <!-- Account Icon (always visible) -->
+      <a href="#" class="navbar__account" id="nav-account-icon" title="Account">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      </a>
+      <div class="navbar__toggle" id="menuToggle"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+
+  <!-- ===== MOBILE MENU ===== -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html" class="mobile-menu__link">Home</a>
+    <a href="about.html" class="mobile-menu__link">About</a>
+    <div class="mobile-menu__divider"></div>
+    <a href="the-chapter-room.html" class="mobile-menu__link">The Chapter Room</a>
+    <a href="my-thoughts.html" class="mobile-menu__link">My Thoughts</a>
+    <a href="the-writers-room.html" class="mobile-menu__link">The Writer's Room</a>
+    <a href="the-publishing-room.html" class="mobile-menu__link">The Publishing Room</a>
+    <a href="the-opinion-yard.html" class="mobile-menu__link">The Opinion Yard</a>
+    <a href="the-nebula-academy.html" class="mobile-menu__link">The Nebula Academy</a>
+  </div>
+
+  <!-- ===== CONTENT CONTENT ===== -->
+  <section class="section section--dark" style="padding-top: calc(var(--space-4xl) + 80px); min-height: 80vh;">
+    <div class="container container--narrow">
+      
+      <!-- Loading state -->
+      <div id="story-loading" style="text-align: center; padding: 4rem 0; color: var(--text-muted);">
+        <p style="font-size: 1.2rem;">Loading story from the universe...</p>
+      </div>
+
+      <!-- Error state -->
+      <div id="story-error" style="display: none; text-align: center; padding: 4rem 0; color: #f87171;">
+        <p style="font-size: 1.2rem;" id="error-message">Story not found.</p>
+        <a href="the-writers-room.html" class="btn" style="margin-top: 1.5rem;"><span>Back to Writer's Room</span></a>
+      </div>
+
+      <!-- Main Story Container -->
+      <div id="story-content" style="display: none;">
+        <div class="breadcrumb">
+          <a href="the-writers-room.html" id="breadcrumb-parent">The Writer's Room</a>
+          <span class="breadcrumb__separator">›</span>
+          <span id="breadcrumb-title">Story</span>
+        </div>
+
+        <div class="article-header">
+          <h1 class="article-header__title" id="story-title">Story Title</h1>
+          <p class="article-header__author">by <span id="story-author">Author</span></p>
+          <div class="article-header__meta">
+            <span id="story-date">Date</span>
+            <span>·</span>
+            <span id="story-read-time">1 min read</span>
+          </div>
+        </div>
+
+        <div class="article-image" id="story-image-container" style="display: none; text-align: center; margin-bottom: var(--space-3xl);">
+          <img src="" alt="Story Cover" id="story-image" style="max-width: 100%; border-radius: 4px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);">
+        </div>
+
+        <div class="article-body" id="story-body">
+          <!-- Story content goes here -->
+        </div>
+
+        <div class="article-tags" id="story-tags" style="margin-top: var(--space-xl);">
+          <!-- Tags go here -->
+        </div>
+
+        <div class="post-interactions" style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1.5rem; margin-top: 2rem;">
+          <div class="post-stats">
+            <span class="stat-item" id="post-views">0 views</span>
+            <span class="stat-item">
+              <button class="like-btn" id="like-btn" aria-label="Like this post">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              </button>
+              <span id="like-count">0</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Comments Section -->
+        <div class="comments-section" style="margin-top: 3rem; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 2rem;">
+          <div class="comments-header">
+            <h3>Discussion</h3>
+            <span id="comment-count" style="font-size: 1rem; color: var(--text-muted);">0 Comments</span>
+          </div>
+          <form class="comment-form" id="comment-form">
+            <textarea class="comment-input" id="comment-input" placeholder="Share your thoughts..." required></textarea>
+            <div style="display: flex; justify-content: flex-end;">
+              <button type="submit" class="btn"><span>Post Comment</span> <span class="arrow">→</span></button>
+            </div>
+          </form>
+          <div class="comments-list" id="comments-list">
+            <!-- Comments injected here -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <a href="index.html"><img src="assets/images/room-icon.png" alt="The Nebula House" class="footer__logo-img"></a>
+          <p class="footer__brand-tagline">From Imagination to Infinity.</p>
+          <p class="footer__brand-tagline">A digital literary ecosystem.</p>
+        </div>
+        <div class="footer__rooms">
+          <h4 class="footer__heading">Rooms</h4>
+          <a href="the-chapter-room.html" class="footer__link">The Chapter Room</a>
+          <a href="the-writers-room.html" class="footer__link">The Writer's Room</a>
+          <a href="the-nebula-academy.html" class="footer__link">The Nebula Academy</a>
+          <a href="the-publishing-room.html" class="footer__link">The Publishing Room</a>
+          <a href="the-opinion-yard.html" class="footer__link">The Opinion Yard</a>
+          <a href="my-thoughts.html" class="footer__link">My Thoughts</a>
+        </div>
+        <div class="footer__connect">
+          <h4 class="footer__heading">Connect</h4>
+          <a href="mailto:kelechioji@thenebulahouse.com" class="footer__link">Email</a>
+          <a href="https://www.instagram.com/the_nebula_house" target="_blank" rel="noopener" class="footer__link">Instagram</a>
+          <a href="https://youtube.com/@kelechi_oji" target="_blank" rel="noopener" class="footer__link">YouTube</a>
+        </div>
+      </div>
+      <div class="footer__bottom"><p>© 2026 The Nebula House. All Rights Reserved.</p></div>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/pages.js"></script>
+  <script src="js/story.js"></script>
+</body>
+</html>

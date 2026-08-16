@@ -122,10 +122,46 @@ function animateCounter(element, target) {
 }
 
 
-/* --- My Thoughts: Post card hover --- */
-function initMyThoughts() {
-  const postCards = document.querySelectorAll('.post-card');
+/* --- My Thoughts: Dynamic posts loading + hover effects --- */
+async function initMyThoughts() {
+  const grid = document.querySelector('.posts-grid');
+  if (!grid) return;
 
+  try {
+    const data = await nebulaGetPosts(1, 100);
+    const posts = data.posts || [];
+    
+    // Filter posts written by Kelechi Oji
+    const kelechiPosts = posts.filter(p => p.author?.name === 'Kelechi Oji');
+
+    // Render them in the grid
+    kelechiPosts.forEach(p => {
+      const existingTitles = Array.from(document.querySelectorAll('.post-card__title'))
+        .map(el => el.textContent.trim().toLowerCase());
+        
+      if (existingTitles.includes(p.title.trim().toLowerCase())) return;
+
+      const card = document.createElement('a');
+      card.href = `story.html?id=${p.id}`;
+      card.className = 'post-card reveal visible';
+      card.innerHTML = `
+        <h3 class="post-card__title">${escapeHtml(p.title)}</h3>
+        <p class="post-card__author">by Kelechi Oji</p>
+        <p class="post-card__excerpt">${escapeHtml(p.excerpt || '')}</p>
+      `;
+      grid.appendChild(card);
+    });
+
+    // Re-initialize hover effects
+    setupCardHovers();
+
+  } catch (err) {
+    console.error('Failed to load Kelechi\'s dynamic posts:', err);
+  }
+}
+
+function setupCardHovers() {
+  const postCards = document.querySelectorAll('.post-card');
   postCards.forEach(card => {
     card.addEventListener('mouseenter', () => {
       postCards.forEach(other => {
@@ -141,6 +177,11 @@ function initMyThoughts() {
       });
     });
   });
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 

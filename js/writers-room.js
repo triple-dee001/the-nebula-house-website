@@ -181,7 +181,7 @@ async function loadFeed() {
               </div>
               <span>${p.author?.name || 'Anonymous'}</span>
             </div>
-            <div class="wr-article__title">${escapeHtml(p.title)}</div>
+            <a href="story.html?id=${p.id}" class="wr-article__title" style="text-decoration:none;color:#fff;display:block;cursor:pointer;">${escapeHtml(p.title)}</a>
             ${p.subtitle ? `<div style="color:rgba(255,255,255,0.6);font-size:0.95rem;margin-bottom:0.4rem;">${escapeHtml(p.subtitle)}</div>` : ''}
             <div class="wr-article__excerpt">${escapeHtml(p.excerpt || '')}</div>
             <div class="wr-article__footer">
@@ -269,7 +269,7 @@ async function loadChallengesTab() {
                 </div>
                 <span>${p.author?.name || 'Anonymous'}</span>
               </div>
-              <div class="wr-article__title">${escapeHtml(p.title)}</div>
+              <a href="story.html?id=${p.id}" class="wr-article__title" style="text-decoration:none;color:#fff;display:block;cursor:pointer;">${escapeHtml(p.title)}</a>
               <div class="wr-article__excerpt">${escapeHtml(p.excerpt || '')}</div>
               <div class="wr-article__footer">
                 <span>${date}</span>
