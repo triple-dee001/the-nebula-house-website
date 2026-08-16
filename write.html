@@ -124,9 +124,15 @@
 
   <!-- Top Bar -->
   <div class="write-topbar">
-    <a href="the-writers-room.html" class="write-topbar__logo">
-      <img src="assets/images/room-icon.png" alt="The Nebula House">
-    </a>
+    <div style="display:flex; align-items:center; gap:1.5rem;">
+      <a href="the-writers-room.html" class="write-topbar__logo" style="display:flex; align-items:center;">
+        <img src="assets/images/room-icon.png" alt="The Nebula House">
+      </a>
+      <a href="the-writers-room.html" style="color:var(--text-muted); text-decoration:none; font-size:0.9rem; font-weight:600; display:flex; align-items:center; gap:0.25rem; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 5 5 12 12 19"></polyline></svg>
+        Back
+      </a>
+    </div>
     <div class="write-topbar__actions">
       <button class="write-topbar__draft" id="btn-ai-assist" style="border-color:#bb86fc; color:#bb86fc;">✨ AI Assistant</button>
       <button class="write-topbar__publish" id="btn-open-publish" disabled>Publish</button>
