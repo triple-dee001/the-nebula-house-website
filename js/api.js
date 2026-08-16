@@ -21,10 +21,22 @@ function clearStoredUser() { localStorage.removeItem('nebula_user'); }
 // ─── CORE FETCH WRAPPER ───────────────────────
 async function apiRequest(path, options = {}) {
   const token = getToken();
-  const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+  const headers = { 
+    'Content-Type': 'application/json',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0',
+    ...(options.headers || {}) 
+  };
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
-  const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+  // For GET requests, append a cache-buster timestamp parameter to prevent browser caching
+  const method = (options.method || 'GET').toUpperCase();
+  const urlPath = method !== 'GET' 
+    ? path 
+    : (path.includes('?') ? `${path}&_t=${Date.now()}` : `${path}?_t=${Date.now()}`);
+
+  const res = await fetch(`${API_BASE}${urlPath}`, { ...options, headers });
   const data = await res.json().catch(() => ({}));
 
   if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
