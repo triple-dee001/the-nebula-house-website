@@ -153,7 +153,27 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="12" height="12" style="display:inline-block; margin-left:0.25rem; vertical-align:middle;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </span>
           </a>
+          <a href="the-admin-room.html" class="btn" id="btn-admin-panel" style="display:none; background:#bb86fc; color:#000; font-weight:600; border-color:#bb86fc; margin-right:1rem;">
+            <span>Go to Admin Panel</span>
+          </a>
           <button class="btn-signout" id="btn-signout">Sign Out</button>
+        </div>
+
+        <!-- Change Password Section -->
+        <div style="margin-top:var(--space-xl); border-top:1px solid rgba(255,255,255,0.06); padding-top:var(--space-xl);">
+          <label style="display:block; color:var(--text-muted); font-size:0.85rem; margin-bottom:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">Security</label>
+          <button id="btn-toggle-password-form" class="btn btn--secondary" style="font-size:0.85rem; padding:0.5rem 1rem;">Change Password</button>
+          
+          <div id="password-form-group" style="display:none; margin-top:1rem; flex-direction:column; gap:0.75rem; max-width:320px;">
+            <input type="password" id="input-current-password" placeholder="Current Password" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#fff; padding:0.6rem 0.75rem; font-size:0.9rem; outline:none; font-family:inherit;">
+            <input type="password" id="input-new-password" placeholder="New Password (min 8 chars)" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#fff; padding:0.6rem 0.75rem; font-size:0.9rem; outline:none; font-family:inherit;">
+            <div style="display:flex; gap:0.5rem; margin-top:0.25rem;">
+              <button id="btn-save-password" class="btn btn--secondary" style="padding:0.5rem 1rem; font-size:0.85rem;">Update Password</button>
+              <button id="btn-cancel-password" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:0.85rem;">Cancel</button>
+            </div>
+            <div id="password-success" style="color:#4caf50; font-size:0.85rem; display:none; margin-top:0.5rem;">Password updated successfully!</div>
+            <div id="password-error" style="color:#ef4444; font-size:0.85rem; display:none; margin-top:0.5rem;"></div>
+          </div>
         </div>
       </div>
 
@@ -188,7 +208,10 @@
         window.location.href = 'index.html';
         return;
       }
-      if (isAdmin(user)) { window.location.href = 'the-admin-room.html'; return; }
+      if (isAdmin(user)) {
+        const adminBtn = document.getElementById('btn-admin-panel');
+        if (adminBtn) adminBtn.style.display = 'inline-block';
+      }
 
       // Fetch fresh data from server first
       let userData = user;
@@ -302,6 +325,68 @@
             </div>`).join('');
         }
       } catch(e) {}
+
+      // ─── Change Password ───
+      const btnTogglePwd = document.getElementById('btn-toggle-password-form');
+      const pwdFormGroup = document.getElementById('password-form-group');
+      const inputCurrentPwd = document.getElementById('input-current-password');
+      const inputNewPwd = document.getElementById('input-new-password');
+      
+      btnTogglePwd.addEventListener('click', () => {
+        pwdFormGroup.style.display = pwdFormGroup.style.display === 'none' ? 'flex' : 'none';
+        btnTogglePwd.style.display = pwdFormGroup.style.display === 'none' ? 'inline-block' : 'none';
+      });
+
+      document.getElementById('btn-cancel-password').addEventListener('click', () => {
+        pwdFormGroup.style.display = 'none';
+        btnTogglePwd.style.display = 'inline-block';
+        inputCurrentPwd.value = '';
+        inputNewPwd.value = '';
+        document.getElementById('password-error').style.display = 'none';
+        document.getElementById('password-success').style.display = 'none';
+      });
+
+      document.getElementById('btn-save-password').addEventListener('click', async () => {
+        const curPwd = inputCurrentPwd.value;
+        const newPwd = inputNewPwd.value;
+        const errorEl = document.getElementById('password-error');
+        const successEl = document.getElementById('password-success');
+        
+        errorEl.style.display = 'none';
+        successEl.style.display = 'none';
+
+        if (!curPwd || !newPwd) {
+          errorEl.textContent = 'Both fields are required';
+          errorEl.style.display = 'block';
+          return;
+        }
+        if (newPwd.length < 8) {
+          errorEl.textContent = 'New password must be at least 8 characters';
+          errorEl.style.display = 'block';
+          return;
+        }
+
+        const btnSavePwd = document.getElementById('btn-save-password');
+        btnSavePwd.textContent = 'Updating...'; btnSavePwd.disabled = true;
+
+        try {
+          await nebulaChangePassword(curPwd, newPwd);
+          successEl.style.display = 'block';
+          inputCurrentPwd.value = '';
+          inputNewPwd.value = '';
+          setTimeout(() => {
+            pwdFormGroup.style.display = 'none';
+            btnTogglePwd.style.display = 'inline-block';
+            successEl.style.display = 'none';
+          }, 2000);
+        } catch (err) {
+          errorEl.textContent = err.message || 'Failed to change password';
+          errorEl.style.display = 'block';
+        } finally {
+          btnSavePwd.textContent = 'Update Password';
+          btnSavePwd.disabled = false;
+        }
+      });
 
       // ─── Sign out ───
       document.getElementById('btn-signout').addEventListener('click', async () => {

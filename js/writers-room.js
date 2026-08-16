@@ -64,6 +64,8 @@ async function initWritersRoom() {
         await loadMentorshipTab();
       } else if (tab.dataset.tab === 'feed') {
         await loadFeed();
+      } else if (tab.dataset.tab === 'writers') {
+        await loadWritersTab();
       }
     });
   });
@@ -425,4 +427,62 @@ async function handleDeletePost(postId) {
 function escapeHtml(str) {
   if (!str) return '';
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function loadWritersTab() {
+  const grid = document.getElementById('writers-list-grid');
+  const empty = document.getElementById('writers-empty');
+  if (!grid) return;
+
+  grid.innerHTML = '<div style="text-align:center; padding:2rem; width:100%; color:#aaa;">Loading writers...</div>';
+  empty.style.display = 'none';
+
+  try {
+    const writers = await nebulaGetWriters();
+    if (!writers || writers.length === 0) {
+      grid.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+
+    grid.innerHTML = writers.map(w => {
+      const photoUrl = w.photo || '';
+      let avatarHtml = '';
+      if (photoUrl) {
+        avatarHtml = `<img src="${photoUrl}" alt="${w.name}" class="mentor-card__avatar">`;
+      } else {
+        const initial = (w.name || 'U')[0].toUpperCase();
+        avatarHtml = `<div class="mentor-card__avatar" style="display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:1.2rem; background:rgba(255,255,255,0.08);">${initial}</div>`;
+      }
+
+      const bio = w.bio || 'This writer hasn\'t written a bio yet.';
+      const roleText = w.role === 'ADMIN' || w.role === 'SUPER_ADMIN' ? 'Owner / Editor' : 'Writer';
+      const postCount = w._count?.posts || 0;
+
+      return `
+        <div class="mentor-card">
+          <div class="mentor-card__header">
+            ${avatarHtml}
+            <div>
+              <div class="mentor-card__name">${w.name}</div>
+              <div style="font-size:0.8rem; color:#bb86fc; font-weight:600; text-transform:uppercase;">${roleText}</div>
+            </div>
+          </div>
+          <div class="mentor-card__bio" style="margin-bottom:0.5rem; color:#aaa; font-style:italic;">Joined ${new Date(w.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</div>
+          <div class="mentor-card__m-bio" style="font-size:0.9rem; color:#ddd; margin-bottom:1.2rem; line-height:1.5; flex:1;">
+            ${bio}
+          </div>
+          <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem; display:flex; align-items:center; gap:0.4rem;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span>${postCount} stories published</span>
+          </div>
+          <a href="writer.html?id=${w.id}" class="mentor-card__btn" style="text-decoration:none;">View Profile</a>
+        </div>
+      `;
+    }).join('');
+
+  } catch (err) {
+    grid.innerHTML = '';
+    grid.innerHTML = `<div style="text-align:center; padding:2rem; width:100%; color:#e55;">Error loading directory: ${err.message}</div>`;
+  }
 }

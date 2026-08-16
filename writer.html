@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Writer Profile | The Nebula House</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .profile-card {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; padding: var(--space-2xl); margin-bottom: var(--space-2xl);
+    }
+    .profile-header {
+      display: flex; align-items: center; gap: var(--space-xl); margin-bottom: var(--space-xl);
+    }
+    .profile-avatar {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: rgba(255,255,255,0.08); display: flex; align-items:center;
+      justify-content:center; font-size: 2rem; font-weight: 700;
+      font-family: var(--font-secondary); color: #fff;
+    }
+    .profile-name { font-family: var(--font-primary); font-size: 1.75rem; margin-bottom: 0.25rem; }
+    .profile-role { font-size: 0.85rem; color: #bb86fc; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+    .profile-joined { color: var(--text-muted); font-size: 0.85rem; }
+    .profile-bio { font-size: 1rem; color: #ddd; line-height: 1.6; max-width: 600px; margin-top: var(--space-md); }
+    .profile-posts { margin-top: var(--space-xl); }
+    .profile-post {
+      padding: var(--space-md) 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+    }
+    .profile-post__title {
+      font-family: var(--font-primary); font-size: 1.15rem; font-weight: 600; margin-bottom: 0.25rem;
+      color: #fff; text-decoration: none; transition: color 0.2s;
+    }
+    .profile-post__title:hover { color: #bb86fc; }
+    .profile-post__meta { color: var(--text-muted); font-size: 0.85rem; white-space: nowrap; }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar__inner">
+      <div class="navbar__logo"><a href="index.html"><img src="assets/images/room-icon.png" alt="The Nebula House" class="navbar__logo-img"></a></div>
+      <div class="navbar__links">
+        <a href="index.html" class="navbar__link">Home</a>
+        <a href="about.html" class="navbar__link">About</a>
+        <div class="navbar__dropdown">
+          <span class="navbar__link navbar__dropdown-trigger">Our Rooms <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+          <div class="navbar__dropdown-menu">
+            <a href="the-chapter-room.html" class="navbar__dropdown-item">The Chapter Room</a>
+            <a href="my-thoughts.html" class="navbar__dropdown-item">My Thoughts</a>
+            <a href="the-writers-room.html" class="navbar__dropdown-item">The Writer's Room</a>
+            <a href="the-publishing-room.html" class="navbar__dropdown-item">The Publishing Room</a>
+            <a href="the-opinion-yard.html" class="navbar__dropdown-item">The Opinion Yard</a>
+            <a href="the-nebula-academy.html" class="navbar__dropdown-item">The Nebula Academy</a>
+          </div>
+        </div>
+      </div>
+      <!-- Account Icon (always visible) -->
+      <a href="#" class="navbar__account" id="nav-account-icon" title="Account">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      </a>
+      <div class="navbar__toggle" id="menuToggle"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html" class="mobile-menu__link">Home</a><a href="about.html" class="mobile-menu__link">About</a>
+    <div class="mobile-menu__divider"></div>
+    <a href="the-chapter-room.html" class="mobile-menu__link">The Chapter Room</a>
+    <a href="my-thoughts.html" class="mobile-menu__link">My Thoughts</a>
+    <a href="the-writers-room.html" class="mobile-menu__link">The Writer's Room</a>
+    <a href="the-publishing-room.html" class="mobile-menu__link">The Publishing Room</a>
+    <a href="the-opinion-yard.html" class="mobile-menu__link">The Opinion Yard</a>
+    <a href="the-nebula-academy.html" class="mobile-menu__link">The Nebula Academy</a>
+  </div>
+
+  <!-- ===== PROFILE ===== -->
+  <section class="section section--dark" style="padding-top: calc(var(--space-4xl) + 80px); min-height: 100vh;">
+    <div class="container container--narrow">
+      
+      <div style="margin-bottom: 2rem;">
+        <a href="the-writers-room.html" style="color: #bb86fc; text-decoration: none; font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.4rem;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          Back to Writer's Room
+        </a>
+      </div>
+
+      <div class="profile-card reveal" id="profile-card" style="display: none;">
+        <div class="profile-header">
+          <div class="profile-avatar" id="profile-avatar">U</div>
+          <div style="flex:1;">
+            <div class="profile-role" id="profile-role">Writer</div>
+            <div class="profile-name" id="profile-name">Writer Name</div>
+            <div class="profile-joined" id="profile-joined">Joined Date</div>
+          </div>
+        </div>
+        <p class="profile-bio" id="profile-bio"></p>
+      </div>
+
+      <div id="loading-profile" style="text-align: center; color: var(--text-muted); padding: 4rem 0;">
+        Loading writer profile...
+      </div>
+
+      <div id="profile-posts-section" style="display: none;">
+        <div class="section-header reveal">
+          <p class="section-header__label">Portfolio</p>
+          <h2 class="section-header__title">Published Articles</h2>
+          <div class="section-header__line"></div>
+        </div>
+
+        <div id="profile-posts" class="profile-posts">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container"><div class="footer__grid"><div class="footer__brand"><a href="index.html"><img src="assets/images/room-icon.png" alt="The Nebula House" class="footer__logo-img"></a><p class="footer__brand-tagline">From Imagination to Infinity.</p><p class="footer__brand-tagline">A digital literary ecosystem.</p></div><div class="footer__rooms"><h4 class="footer__heading">Rooms</h4><a href="the-chapter-room.html" class="footer__link">The Chapter Room</a><a href="the-writers-room.html" class="footer__link">The Writer's Room</a><a href="the-nebula-academy.html" class="footer__link">The Nebula Academy</a><a href="the-publishing-room.html" class="footer__link">The Publishing Room</a><a href="the-opinion-yard.html" class="footer__link">The Opinion Yard</a><a href="my-thoughts.html" class="footer__link">My Thoughts</a></div><div class="footer__connect"><h4 class="footer__heading">Connect</h4><a href="mailto:kelechioji@thenebulahouse.com" class="footer__link">Email</a><a href="https://www.instagram.com/the_nebula_house" target="_blank" rel="noopener" class="footer__link">Instagram</a><a href="https://youtube.com/@kelechi_oji" target="_blank" rel="noopener" class="footer__link">YouTube</a></div></div><div class="footer__bottom"><p>&copy; 2026 The Nebula House. All Rights Reserved.</p></div></div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const writerId = urlParams.get('id');
+
+      if (!writerId) {
+        window.location.href = 'the-writers-room.html';
+        return;
+      }
+
+      const card = document.getElementById('profile-card');
+      const postsSec = document.getElementById('profile-posts-section');
+      const loading = document.getElementById('loading-profile');
+
+      try {
+        // 1. Fetch user public profile
+        const writer = await apiRequest(`/users/${writerId}`);
+        loading.style.display = 'none';
+        card.style.display = 'block';
+
+        // Set avatar
+        const avatarEl = document.getElementById('profile-avatar');
+        if (writer.photo) {
+          avatarEl.innerHTML = `<img src="${writer.photo}" alt="${writer.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+        } else {
+          avatarEl.textContent = (writer.name || 'U')[0].toUpperCase();
+        }
+
+        // Set roles & fields
+        const roleText = writer.role === 'ADMIN' || writer.role === 'SUPER_ADMIN' ? 'Owner / Editor' : 'Writer';
+        document.getElementById('profile-role').textContent = roleText;
+        document.getElementById('profile-name').textContent = writer.name || 'Writer';
+        document.getElementById('profile-joined').textContent = writer.createdAt
+          ? `Joined ${new Date(writer.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`
+          : '';
+        document.getElementById('profile-bio').textContent = writer.bio || 'This writer hasn\'t written a bio yet.';
+
+        // 2. Fetch writer's posts
+        const posts = await apiRequest(`/users/${writerId}/posts`);
+        postsSec.style.display = 'block';
+
+        const postsContainer = document.getElementById('profile-posts');
+        if (posts && posts.length > 0) {
+          postsContainer.innerHTML = posts.map(p => `
+            <div class="profile-post">
+              <a href="story.html?id=${p.id}" class="profile-post__title">${p.title}</a>
+              <div class="profile-post__meta">${new Date(p.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+            </div>
+          `).join('');
+        } else {
+          postsContainer.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding: 2rem 0;">No published articles found for this writer.</p>';
+        }
+
+      } catch (err) {
+        loading.innerHTML = `<div style="color:#ef4444;">Failed to load profile: ${err.message}</div>`;
+      }
+    });
+  </script>
+</body>
+</html>

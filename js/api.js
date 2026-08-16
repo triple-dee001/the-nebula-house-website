@@ -145,6 +145,9 @@ async function nebulaGetUserPosts(userId) {
   const path = userId ? `/users/${userId}/posts` : '/users/me/posts';
   return apiRequest(path);
 }
+async function nebulaGetWriters() {
+  return apiRequest('/users');
+}
 
 // ─── POSTS ────────────────────────────────────
 async function nebulaGetPosts(page = 1, limit = 20, tag = '') {
@@ -158,6 +161,9 @@ async function nebulaGetPost(id) {
 
 async function nebulaCreatePost(post) {
   return apiRequest('/posts', { method: 'POST', body: JSON.stringify(post) });
+}
+async function nebulaUpdatePost(id, post) {
+  return apiRequest(`/posts/${id}`, { method: 'PUT', body: JSON.stringify(post) });
 }
 
 async function nebulaToggleLike(postId) {

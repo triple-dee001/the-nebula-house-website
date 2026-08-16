@@ -10,9 +10,9 @@ const ANNOUNCEMENT = {
   text: '🎓 The Nebula Academy: Term 2 is out!!',
   link: 'the-nebula-academy.html',
   linkText: 'Enrol Now →',
-  bgColor: 'linear-gradient(90deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%)',
-  accentColor: '#c9a84c',
-  id: 'nebula-announcement-v1', // change this id to force re-show after dismissal
+  bgColor: '#ffffff',
+  accentColor: '#7928ca',
+  id: 'nebula-announcement-v2', // change this id to force re-show after dismissal
 };
 
 // ─── INJECT ANNOUNCEMENT BANNER ──────────────
@@ -24,30 +24,42 @@ function injectAnnouncementBanner() {
   style.textContent = `
     #nebula-announcement {
       background: ${ANNOUNCEMENT.bgColor};
-      border-bottom: 1px solid rgba(201,168,76,0.3);
-      padding: 0.6rem 1rem;
+      border-bottom: 2px solid #000000;
+      padding: 0.6rem 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 1rem;
       position: relative;
       z-index: 10000;
-      flex-wrap: wrap;
-      text-align: center;
+      overflow: hidden;
+      width: 100%;
     }
-    #nebula-announcement .banner-text {
-      font-size: 0.88rem;
-      color: rgba(255,255,255,0.9);
+    #nebula-announcement .banner-marquee-container {
+      display: flex;
+      overflow: hidden;
+      white-space: nowrap;
+      width: 100%;
+      padding-right: 45px;
+    }
+    #nebula-announcement .banner-marquee-text {
+      display: inline-block;
+      padding-left: 100%;
+      animation: banner-marquee-scroll 30s linear infinite;
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #000000;
       font-family: var(--font-secondary, 'Inter', sans-serif);
-      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
     #nebula-announcement .banner-link {
       color: ${ANNOUNCEMENT.accentColor};
-      font-weight: 700;
-      text-decoration: none;
+      font-weight: 900;
+      text-decoration: underline;
+      margin-left: 1.5rem;
       font-size: 0.85rem;
-      white-space: nowrap;
       transition: opacity 0.2s;
+      white-space: nowrap;
     }
     #nebula-announcement .banner-link:hover { opacity: 0.8; }
     #nebula-announcement .banner-close {
@@ -55,25 +67,40 @@ function injectAnnouncementBanner() {
       right: 1rem;
       top: 50%;
       transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: rgba(255,255,255,0.4);
+      background: #ffffff;
+      border: 1px solid #000000;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000000;
       cursor: pointer;
-      font-size: 1rem;
+      font-size: 0.8rem;
       line-height: 1;
-      padding: 0.25rem;
-      transition: color 0.2s;
+      transition: all 0.2s;
+      z-index: 10001;
     }
-    #nebula-announcement .banner-close:hover { color: #fff; }
+    #nebula-announcement .banner-close:hover { background: #000000; color: #ffffff; }
     body { padding-top: 0; }
+    
+    @keyframes banner-marquee-scroll {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-100%, 0, 0); }
+    }
   `;
   document.head.appendChild(style);
 
   const banner = document.createElement('div');
   banner.id = 'nebula-announcement';
   banner.innerHTML = `
-    <span class="banner-text">${ANNOUNCEMENT.text}</span>
-    <a href="${ANNOUNCEMENT.link}" class="banner-link">${ANNOUNCEMENT.linkText}</a>
+    <div class="banner-marquee-container">
+      <div class="banner-marquee-text">
+        <span>${ANNOUNCEMENT.text}</span>
+        <a href="${ANNOUNCEMENT.link}" class="banner-link">${ANNOUNCEMENT.linkText}</a>
+      </div>
+    </div>
     <button class="banner-close" id="banner-close-btn" aria-label="Dismiss">✕</button>
   `;
 

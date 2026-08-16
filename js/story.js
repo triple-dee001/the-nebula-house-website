@@ -73,6 +73,16 @@ async function loadStory(id) {
     // Views
     document.getElementById('post-views').textContent = `${post.views || 0} views`;
 
+    // Edit button authorization check
+    const editBtn = document.getElementById('btn-edit-story');
+    const currentUser = getCurrentUser();
+    if (currentUser && (currentUser.id === post.authorId || isAdmin(currentUser))) {
+      if (editBtn) {
+        editBtn.style.display = 'inline-block';
+        editBtn.href = `write.html?edit=${post.id}`;
+      }
+    }
+
     // Breadcrumb adjustment
     const breadcrumbParent = document.getElementById('breadcrumb-parent');
     const isOwnerPost = post.author?.email === 'kelechioji@thenebulahouse.com' || post.author?.email === 'danieldurojaiye42@gmail.com';

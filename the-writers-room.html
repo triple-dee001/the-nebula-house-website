@@ -224,6 +224,7 @@
           <!-- Tab Headers -->
           <div class="wr-tabs">
             <a href="#" class="wr-tab active" data-tab="feed">Community Feed</a>
+            <a href="#" class="wr-tab" data-tab="writers">Writers Directory</a>
             <a href="#" class="wr-tab" data-tab="challenges">Monthly Challenges</a>
             <a href="#" class="wr-tab" data-tab="mentorship">Author Mentorship</a>
           </div>
@@ -236,6 +237,14 @@
                 <p>Be the first to publish. Click "Write" to begin crafting your story.</p>
               </div>
             </div>
+          </div>
+
+          <!-- Writers Directory Container -->
+          <div class="tab-content" id="cnt-writers" style="display:none;">
+            <div class="mentor-grid" id="writers-list-grid">
+              <!-- Loaded by writers-room.js -->
+            </div>
+            <div class="wr-empty" id="writers-empty" style="display:none;">No writers found in the directory.</div>
           </div>
 
           <!-- Challenges Container -->

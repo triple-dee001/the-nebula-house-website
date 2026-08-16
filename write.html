@@ -278,6 +278,40 @@
       }
     });
 
+    // ─── Edit Story Pre-population ───
+    const urlParams = new URLSearchParams(window.location.search);
+    const editId = urlParams.get('edit');
+    if (editId) {
+      document.getElementById('btn-open-publish').textContent = 'Save Changes';
+      document.getElementById('btn-confirm-publish').textContent = 'Save Changes';
+      
+      // Load post details
+      (async () => {
+        try {
+          const post = await nebulaGetPost(editId);
+          document.getElementById('write-title').value = post.title;
+          document.getElementById('write-subtitle').value = post.subtitle || '';
+          quill.root.innerHTML = post.body || '';
+          
+          // Trigger resize on textareas
+          document.querySelectorAll('.write-title, .write-subtitle').forEach(el => {
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
+          });
+          
+          // Pre-populate publish modal fields
+          document.getElementById('publish-tags').value = post.tags || '';
+          document.getElementById('publish-excerpt').value = post.excerpt || '';
+          document.getElementById('publish-challenge').value = post.challengeId || '';
+          
+          // Enable publish button
+          document.getElementById('btn-open-publish').disabled = false;
+        } catch (err) {
+          alert('Failed to load story for editing: ' + err.message);
+        }
+      })();
+    }
+
     // Enable publish button when there's content
     quill.on('text-change', () => {
       const hasContent = quill.getText().trim().length > 0;
@@ -389,22 +423,40 @@
       };
 
       try {
-        await nebulaCreatePost(post);
-        // Show pending message
-        document.getElementById('publish-modal').innerHTML = `
-          <div class="publish-card" style="text-align:center;">
-            <div style="font-size:3rem; margin-bottom:1rem;">🎉</div>
-            <h2 style="font-family:var(--font-primary);">Story Submitted!</h2>
-            <p style="color:#aaa; margin: 1rem 0 1.5rem; line-height:1.6;">
-              Your story is pending review. Once approved by our admin, it will appear in The Writer's Room.
-            </p>
-            <a href="the-writers-room.html" class="btn-go" style="display:inline-block; padding:0.65rem 2rem; border-radius:6px; text-decoration:none; background:#4caf50; color:#fff; font-weight:600;">Back to the Room</a>
-          </div>
-        `;
+        if (editId) {
+          await nebulaUpdatePost(editId, post);
+          const isAdminUser = isAdmin(user);
+          const successMsg = isAdminUser 
+            ? 'Your story has been updated and is instantly live!'
+            : 'Your story has been updated and is pending review.';
+            
+          document.getElementById('publish-modal').innerHTML = `
+            <div class="publish-card" style="text-align:center;">
+              <div style="font-size:3rem; margin-bottom:1rem;">🎉</div>
+              <h2 style="font-family:var(--font-primary);">Story Updated!</h2>
+              <p style="color:#aaa; margin: 1rem 0 1.5rem; line-height:1.6;">
+                ${successMsg}
+              </p>
+              <a href="${isAdminUser ? 'my-thoughts.html' : 'the-writers-room.html'}" class="btn-go" style="display:inline-block; padding:0.65rem 2rem; border-radius:6px; text-decoration:none; background:#4caf50; color:#fff; font-weight:600;">View Stories</a>
+            </div>
+          `;
+        } else {
+          await nebulaCreatePost(post);
+          document.getElementById('publish-modal').innerHTML = `
+            <div class="publish-card" style="text-align:center;">
+              <div style="font-size:3rem; margin-bottom:1rem;">🎉</div>
+              <h2 style="font-family:var(--font-primary);">Story Submitted!</h2>
+              <p style="color:#aaa; margin: 1rem 0 1.5rem; line-height:1.6;">
+                Your story is pending review. Once approved by our admin, it will appear in The Writer's Room.
+              </p>
+              <a href="the-writers-room.html" class="btn-go" style="display:inline-block; padding:0.65rem 2rem; border-radius:6px; text-decoration:none; background:#4caf50; color:#fff; font-weight:600;">Back to the Room</a>
+            </div>
+          `;
+        }
       } catch (err) {
         alert("Error publishing post: " + err.message);
         btn.disabled = false;
-        btn.textContent = 'Publish Now';
+        btn.textContent = editId ? 'Save Changes' : 'Publish Now';
       }
     });
   </script>
