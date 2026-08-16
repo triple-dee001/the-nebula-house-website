@@ -41,7 +41,7 @@ async function loadStory(id) {
     });
 
     // Read time calculation
-    const wordCount = (post.content || '').split(/\s+/).length;
+    const wordCount = (post.body || '').split(/\s+/).length;
     const readTime = Math.max(1, Math.ceil(wordCount / 200));
     document.getElementById('story-read-time').textContent = `${readTime} min read`;
 
@@ -56,7 +56,7 @@ async function loadStory(id) {
     }
 
     // Body formatting
-    document.getElementById('story-body').innerHTML = formatContent(post.content);
+    document.getElementById('story-body').innerHTML = formatContent(post.body);
 
     // Tags
     const tagsContainer = document.getElementById('story-tags');
