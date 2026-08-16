@@ -4,7 +4,7 @@ const API_BASE = window.location.hostname === 'localhost' || window.location.hos
   : 'https://the-nebula-house-backend.onrender.com/api';
 
 // Google OAuth Client ID Config (Paste your credentials here)
-window.GOOGLE_CLIENT_ID = ''; 
+window.GOOGLE_CLIENT_ID = '428710921643-c3shur9o99hbqbu7emoqvhi1gd89a6de.apps.googleusercontent.com'; 
 
 // ─── TOKEN MANAGEMENT ────────────────────────
 function getToken() { return localStorage.getItem('nebula_token'); }
