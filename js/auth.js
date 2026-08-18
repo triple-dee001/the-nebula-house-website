@@ -5,7 +5,7 @@
 function getPathPrefix() {
   const path = window.location.pathname;
   if (path.includes('/post/') || path.includes('/past-reads/')) return '../';
-  if (path.includes('/the-nebula-academy/term-1/')) return '../../';
+  if (path.includes('/the-nebula-academy/term-')) return '../../';
   return '';
 }
 
