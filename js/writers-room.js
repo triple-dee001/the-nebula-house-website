@@ -148,6 +148,38 @@ async function initWritersRoom() {
       }
     });
   }
+
+  // ─── Load Featured Writers Sidebar ───
+  const sidebarWriters = document.getElementById('featured-writers-sidebar');
+  if (sidebarWriters) {
+    try {
+      const writers = await nebulaGetWriters();
+      const featured = writers.filter(w => w.role === 'ADMIN' || w.role === 'SUPER_ADMIN' || w.email === 'kelechioji@thenebulahouse.com' || w._count?.posts > 0).slice(0, 3);
+      if (featured.length > 0) {
+        sidebarWriters.innerHTML = featured.map(w => {
+          const initial = (w.name || 'U')[0].toUpperCase();
+          const avatarUrl = w.photo ? (w.photo.startsWith('http') ? w.photo : `https://the-nebula-house-backend.onrender.com${w.photo}`) : '';
+          const avatarHtml = avatarUrl 
+            ? `<img src="${avatarUrl}" alt="${w.name}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;display:block;">` 
+            : `<div class="wr-sidebar__writer-avatar">${initial}</div>`;
+          const count = w._count?.posts || 0;
+          const roleLabel = w.role === 'ADMIN' || w.role === 'SUPER_ADMIN' ? 'Founder' : 'Writer';
+          const linkTarget = w.slug ? `writer.html?slug=${w.slug}` : `writer.html?id=${w.id}`;
+          return `
+            <a href="${linkTarget}" class="wr-sidebar__writer" style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:0.75rem; margin-bottom:1rem; cursor:pointer;">
+              ${avatarHtml}
+              <div>
+                <div class="wr-sidebar__writer-name" style="font-weight:600;">${w.name}</div>
+                <div class="wr-sidebar__writer-desc" style="font-size:0.8rem; color:var(--text-muted);">${roleLabel} · ${count} ${count === 1 ? 'article' : 'articles'}</div>
+              </div>
+            </a>
+          `;
+        }).join('');
+      }
+    } catch (e) {
+      console.error('Error loading featured writers sidebar:', e);
+    }
+  }
 }
 
 // ─── FEED TAB ────────────────────────────────
@@ -179,9 +211,9 @@ async function loadFeed() {
           <div style="flex:1;">
             <div class="wr-article__meta">
               <div class="wr-article__avatar">
-                ${p.author?.photo ? `<img src="${p.author.photo}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;display:block;">` : initial}
+                ${p.author?.photo ? `<img src="${p.author.photo.startsWith('http') ? p.author.photo : 'https://the-nebula-house-backend.onrender.com' + p.author.photo}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;display:block;">` : initial}
               </div>
-              <span>${p.author?.name || 'Anonymous'}</span>
+              <span style="cursor:pointer;" onclick="window.location.href='${p.author?.slug ? 'writer.html?slug=' + p.author.slug : 'writer.html?id=' + p.author?.id}'">${p.author?.name || 'Anonymous'}</span>
             </div>
             <a href="story.html?id=${p.id}" class="wr-article__title" style="text-decoration:none;color:#fff;display:block;cursor:pointer;">${escapeHtml(p.title)}</a>
             ${p.subtitle ? `<div style="color:rgba(255,255,255,0.6);font-size:0.95rem;margin-bottom:0.4rem;">${escapeHtml(p.subtitle)}</div>` : ''}
@@ -267,9 +299,9 @@ async function loadChallengesTab() {
             <div style="flex:1;">
               <div class="wr-article__meta">
                 <div class="wr-article__avatar">
-                  ${p.author?.photo ? `<img src="${p.author.photo}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;display:block;">` : initial}
+                  ${p.author?.photo ? `<img src="${p.author.photo.startsWith('http') ? p.author.photo : 'https://the-nebula-house-backend.onrender.com' + p.author.photo}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;display:block;">` : initial}
                 </div>
-                <span>${p.author?.name || 'Anonymous'}</span>
+                <span style="cursor:pointer;" onclick="window.location.href='${p.author?.slug ? 'writer.html?slug=' + p.author.slug : 'writer.html?id=' + p.author?.id}'">${p.author?.name || 'Anonymous'}</span>
               </div>
               <a href="story.html?id=${p.id}" class="wr-article__title" style="text-decoration:none;color:#fff;display:block;cursor:pointer;">${escapeHtml(p.title)}</a>
               <div class="wr-article__excerpt">${escapeHtml(p.excerpt || '')}</div>
@@ -312,7 +344,7 @@ async function loadMentorshipTab() {
         <div class="mentor-card">
           <div class="mentor-card__header">
             ${m.photo 
-              ? `<img class="mentor-card__avatar" src="${m.photo}" alt="${m.name}">` 
+              ? `<img class="mentor-card__avatar" src="${m.photo.startsWith('http') ? m.photo : 'https://the-nebula-house-backend.onrender.com' + m.photo}" alt="${m.name}">` 
               : `<div class="mentor-card__avatar" style="display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.2rem;">${initial}</div>`
             }
             <div>
@@ -449,7 +481,8 @@ async function loadWritersTab() {
       const photoUrl = w.photo || '';
       let avatarHtml = '';
       if (photoUrl) {
-        avatarHtml = `<img src="${photoUrl}" alt="${w.name}" class="mentor-card__avatar">`;
+        const imgSrc = photoUrl.startsWith('http') ? photoUrl : `https://the-nebula-house-backend.onrender.com${photoUrl}`;
+        avatarHtml = `<img src="${imgSrc}" alt="${w.name}" class="mentor-card__avatar">`;
       } else {
         const initial = (w.name || 'U')[0].toUpperCase();
         avatarHtml = `<div class="mentor-card__avatar" style="display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:1.2rem; background:rgba(255,255,255,0.08);">${initial}</div>`;

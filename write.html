@@ -162,7 +162,7 @@
     <div class="write-topbar__actions">
       <button class="write-topbar__draft" id="btn-ai-assist" style="border-color:#bb86fc; color:#bb86fc;">✨ AI Assistant</button>
       <button class="write-topbar__publish" id="btn-open-publish" disabled>Publish</button>
-      <div class="write-topbar__user" id="write-user-avatar"></div>
+      <a href="user-profile.html" class="write-topbar__user" id="write-user-avatar" style="text-decoration:none; cursor:pointer;" title="Go to My Profile"></a>
     </div>
   </div>
 
@@ -263,8 +263,13 @@
         // Show user avatar
         const avatar = document.getElementById('write-user-avatar');
         if (avatar) {
-          const initial = (user.name || user.email)[0].toUpperCase();
-          avatar.textContent = initial;
+          if (user.photo) {
+            const imgSrc = user.photo.startsWith('http') ? user.photo : `https://the-nebula-house-backend.onrender.com${user.photo}`;
+            avatar.innerHTML = `<img src="${imgSrc}" alt="${user.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+          } else {
+            const initial = (user.name || user.email)[0].toUpperCase();
+            avatar.textContent = initial;
+          }
         }
 
         // Fetch active challenges to populate challenge select dropdown
