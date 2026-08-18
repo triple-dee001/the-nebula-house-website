@@ -178,6 +178,42 @@ function initInteractions(post) {
     }
   };
 
+  // --- Share Post ---
+  const shareBtn = document.getElementById('share-btn');
+  if (shareBtn) {
+    shareBtn.onclick = async () => {
+      const shareData = {
+        title: post.title,
+        text: post.excerpt || `Read "${post.title}" on The Nebula House.`,
+        url: window.location.href
+      };
+
+      if (navigator.share) {
+        try {
+          await navigator.share(shareData);
+        } catch (err) {
+          console.log('Error sharing:', err);
+        }
+      } else {
+        // Fallback: Copy link
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          const shareLabel = document.getElementById('share-label');
+          if (shareLabel) {
+            shareLabel.textContent = 'Link Copied!';
+            shareBtn.style.color = '#4caf50';
+            setTimeout(() => {
+              shareLabel.textContent = 'Share';
+              shareBtn.style.color = 'var(--text-muted)';
+            }, 2000);
+          }
+        } catch (err) {
+          alert('Could not copy link to clipboard.');
+        }
+      }
+    };
+  }
+
   // --- Comments ---
   const form = document.getElementById('comment-form');
   const input = document.getElementById('comment-input');
