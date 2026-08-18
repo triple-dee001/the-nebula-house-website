@@ -158,7 +158,7 @@ async function initWritersRoom() {
       if (featured.length > 0) {
         sidebarWriters.innerHTML = featured.map(w => {
           const initial = (w.name || 'U')[0].toUpperCase();
-          const avatarUrl = w.photo ? (w.photo.startsWith('http') ? w.photo : `https://the-nebula-house-backend.onrender.com${w.photo}`) : '';
+          const avatarUrl = w.photo ? (w.photo.startsWith('http') || w.photo.startsWith('data:') ? w.photo : `https://the-nebula-house-backend.onrender.com${w.photo}`) : '';
           const avatarHtml = avatarUrl 
             ? `<img src="${avatarUrl}" alt="${w.name}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;display:block;">` 
             : `<div class="wr-sidebar__writer-avatar">${initial}</div>`;
@@ -211,7 +211,7 @@ async function loadFeed() {
           <div style="flex:1;">
             <div class="wr-article__meta">
               <div class="wr-article__avatar">
-                ${p.author?.photo ? `<img src="${p.author.photo.startsWith('http') ? p.author.photo : 'https://the-nebula-house-backend.onrender.com' + p.author.photo}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;display:block;">` : initial}
+                ${p.author?.photo ? `<img src="${p.author.photo.startsWith('http') || p.author.photo.startsWith('data:') ? p.author.photo : 'https://the-nebula-house-backend.onrender.com' + p.author.photo}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;display:block;">` : initial}
               </div>
               <span style="cursor:pointer;" onclick="window.location.href='${p.author?.slug ? 'writer.html?slug=' + p.author.slug : 'writer.html?id=' + p.author?.id}'">${p.author?.name || 'Anonymous'}</span>
             </div>
@@ -481,7 +481,7 @@ async function loadWritersTab() {
       const photoUrl = w.photo || '';
       let avatarHtml = '';
       if (photoUrl) {
-        const imgSrc = photoUrl.startsWith('http') ? photoUrl : `https://the-nebula-house-backend.onrender.com${photoUrl}`;
+        const imgSrc = photoUrl.startsWith('http') || photoUrl.startsWith('data:') ? photoUrl : `https://the-nebula-house-backend.onrender.com${photoUrl}`;
         avatarHtml = `<img src="${imgSrc}" alt="${w.name}" class="mentor-card__avatar">`;
       } else {
         const initial = (w.name || 'U')[0].toUpperCase();

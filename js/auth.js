@@ -19,7 +19,7 @@ function updateNavbarAuth(user) {
     icon.onclick = null;
     // Show avatar or initial
     if (user.photo) {
-      const imgSrc = user.photo.startsWith('http') ? user.photo : `https://the-nebula-house-backend.onrender.com${user.photo}`;
+      const imgSrc = user.photo.startsWith('http') || user.photo.startsWith('data:') ? user.photo : `https://the-nebula-house-backend.onrender.com${user.photo}`;
       icon.innerHTML = `<img src="${imgSrc}" alt="${user.name}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;display:block;">`;
     } else {
       const initial = (user.name || user.email || 'U')[0].toUpperCase();

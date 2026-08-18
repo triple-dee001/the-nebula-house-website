@@ -256,7 +256,7 @@
       const avatarEl = document.getElementById('profile-avatar');
       function setAvatar(photo, name) {
         if (photo) {
-          const imgSrc = photo.startsWith('http') ? photo : `https://the-nebula-house-backend.onrender.com${photo}`;
+          const imgSrc = photo.startsWith('http') || photo.startsWith('data:') ? photo : `https://the-nebula-house-backend.onrender.com${photo}`;
           avatarEl.innerHTML = `<img src="${imgSrc}" alt="${name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
         } else {
           avatarEl.textContent = (name || 'U')[0].toUpperCase();

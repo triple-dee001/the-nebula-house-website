@@ -159,7 +159,7 @@
         // Set avatar
         const avatarEl = document.getElementById('profile-avatar');
         if (writer.photo) {
-          const imgSrc = writer.photo.startsWith('http') ? writer.photo : `https://the-nebula-house-backend.onrender.com${writer.photo}`;
+          const imgSrc = writer.photo.startsWith('http') || writer.photo.startsWith('data:') ? writer.photo : `https://the-nebula-house-backend.onrender.com${writer.photo}`;
           avatarEl.innerHTML = `<img src="${imgSrc}" alt="${writer.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
         } else {
           avatarEl.textContent = (writer.name || 'U')[0].toUpperCase();

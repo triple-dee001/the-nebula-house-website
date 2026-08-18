@@ -131,19 +131,25 @@ async function nebulaUpdateProfile(data) {
 }
 
 async function nebulaUploadPhoto(file) {
-  const formData = new FormData();
-  formData.append('photo', file);
-  const token = getToken();
-  const res = await fetch(`${API_BASE}/users/me/photo`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
-    body: formData,
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = async () => {
+      try {
+        const base64Data = reader.result;
+        const data = await apiRequest('/users/me/photo', {
+          method: 'POST',
+          body: JSON.stringify({ photo: base64Data }),
+        });
+        const user = getStoredUser();
+        if (user) { user.photo = data.photo; setStoredUser(user); }
+        resolve(data.photo);
+      } catch (err) {
+        reject(err);
+      }
+    };
+    reader.onerror = () => reject(new Error('Failed to read file'));
+    reader.readAsDataURL(file);
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || 'Upload failed');
-  const user = getStoredUser();
-  if (user) { user.photo = data.photo; setStoredUser(user); }
-  return data.photo;
 }
 
 async function nebulaChangePassword(currentPassword, newPassword) {
