@@ -87,26 +87,53 @@
         <div class="section-header__line"></div>
       </div>
 
-      <div class="term-card reveal">
-        <p class="term-card__label">Term I</p>
-        <h3 class="term-card__title">Pain, Meaning, and The Human Condition</h3>
-        <p class="term-card__desc">Term I of The Nebula Academy is an initiation into seriousness. It does not offer self-improvement or optimism. It teaches attention. Across three modules, participants are invited to confront pain, darkness, and inner conflict — not as problems to be solved, but as realities that reveal what is most true about being human.</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem; margin-top: 3rem;">
+        
+        <!-- Term I Card -->
+        <div class="term-card reveal" style="display: flex; flex-direction: column; height: 100%;">
+          <p class="term-card__label">Term I</p>
+          <h3 class="term-card__title">Pain, Meaning, and The Human Condition</h3>
+          <p class="term-card__desc" style="flex: 1; margin-bottom: 1.5rem;">Term I of The Nebula Academy is an initiation into seriousness. It does not offer self-improvement or optimism. It teaches attention. Across three modules, participants are invited to confront pain, darkness, and inner conflict — not as problems to be solved, but as realities that reveal what is most true about being human.</p>
 
-        <div class="term-card__stats">
-          <div class="term-card__stat">
-            <span class="term-card__stat-value" data-value="3">0</span>
-            <span class="term-card__stat-label">Modules</span>
+          <div class="term-card__stats" style="margin-bottom: 2rem;">
+            <div class="term-card__stat">
+              <span class="term-card__stat-value" data-value="3">0</span>
+              <span class="term-card__stat-label">Modules</span>
+            </div>
+            <div class="term-card__stat">
+              <span class="term-card__stat-value" data-value="3">0</span>
+              <span class="term-card__stat-label">Weeks Duration</span>
+            </div>
           </div>
-          <div class="term-card__stat">
-            <span class="term-card__stat-value" data-value="3">0</span>
-            <span class="term-card__stat-label">Weeks Duration</span>
-          </div>
+
+          <a href="the-nebula-academy/term-1/index.html" class="btn" style="align-self: flex-start;">
+            <span>View Curriculum</span>
+            <span class="arrow">→</span>
+          </a>
         </div>
 
-        <a href="the-nebula-academy/term-1/index.html" class="btn">
-          <span>View Curriculum</span>
-          <span class="arrow">→</span>
-        </a>
+        <!-- Term II Card -->
+        <div class="term-card reveal" style="display: flex; flex-direction: column; height: 100%;">
+          <p class="term-card__label">Term II</p>
+          <h3 class="term-card__title">Identity, Faith, and the Modern Soul</h3>
+          <p class="term-card__desc" style="flex: 1; margin-bottom: 1.5rem;">Term II of The Nebula Academy shifts from attention to integration. It invites participants to examine the intersection of identity, sacred texts, and contemporary culture. Through dialogic reflection, we explore how to maintain faith and cultivate meaning in a fragmented age.</p>
+
+          <div class="term-card__stats" style="margin-bottom: 2rem;">
+            <div class="term-card__stat">
+              <span class="term-card__stat-value" data-value="3">0</span>
+              <span class="term-card__stat-label">Modules</span>
+            </div>
+            <div class="term-card__stat">
+              <span class="term-card__stat-value" data-value="6">0</span>
+              <span class="term-card__stat-label">Weeks Duration</span>
+            </div>
+          </div>
+
+          <a href="#" class="btn btn--disabled" style="align-self: flex-start; background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); color: var(--text-muted); pointer-events: none;" onclick="return false;">
+            <span>Coming Soon</span>
+          </a>
+        </div>
+
       </div>
     </div>
   </section>

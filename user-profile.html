@@ -158,7 +158,12 @@
           </div>
           <div id="bio-success" style="color:#4caf50; font-size:0.85rem; margin-top:0.5rem; display:none;">Bio updated!</div>
         </div>
- 
+
+        <div style="margin-bottom:var(--space-xl); display:flex; align-items:center; gap:0.6rem;">
+          <input type="checkbox" id="profile-is-writer" style="width:auto; margin:0; cursor:pointer; height:18px; width:18px;">
+          <label for="profile-is-writer" style="color:#fff; font-size:0.95rem; cursor:pointer; user-select:none; font-weight:500;">Show me in the Writer Directory</label>
+        </div>
+
         <div class="profile-stats">
           <div class="profile-stat">
             <div class="profile-stat__value" id="profile-post-count">0</div>
@@ -303,6 +308,19 @@
           setTimeout(() => msg.style.display = 'none', 3000);
         } catch(err) { alert(err.message); }
         btn.textContent = 'Save'; btn.disabled = false;
+      });
+
+      // ─── Directory Preference ───
+      const writerCheckbox = document.getElementById('profile-is-writer');
+      writerCheckbox.checked = userData.isWriter || false;
+      writerCheckbox.addEventListener('change', async (e) => {
+        const isChecked = e.target.checked;
+        try {
+          await nebulaUpdateProfile({ isWriter: isChecked });
+        } catch(err) {
+          alert('Failed to update directory preference: ' + err.message);
+          e.target.checked = !isChecked; // revert
+        }
       });
 
       // ─── Photo Upload ───

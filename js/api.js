@@ -44,10 +44,10 @@ async function apiRequest(path, options = {}) {
 }
 
 // ─── AUTH ─────────────────────────────────────
-async function nebulaRegister(name, email, password) {
+async function nebulaRegister(name, email, password, isWriter) {
   return apiRequest('/auth/register', {
     method: 'POST',
-    body: JSON.stringify({ name, email, password }),
+    body: JSON.stringify({ name, email, password, isWriter }),
   });
 }
 

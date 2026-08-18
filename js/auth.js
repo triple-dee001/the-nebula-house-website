@@ -50,6 +50,10 @@ function injectAuthModal() {
         <div id="auth-name-group" style="display:none; margin-bottom:1rem;">
           <input type="text" id="auth-name" class="nebula-auth-input" placeholder="Your name" autocomplete="name">
         </div>
+        <div id="auth-writer-group" style="display:none; margin-bottom:1rem; align-items:center; gap:0.5rem;">
+          <input type="checkbox" id="auth-is-writer" style="width:auto; margin:0; cursor:pointer;">
+          <label for="auth-is-writer" style="color:rgba(255,255,255,0.75); font-size:0.88rem; cursor:pointer; user-select:none;">Register as a Writer</label>
+        </div>
         <div style="margin-bottom:1rem;">
           <input type="email" id="auth-email" class="nebula-auth-input" placeholder="Email address" autocomplete="email">
         </div>
@@ -144,6 +148,7 @@ function injectAuthModal() {
     document.getElementById('auth-switch-text').textContent = isSignUp ? 'Already have an account?' : "Don't have an account?";
     document.getElementById('auth-switch-btn').textContent = isSignUp ? 'Sign In' : 'Sign Up';
     document.getElementById('auth-name-group').style.display = isSignUp ? 'block' : 'none';
+    document.getElementById('auth-writer-group').style.display = isSignUp ? 'flex' : 'none';
     document.getElementById('auth-forgot-link').style.display = isSignUp ? 'none' : 'inline';
     hideAuthError();
   });
@@ -187,6 +192,8 @@ function injectAuthModal() {
     const password = document.getElementById('auth-password').value;
     const btn = document.getElementById('auth-submit');
 
+    const isWriter = isSignUp ? document.getElementById('auth-is-writer').checked : false;
+
     if (!email || !password) return showAuthError('Please fill in all fields');
     if (isSignUp && !name) return showAuthError('Please enter your name');
 
@@ -195,7 +202,7 @@ function injectAuthModal() {
 
     try {
       if (isSignUp) {
-        await nebulaRegister(name, email, password);
+        await nebulaRegister(name, email, password, isWriter);
         showSuccessView('📬', 'Check Your Email', `We've sent a verification link to ${email}. Please verify before signing in.`);
       } else {
         const user = await nebulaLogin(email, password);
