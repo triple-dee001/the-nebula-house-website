@@ -8,11 +8,11 @@
 const ANNOUNCEMENT = {
   active: true,
   text: '🎓 The Nebula Academy: Term 2 is out!!',
-  link: 'the-nebula-academy.html',
+  link: 'the-nebula-academy/term-2/index.html',
   linkText: 'Enrol Now →',
   bgColor: '#ffffff',
   accentColor: '#7928ca',
-  id: 'nebula-announcement-v2', // change this id to force re-show after dismissal
+  id: 'nebula-announcement-v3', // change this id to force re-show after dismissal
 };
 
 // ─── INJECT ANNOUNCEMENT BANNER ──────────────
