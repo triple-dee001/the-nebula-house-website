@@ -129,8 +129,9 @@
     document.addEventListener('DOMContentLoaded', async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const writerId = urlParams.get('id');
+      const writerSlug = urlParams.get('slug');
 
-      if (!writerId) {
+      if (!writerId && !writerSlug) {
         window.location.href = 'the-writers-room.html';
         return;
       }
@@ -140,15 +141,26 @@
       const loading = document.getElementById('loading-profile');
 
       try {
-        // 1. Fetch user public profile
-        const writer = await apiRequest(`/users/${writerId}`);
+        // 1. Fetch user public profile — by slug or by ID
+        let writer;
+        if (writerSlug) {
+          writer = await nebulaGetWriterBySlug(writerSlug);
+        } else {
+          writer = await nebulaGetWriterById(writerId);
+        }
+
+        const userId = writer.id;
         loading.style.display = 'none';
         card.style.display = 'block';
+
+        // Update page title with writer name
+        document.title = `${writer.name} | The Nebula House`;
 
         // Set avatar
         const avatarEl = document.getElementById('profile-avatar');
         if (writer.photo) {
-          avatarEl.innerHTML = `<img src="${writer.photo}" alt="${writer.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+          const imgSrc = writer.photo.startsWith('http') ? writer.photo : `https://the-nebula-house-backend.onrender.com${writer.photo}`;
+          avatarEl.innerHTML = `<img src="${imgSrc}" alt="${writer.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
         } else {
           avatarEl.textContent = (writer.name || 'U')[0].toUpperCase();
         }
@@ -162,8 +174,19 @@
           : '';
         document.getElementById('profile-bio').textContent = writer.bio || 'This writer hasn\'t written a bio yet.';
 
+        // Post count stat
+        const pubCount = writer._count?.posts || 0;
+        const statsEl = document.createElement('div');
+        statsEl.style.cssText = 'display:flex; gap:2rem; margin-top:1rem;';
+        statsEl.innerHTML = `
+          <div style="text-align:center;">
+            <div style="font-size:1.6rem; font-weight:700; font-family:var(--font-secondary);">${pubCount}</div>
+            <div style="font-size:0.82rem; color:var(--text-muted);">Published</div>
+          </div>`;
+        document.getElementById('profile-bio').after(statsEl);
+
         // 2. Fetch writer's posts
-        const posts = await apiRequest(`/users/${writerId}/posts`);
+        const posts = await nebulaGetUserPosts(userId);
         postsSec.style.display = 'block';
 
         const postsContainer = document.getElementById('profile-posts');
@@ -171,7 +194,7 @@
           postsContainer.innerHTML = posts.map(p => `
             <div class="profile-post">
               <a href="story.html?id=${p.id}" class="profile-post__title">${p.title}</a>
-              <div class="profile-post__meta">${new Date(p.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+              <div class="profile-post__meta">${new Date(p.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} &nbsp;·&nbsp; 👁 ${p.views || 0}</div>
             </div>
           `).join('');
         } else {

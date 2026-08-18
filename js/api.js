@@ -160,6 +160,12 @@ async function nebulaGetUserPosts(userId) {
 async function nebulaGetWriters() {
   return apiRequest('/users');
 }
+async function nebulaGetWriterBySlug(slug) {
+  return apiRequest(`/users/slug/${slug}`);
+}
+async function nebulaGetWriterById(id) {
+  return apiRequest(`/users/${id}`);
+}
 
 // ─── POSTS ────────────────────────────────────
 async function nebulaGetPosts(page = 1, limit = 20, tag = '') {
@@ -195,6 +201,9 @@ async function nebulaDeleteComment(postId, commentId) {
 
 async function nebulaGetMyPosts() {
   return apiRequest('/posts/mine');
+}
+async function nebulaDeletePost(postId) {
+  return apiRequest(`/posts/${postId}`, { method: 'DELETE' });
 }
 
 // ─── NEWSLETTER ───────────────────────────────
@@ -278,6 +287,9 @@ async function adminToggleMentor(userId, isMentor, mentorBio = null) {
 }
 async function adminDeleteUser(userId) {
   return apiRequest(`/admin/users/${userId}`, { method: 'DELETE' });
+}
+async function adminForceVerifyUser(userId) {
+  return apiRequest(`/admin/users/${userId}/verify`, { method: 'PUT' });
 }
 async function adminGetPosts(params = {}) {
   const q = new URLSearchParams(params);
