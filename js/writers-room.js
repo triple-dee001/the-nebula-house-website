@@ -154,7 +154,7 @@ async function initWritersRoom() {
   if (sidebarWriters) {
     try {
       const writers = await nebulaGetWriters();
-      const featured = writers.filter(w => w.role === 'ADMIN' || w.role === 'SUPER_ADMIN' || w.email === 'kelechioji@thenebulahouse.com' || w._count?.posts > 0).slice(0, 3);
+      const featured = writers.filter(w => w._count?.posts > 0).sort((a, b) => (b._count?.posts || 0) - (a._count?.posts || 0)).slice(0, 3);
       if (featured.length > 0) {
         sidebarWriters.innerHTML = featured.map(w => {
           const initial = (w.name || 'U')[0].toUpperCase();
