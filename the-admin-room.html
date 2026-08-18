@@ -533,6 +533,7 @@
           <td style="display:flex; gap:0.4rem; flex-wrap:wrap;">
             ${u.role === 'USER' ? `<button class="btn-make-admin" onclick="grantAdmin('${u.id}','${u.email}')">Make Admin</button>` : `<button class="btn-reject" onclick="revokeAdmin('${u.id}','${u.email}')">Revoke</button>`}
             ${u.isMentor ? `<button class="btn-reject" onclick="toggleMentor('${u.id}', false)">Revoke Mentor</button>` : `<button class="btn-make-admin" onclick="toggleMentor('${u.id}', true)">Make Mentor</button>`}
+            ${!u.emailVerified ? `<button class="btn-make-admin" onclick="forceVerifyAdmin('${u.id}','${u.name || u.email}')" style="background:rgba(74,222,128,0.2);border-color:rgba(74,222,128,0.4);color:#4ade80;">✓ Verify</button>` : ''}
             <button class="btn-delete" onclick="deleteUserAdmin('${u.id}')">Delete</button>
           </td>
         </tr>`;
@@ -714,6 +715,15 @@
     if (!confirm('Delete this user account? This cannot be undone.')) return;
     try {
       await adminDeleteUser(uid);
+      await loadDashboard();
+    } catch (err) { alert(err.message); }
+  }
+
+  async function forceVerifyAdmin(uid, name) {
+    if (!confirm(`Force-verify ${name}'s email? This will mark their email as verified without them clicking a link.`)) return;
+    try {
+      const res = await adminForceVerifyUser(uid);
+      alert(res.message || 'Email verified!');
       await loadDashboard();
     } catch (err) { alert(err.message); }
   }
