@@ -209,6 +209,7 @@ input, textarea {
   max-width: var(--max-width-wide);
   margin: 0 auto;
   padding: 0 var(--space-xl);
+  position: relative;
 }
 
 .navbar__logo {
@@ -242,6 +243,9 @@ input, textarea {
 }
 
 .navbar__links {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: var(--space-2xl);

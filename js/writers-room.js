@@ -192,8 +192,7 @@ async function initWritersRoom() {
       }
     });
   }
-
-
+});
 
 // ─── FEED TAB ────────────────────────────────
 async function loadFeed(tag = '') {
