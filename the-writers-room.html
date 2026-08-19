@@ -152,6 +152,105 @@
     /* Mentorship Requests Modal */
     .mentor-modal { position: fixed; inset: 0; z-index: 10002; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; }
     .mentor-modal.open { display: flex; }
+    
+    .mentor-modal .publish-card {
+      background: #0d0d0d !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      border-radius: 12px !important;
+      padding: 2.25rem 2rem 2rem !important;
+      width: 100% !important;
+      max-width: 450px !important;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6) !important;
+      font-family: var(--font-secondary) !important;
+      box-sizing: border-box !important;
+    }
+    .mentor-modal .publish-card h2 {
+      font-size: 1.5rem !important;
+      font-weight: 600 !important;
+      color: #fff !important;
+      margin-bottom: 0.4rem !important;
+      letter-spacing: -0.02em !important;
+      text-transform: none !important;
+      border-bottom: none !important;
+      padding: 0 !important;
+      margin-top: 0 !important;
+    }
+    .mentor-modal .publish-card label {
+      display: block !important;
+      margin-bottom: 0.5rem !important;
+      font-weight: 600 !important;
+      font-size: 0.82rem !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.08em !important;
+      color: rgba(255,255,255,0.4) !important;
+    }
+    .mentor-modal .publish-actions {
+      display: flex !important;
+      justify-content: flex-end !important;
+      gap: 1rem !important;
+      margin-top: 0.5rem !important;
+    }
+    .mentor-modal .btn-cancel {
+      padding: 0.65rem 1.5rem !important;
+      background: rgba(255,255,255,0.06) !important;
+      border: 1px solid rgba(255,255,255,0.12) !important;
+      border-radius: 6px !important;
+      color: #fff !important;
+      font-weight: 600 !important;
+      cursor: pointer !important;
+      font-size: 0.9rem !important;
+      font-family: inherit !important;
+      transition: all 0.2s !important;
+    }
+    .mentor-modal .btn-cancel:hover {
+      background: rgba(255,255,255,0.12) !important;
+      border-color: rgba(255,255,255,0.25) !important;
+    }
+    .mentor-modal .btn-go {
+      padding: 0.65rem 1.75rem !important;
+      background: #ffffff !important;
+      border: 1px solid #ffffff !important;
+      border-radius: 6px !important;
+      color: #000000 !important;
+      font-weight: 600 !important;
+      cursor: pointer !important;
+      font-size: 0.9rem !important;
+      font-family: inherit !important;
+      transition: all 0.2s !important;
+    }
+    .mentor-modal .btn-go:hover {
+      opacity: 0.9 !important;
+    }
+    .mentor-modal .btn-go:disabled {
+      opacity: 0.4 !important;
+      cursor: not-allowed !important;
+    }
+    
+    /* Close X Button Styling */
+    .mentor-modal .modal-close {
+      position: absolute !important;
+      top: 1.25rem !important;
+      right: 1.5rem !important;
+      background: none !important;
+      border: none !important;
+      color: #888 !important;
+      font-size: 1.75rem !important;
+      font-weight: 300 !important;
+      cursor: pointer !important;
+      line-height: 1 !important;
+      width: 32px !important;
+      height: 32px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border-radius: 50% !important;
+      transition: all 0.2s !important;
+      padding: 0 !important;
+    }
+    .mentor-modal .modal-close:hover {
+      color: #fff !important;
+      background: rgba(255,255,255,0.1) !important;
+    }
 
     /* Badges for status in table */
     .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }

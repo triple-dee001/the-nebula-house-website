@@ -13,6 +13,16 @@ function updateNavbarAuth(user) {
   const icon = document.getElementById('nav-account-icon');
   if (!icon) return;
 
+  // Group account icon and notification bell inside actions wrapper to prevent shifting header menus
+  let actionsWrapper = icon.parentNode.querySelector('.navbar__actions');
+  if (!actionsWrapper) {
+    actionsWrapper = document.createElement('div');
+    actionsWrapper.className = 'navbar__actions';
+    actionsWrapper.style.cssText = 'display:flex; align-items:center; gap:1.25rem; margin-left:auto;';
+    icon.parentNode.insertBefore(actionsWrapper, icon);
+    actionsWrapper.appendChild(icon);
+  }
+
   if (user) {
     const prefix = getPathPrefix();
     icon.href = isAdmin(user) ? prefix + 'the-admin-room.html' : prefix + 'user-profile.html';
@@ -31,7 +41,7 @@ function updateNavbarAuth(user) {
     if (!bell) {
       bell = document.createElement('div');
       bell.id = 'nav-bell-icon';
-      bell.style.cssText = 'position:relative; cursor:pointer; display:flex; align-items:center; justify-content:center; margin-right:1.25rem; color:#fff;';
+      bell.style.cssText = 'position:relative; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#fff;';
       bell.innerHTML = `
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
         <span id="nav-bell-badge" style="display:none; position:absolute; top:-4px; right:-4px; background:#ef4444; color:#fff; font-size:0.68rem; font-weight:800; border-radius:50%; min-width:14px; height:14px; padding:2px; display:flex; align-items:center; justify-content:center; border:2px solid #000; box-sizing:content-box; line-height:1;">0</span>

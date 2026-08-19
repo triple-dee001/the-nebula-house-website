@@ -364,7 +364,7 @@ async function loadMentorshipTab() {
         <div class="mentor-card">
           <div class="mentor-card__header">
             ${m.photo 
-              ? `<img class="mentor-card__avatar" src="${m.photo.startsWith('http') ? m.photo : 'https://the-nebula-house-backend.onrender.com' + m.photo}" alt="${m.name}">` 
+              ? `<img class="mentor-card__avatar" src="${m.photo.startsWith('http') || m.photo.startsWith('data:') ? m.photo : 'https://the-nebula-house-backend.onrender.com' + m.photo}" alt="${m.name}">` 
               : `<div class="mentor-card__avatar" style="display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.2rem;">${initial}</div>`
             }
             <div>
