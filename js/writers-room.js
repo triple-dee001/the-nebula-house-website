@@ -207,7 +207,7 @@ async function loadFeed(tag = '') {
   if (empty) empty.style.display = 'none';
 
   try {
-    const data = await nebulaGetPosts(1, 40, tag);
+    const data = await nebulaGetPosts(1, 15, tag);
     feed.style.opacity = '1';
     const posts = data.posts || [];
     const user = getCurrentUser();
