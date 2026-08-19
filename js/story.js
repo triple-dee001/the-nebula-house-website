@@ -50,16 +50,13 @@ async function loadStory(id) {
     const readTime = Math.max(1, Math.ceil(wordCount / 200));
     document.getElementById('story-read-time').textContent = `${readTime} min read`;
 
-    // Cover Image
+    // Cover Image (Only display top header image if it's NOT already embedded inside article body)
     const imgContainer = document.getElementById('story-image-container');
     const imgEl = document.getElementById('story-image');
     let coverUrl = post.coverImage;
-    if (!coverUrl && post.body) {
-      const match = post.body.match(/<img[^>]+src=["']([^"']+)["']/i);
-      if (match) coverUrl = match[1];
-    }
+    const bodyHasImage = post.body && coverUrl && post.body.includes(coverUrl);
 
-    if (coverUrl) {
+    if (coverUrl && !bodyHasImage) {
       function formatImageUrl(url) {
         if (!url) return '';
         if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url;
@@ -70,7 +67,7 @@ async function loadStory(id) {
       imgEl.src = formatImageUrl(coverUrl);
       imgContainer.style.display = 'block';
     } else {
-      imgContainer.style.display = 'none';
+      if (imgContainer) imgContainer.style.display = 'none';
     }
 
     // Body formatting
