@@ -192,7 +192,8 @@ async function initWritersRoom() {
       }
     });
   }
-});
+}
+
 
 // ─── FEED TAB ────────────────────────────────
 async function loadFeed(tag = '') {
@@ -223,18 +224,21 @@ async function loadFeed(tag = '') {
       const date = new Date(p.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
       const wordCount = (p.excerpt || '').split(/\s+/).length * 10;
       const readTime = Math.max(1, Math.ceil(wordCount / 200));
+      const coverSrc = p.coverImage
+        ? (p.coverImage.startsWith('http') ? p.coverImage : 'https://the-nebula-house-backend.onrender.com/' + p.coverImage)
+        : 'assets/images/room-icon.png';
 
       return `
-        <div class="wr-article">
-          <div style="flex:1;">
+        <div class="wr-article" style="cursor:pointer;" onclick="window.location.href='story.html?id=${p.id}'">
+          <div style="flex:1; min-width:0;">
             <div class="wr-article__meta">
               <div class="wr-article__avatar">
-                ${p.author?.photo ? `<img src="${p.author.photo.startsWith('http') || p.author.photo.startsWith('data:') ? p.author.photo : 'https://the-nebula-house-backend.onrender.com' + p.author.photo}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;display:block;">` : initial}
+                ${p.author?.photo ? `<img src="${p.author.photo.startsWith('http') || p.author.photo.startsWith('data:') ? p.author.photo : 'https://the-nebula-house-backend.onrender.com' + p.author.photo}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;display:block;">` : `<div style="width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">${initial}</div>`}
               </div>
-              <span style="cursor:pointer;" onclick="window.location.href='${p.author?.slug ? 'writer.html?slug=' + p.author.slug : 'writer.html?id=' + p.author?.id}'">${p.author?.name || 'Anonymous'}</span>
+              <span style="cursor:pointer;" onclick="event.stopPropagation();window.location.href='${p.author?.slug ? 'writer.html?slug=' + p.author.slug : 'writer.html?id=' + p.author?.id}'">${p.author?.name || 'Anonymous'}</span>
             </div>
-            <a href="story.html?id=${p.id}" class="wr-article__title" style="text-decoration:none;color:#fff;display:block;cursor:pointer;">${escapeHtml(p.title)}</a>
-            ${p.subtitle ? `<div style="color:rgba(255,255,255,0.6);font-size:0.95rem;margin-bottom:0.4rem;">${escapeHtml(p.subtitle)}</div>` : ''}
+            <div class="wr-article__title" style="color:#fff;font-weight:700;font-size:1.05rem;line-height:1.3;margin-bottom:0.4rem;">${escapeHtml(p.title)}</div>
+            ${p.subtitle ? `<div style="color:rgba(255,255,255,0.6);font-size:0.9rem;margin-bottom:0.4rem;">${escapeHtml(p.subtitle)}</div>` : ''}
             <div class="wr-article__excerpt">${escapeHtml(p.excerpt || '')}</div>
             <div class="wr-article__footer">
               <span>${date}</span>
@@ -244,12 +248,16 @@ async function loadFeed(tag = '') {
               <span style="margin-left:auto; color:var(--text-muted);">
                 ♥ ${p._count?.likes || 0} · 💬 ${p._count?.comments || 0}
               </span>
-              ${userIsAdmin ? `<button class="wr-article__delete" style="margin-left:1rem;" onclick="handleDeletePost('${p.id}')">Delete</button>` : ''}
+              ${userIsAdmin ? `<button class="wr-article__delete" style="margin-left:1rem;" onclick="event.stopPropagation();handleDeletePost('${p.id}')">Delete</button>` : ''}
             </div>
+          </div>
+          <div style="flex-shrink:0;width:140px;height:100px;border-radius:6px;overflow:hidden;background:#111;">
+            <img src="${coverSrc}" alt="${escapeHtml(p.title)}" style="width:100%;height:100%;object-fit:${p.coverImage ? 'cover' : 'contain'};padding:${p.coverImage ? '0' : '20px'};box-sizing:border-box;opacity:${p.coverImage ? '1' : '0.4'};" onerror="this.src='assets/images/room-icon.png';this.style.objectFit='contain';this.style.padding='20px';this.style.opacity='0.4';">
           </div>
         </div>
       `;
     }).join('');
+
   } catch (err) {
     feed.style.opacity = '1';
     console.error('Feed load error:', err);
