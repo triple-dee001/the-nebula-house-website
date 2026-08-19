@@ -353,8 +353,10 @@
       try {
         const posts = await nebulaGetMyPosts();
         const published = posts.filter(p => p.status === 'PUBLISHED');
-        document.getElementById('profile-post-count').textContent = published.length;
-        document.getElementById('profile-total-count').textContent = posts.length;
+        const postCountEl = document.getElementById('profile-post-count');
+        if (postCountEl) postCountEl.textContent = published.length;
+        const totalCountEl = document.getElementById('profile-total-count');
+        if (totalCountEl) totalCountEl.textContent = posts.length;
         const container = document.getElementById('profile-posts');
         if (posts.length > 0) {
           container.innerHTML = posts.map(p => {
