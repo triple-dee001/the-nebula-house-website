@@ -4,10 +4,10 @@
 
 document.addEventListener('DOMContentLoaded', async () => {
   const urlParams = new URLSearchParams(window.location.search);
-  const storyId = urlParams.get('id');
+  const storyId = urlParams.get('id') || urlParams.get('slug');
 
   if (!storyId) {
-    showError('No story ID specified in the URL.');
+    showError('No story ID or slug specified in the URL.');
     return;
   }
 
@@ -24,6 +24,11 @@ async function loadStory(id) {
     // 1. Fetch story details from backend (automatically increments view count)
     const post = await nebulaGetPost(id);
     currentStory = post;
+
+    // Update browser URL bar cleanly to clean routing if slug exists
+    if (post.slug) {
+      window.history.replaceState({}, '', `/story/${post.slug}`);
+    }
 
     // 2. Hide loader, show content container
     if (loadingEl) loadingEl.style.display = 'none';
@@ -182,10 +187,14 @@ function initInteractions(post) {
   const shareBtn = document.getElementById('share-btn');
   if (shareBtn) {
     shareBtn.onclick = async () => {
+      const cleanUrl = post.slug 
+        ? `${window.location.origin}/story/${post.slug}`
+        : window.location.href;
+
       const shareData = {
         title: post.title,
         text: post.excerpt || `Read "${post.title}" on The Nebula House.`,
-        url: window.location.href
+        url: cleanUrl
       };
 
       if (navigator.share) {
@@ -197,7 +206,7 @@ function initInteractions(post) {
       } else {
         // Fallback: Copy link
         try {
-          await navigator.clipboard.writeText(window.location.href);
+          await navigator.clipboard.writeText(cleanUrl);
           const shareLabel = document.getElementById('share-label');
           if (shareLabel) {
             shareLabel.textContent = 'Link Copied!';

@@ -1,5 +1,11 @@
 {
   "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/story/:slug",
+      "destination": "https://the-nebula-house-backend.onrender.com/api/posts/share/:slug"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

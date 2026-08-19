@@ -37,8 +37,9 @@ async function initWritersRoom() {
     });
   }
 
-  // ─── Load Initial Feed ───
-  await loadFeed();
+  // ─── Load Initial Feed & Sidebar Concurrently (Non-Blocking) ───
+  loadFeed();
+  loadFeaturedWritersSidebar();
 
   // ─── Trending Topics Tag Filtering ───
   let activeTag = '';
@@ -192,38 +193,7 @@ async function initWritersRoom() {
     });
   }
 
-  // ─── Load Featured Writers Sidebar ───
-  const sidebarWriters = document.getElementById('featured-writers-sidebar');
-  if (sidebarWriters) {
-    try {
-      const writers = await nebulaGetWriters();
-      const featured = writers.filter(w => w._count?.posts > 0).sort((a, b) => (b._count?.posts || 0) - (a._count?.posts || 0)).slice(0, 3);
-      if (featured.length > 0) {
-        sidebarWriters.innerHTML = featured.map(w => {
-          const initial = (w.name || 'U')[0].toUpperCase();
-          const avatarUrl = w.photo ? (w.photo.startsWith('http') || w.photo.startsWith('data:') ? w.photo : `https://the-nebula-house-backend.onrender.com${w.photo}`) : '';
-          const avatarHtml = avatarUrl 
-            ? `<img src="${avatarUrl}" alt="${w.name}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;display:block;">` 
-            : `<div class="wr-sidebar__writer-avatar">${initial}</div>`;
-          const count = w._count?.posts || 0;
-          const roleLabel = w.role === 'ADMIN' || w.role === 'SUPER_ADMIN' ? 'Founder' : 'Writer';
-          const linkTarget = w.slug ? `writer.html?slug=${w.slug}` : `writer.html?id=${w.id}`;
-          return `
-            <a href="${linkTarget}" class="wr-sidebar__writer" style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:0.75rem; margin-bottom:1rem; cursor:pointer;">
-              ${avatarHtml}
-              <div>
-                <div class="wr-sidebar__writer-name" style="font-weight:600;">${w.name}</div>
-                <div class="wr-sidebar__writer-desc" style="font-size:0.8rem; color:var(--text-muted);">${roleLabel} · ${count} ${count === 1 ? 'article' : 'articles'}</div>
-              </div>
-            </a>
-          `;
-        }).join('');
-      }
-    } catch (e) {
-      console.error('Error loading featured writers sidebar:', e);
-    }
-  }
-}
+
 
 // ─── FEED TAB ────────────────────────────────
 async function loadFeed(tag = '') {
@@ -231,8 +201,14 @@ async function loadFeed(tag = '') {
   const empty = document.getElementById('wr-empty-state');
   if (!feed) return;
 
+  // Visual loading feedback
+  feed.style.opacity = '0.4';
+  feed.style.transition = 'opacity 0.15s ease';
+  if (empty) empty.style.display = 'none';
+
   try {
     const data = await nebulaGetPosts(1, 40, tag);
+    feed.style.opacity = '1';
     const posts = data.posts || [];
     const user = getCurrentUser();
     const userIsAdmin = user && (user.role === 'ADMIN' || user.role === 'SUPER_ADMIN');
@@ -276,6 +252,7 @@ async function loadFeed(tag = '') {
       `;
     }).join('');
   } catch (err) {
+    feed.style.opacity = '1';
     console.error('Feed load error:', err);
     if (empty) {
       empty.style.display = 'block';
@@ -560,5 +537,39 @@ async function loadWritersTab() {
   } catch (err) {
     grid.innerHTML = '';
     grid.innerHTML = `<div style="text-align:center; padding:2rem; width:100%; color:#e55;">Error loading directory: ${err.message}</div>`;
+  }
+}
+
+
+async function loadFeaturedWritersSidebar() {
+  const sidebarWriters = document.getElementById('featured-writers-sidebar');
+  if (sidebarWriters) {
+    try {
+      const writers = await nebulaGetWriters();
+      const featured = writers.filter(w => w._count?.posts > 0).sort((a, b) => (b._count?.posts || 0) - (a._count?.posts || 0)).slice(0, 3);
+      if (featured.length > 0) {
+        sidebarWriters.innerHTML = featured.map(w => {
+          const initial = (w.name || 'U')[0].toUpperCase();
+          const avatarUrl = w.photo ? (w.photo.startsWith('http') || w.photo.startsWith('data:') ? w.photo : `https://the-nebula-house-backend.onrender.com${w.photo}`) : '';
+          const avatarHtml = avatarUrl 
+            ? `<img src="${avatarUrl}" alt="${w.name}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;display:block;">` 
+            : `<div class="wr-sidebar__writer-avatar">${initial}</div>`;
+          const count = w._count?.posts || 0;
+          const roleLabel = w.role === 'ADMIN' || w.role === 'SUPER_ADMIN' ? 'Founder' : 'Writer';
+          const linkTarget = w.slug ? `writer.html?slug=${w.slug}` : `writer.html?id=${w.id}`;
+          return `
+            <a href="${linkTarget}" class="wr-sidebar__writer" style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:0.75rem; margin-bottom:1rem; cursor:pointer;">
+              ${avatarHtml}
+              <div>
+                <div class="wr-sidebar__writer-name" style="font-weight:600;">${w.name}</div>
+                <div class="wr-sidebar__writer-desc" style="font-size:0.8rem; color:var(--text-muted);">${roleLabel} · ${count} ${count === 1 ? 'article' : 'articles'}</div>
+              </div>
+            </a>
+          `;
+        }).join('');
+      }
+    } catch (e) {
+      console.error('Error loading featured writers sidebar:', e);
+    }
   }
 }
