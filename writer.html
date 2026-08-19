@@ -175,15 +175,66 @@
           : '';
         document.getElementById('profile-bio').textContent = writer.bio || 'This writer hasn\'t written a bio yet.';
 
-        // Post count stat
+        // Post, Followers, and Following stats
         const pubCount = writer._count?.posts || 0;
+        const followersCount = writer.followersCount || 0;
+        const followingCount = writer.followingCount || 0;
+
         const statsEl = document.createElement('div');
-        statsEl.style.cssText = 'display:flex; gap:2rem; margin-top:1rem;';
+        statsEl.style.cssText = 'display:flex; gap:2rem; margin-top:1.5rem; align-items:center;';
         statsEl.innerHTML = `
           <div style="text-align:center;">
             <div style="font-size:1.6rem; font-weight:700; font-family:var(--font-secondary);">${pubCount}</div>
             <div style="font-size:0.82rem; color:var(--text-muted);">Published</div>
-          </div>`;
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:1.6rem; font-weight:700; font-family:var(--font-secondary);" id="followers-count">${followersCount}</div>
+            <div style="font-size:0.82rem; color:var(--text-muted);">Followers</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:1.6rem; font-weight:700; font-family:var(--font-secondary);">${followingCount}</div>
+            <div style="font-size:0.82rem; color:var(--text-muted);">Following</div>
+          </div>
+        `;
+
+        const loggedUser = getCurrentUser();
+        if (loggedUser && loggedUser.id !== userId) {
+          const followBtn = document.createElement('button');
+          followBtn.style.cssText = 'margin-left:auto; padding:0.55rem 1.4rem; font-size:0.85rem; font-weight:600; border-radius:20px; cursor:pointer; border:1px solid #fff; transition:all 0.2s; outline:none; font-family:inherit;';
+          
+          function updateButtonState(isFollowing) {
+            if (isFollowing) {
+              followBtn.textContent = 'Following';
+              followBtn.style.background = 'transparent';
+              followBtn.style.color = '#fff';
+            } else {
+              followBtn.textContent = 'Follow';
+              followBtn.style.background = '#fff';
+              followBtn.style.color = '#000';
+            }
+          }
+          
+          updateButtonState(writer.following);
+          
+          followBtn.addEventListener('click', async () => {
+            followBtn.disabled = true;
+            try {
+              const res = await nebulaToggleFollow(userId);
+              updateButtonState(res.following);
+              document.getElementById('followers-count').textContent = res.followersCount;
+            } catch (err) {
+              if (err.message.includes('401')) {
+                alert('Please sign in to follow writers.');
+              } else {
+                alert('Failed to update follow status: ' + err.message);
+              }
+            } finally {
+              followBtn.disabled = false;
+            }
+          });
+          
+          statsEl.appendChild(followBtn);
+        }
         document.getElementById('profile-bio').after(statsEl);
 
         // 2. Fetch writer's posts

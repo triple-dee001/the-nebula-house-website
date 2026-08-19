@@ -173,6 +173,17 @@ async function nebulaGetWriterById(id) {
   return apiRequest(`/users/${id}`);
 }
 
+// ─── FOLLOWS ──────────────────────────────────
+async function nebulaToggleFollow(userId) {
+  return apiRequest(`/users/${userId}/follow`, { method: 'POST' });
+}
+async function nebulaGetFollowers(userId) {
+  return apiRequest(`/users/${userId}/followers`);
+}
+async function nebulaGetFollowing(userId) {
+  return apiRequest(`/users/${userId}/following`);
+}
+
 // ─── POSTS ────────────────────────────────────
 async function nebulaGetPosts(page = 1, limit = 20, tag = '') {
   const q = new URLSearchParams({ page, limit, ...(tag ? { tag } : {}) });

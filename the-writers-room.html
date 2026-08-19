@@ -209,7 +209,7 @@
       <div class="wr-header reveal">
         <div>
           <h1 style="font-family: var(--font-primary); font-size: 2.5rem; margin-bottom: 0.25rem;">The Writer's Room</h1>
-          <p style="color: var(--text-muted); font-size: 1rem;">Stories, essays, and ideas from the Nebula community.</p>
+          <p style="color: var(--text-muted); font-size: 1rem;">Stories, essays, and ideas from the Nebula community. <a href="/how-to-become-a-writer" target="_blank" style="color: #bb86fc; text-decoration: none; margin-left: 0.5rem; font-weight: 500;">How to become a writer →</a></p>
         </div>
         <a class="wr-header__write-btn" id="btn-write">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
@@ -369,7 +369,8 @@
 
   <!-- Mentorship Request Modal -->
   <div class="mentor-modal" id="mentorship-request-modal">
-    <div class="publish-card" style="max-width:450px;">
+    <div class="publish-card" style="max-width:450px; position:relative;">
+      <button class="modal-close" id="btn-close-mentor-modal-x" style="position:absolute; top:1.25rem; right:1.5rem; background:none; border:none; color:#888; font-size:1.5rem; cursor:pointer; line-height:1;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#888'">&times;</button>
       <h2 id="mentor-req-title">Request Mentorship</h2>
       <p style="color:#aaa; font-size:0.85rem; margin-bottom:1.25rem;">Tell the author why you'd like them as your writing mentor and what your goals are.</p>
       <input type="hidden" id="mentor-req-id">

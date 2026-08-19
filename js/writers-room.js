@@ -40,6 +40,42 @@ async function initWritersRoom() {
   // ─── Load Initial Feed ───
   await loadFeed();
 
+  // ─── Trending Topics Tag Filtering ───
+  let activeTag = '';
+  document.querySelectorAll('.wr-sidebar__topic').forEach(tagEl => {
+    tagEl.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const tagText = tagEl.textContent.trim();
+      
+      // Toggle active tag state
+      if (activeTag === tagText) {
+        activeTag = '';
+        tagEl.style.background = '';
+        tagEl.style.color = '';
+      } else {
+        document.querySelectorAll('.wr-sidebar__topic').forEach(el => {
+          el.style.background = '';
+          el.style.color = '';
+        });
+        activeTag = tagText;
+        tagEl.style.background = '#ffffff';
+        tagEl.style.color = '#000000';
+      }
+      
+      // Switch back to community feed tab if on another tab
+      const feedTab = document.querySelector('.wr-tab[data-tab="feed"]');
+      if (feedTab && !feedTab.classList.contains('active')) {
+        document.querySelectorAll('.wr-tab').forEach(t => t.classList.remove('active'));
+        feedTab.classList.add('active');
+        document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+        const target = document.getElementById('cnt-feed');
+        if (target) target.style.display = 'block';
+      }
+
+      await loadFeed(activeTag);
+    });
+  });
+
   // ─── Tab Switching ───
   document.querySelectorAll('.wr-tab').forEach(tab => {
     tab.addEventListener('click', async (e) => {
@@ -74,6 +110,13 @@ async function initWritersRoom() {
   const btnCloseModal = document.getElementById('btn-close-mentor-modal');
   if (btnCloseModal) {
     btnCloseModal.addEventListener('click', () => {
+      document.getElementById('mentorship-request-modal').classList.remove('open');
+    });
+  }
+
+  const btnCloseModalX = document.getElementById('btn-close-mentor-modal-x');
+  if (btnCloseModalX) {
+    btnCloseModalX.addEventListener('click', () => {
       document.getElementById('mentorship-request-modal').classList.remove('open');
     });
   }
@@ -183,13 +226,13 @@ async function initWritersRoom() {
 }
 
 // ─── FEED TAB ────────────────────────────────
-async function loadFeed() {
+async function loadFeed(tag = '') {
   const feed = document.getElementById('wr-feed');
   const empty = document.getElementById('wr-empty-state');
   if (!feed) return;
 
   try {
-    const data = await nebulaGetPosts(1, 40);
+    const data = await nebulaGetPosts(1, 40, tag);
     const posts = data.posts || [];
     const user = getCurrentUser();
     const userIsAdmin = user && (user.role === 'ADMIN' || user.role === 'SUPER_ADMIN');

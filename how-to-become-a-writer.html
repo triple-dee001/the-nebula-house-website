@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="assets/images/favicon.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Become a Writer | The Nebula House</title>
+  <meta name="description" content="A comprehensive onboarding guide on how to register, write, submit drafts, and publish stories as a writer in The Nebula House.">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .onboarding-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+    .onboarding-step {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      padding: 2rem;
+      transition: all 0.2s;
+    }
+    .onboarding-step:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-4px);
+    }
+    .step-num {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #bb86fc;
+      font-family: var(--font-secondary);
+      margin-bottom: 1rem;
+    }
+    .step-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: #fff;
+    }
+    .step-desc {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar__inner">
+      <div class="navbar__logo">
+        <a href="index.html"><img src="assets/images/room-icon.png" alt="The Nebula House" class="navbar__logo-img"></a>
+      </div>
+      <div class="navbar__links">
+        <a href="index.html" class="navbar__link">Home</a>
+        <a href="about.html" class="navbar__link">About</a>
+        <div class="navbar__dropdown">
+          <span class="navbar__link navbar__dropdown-trigger">
+            Our Rooms
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </span>
+          <div class="navbar__dropdown-menu">
+            <a href="the-chapter-room.html" class="navbar__dropdown-item">The Chapter Room</a>
+            <a href="my-thoughts.html" class="navbar__dropdown-item">My Thoughts</a>
+            <a href="the-writers-room.html" class="navbar__dropdown-item">The Writer's Room</a>
+            <a href="the-publishing-room.html" class="navbar__dropdown-item">The Publishing Room</a>
+            <a href="the-opinion-yard.html" class="navbar__dropdown-item">The Opinion Yard</a>
+            <a href="the-nebula-academy.html" class="navbar__dropdown-item">The Nebula Academy</a>
+          </div>
+        </div>
+      </div>
+      <!-- Account Icon -->
+      <a href="#" class="navbar__account" id="nav-account-icon" title="Account">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      </a>
+      <div class="navbar__toggle" id="menuToggle">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== MOBILE MENU ===== -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html" class="mobile-menu__link">Home</a>
+    <a href="about.html" class="mobile-menu__link">About</a>
+    <div class="mobile-menu__divider"></div>
+    <a href="the-chapter-room.html" class="mobile-menu__link">The Chapter Room</a>
+    <a href="my-thoughts.html" class="mobile-menu__link">My Thoughts</a>
+    <a href="the-writers-room.html" class="mobile-menu__link">The Writer's Room</a>
+    <a href="the-publishing-room.html" class="mobile-menu__link">The Publishing Room</a>
+    <a href="the-opinion-yard.html" class="mobile-menu__link">The Opinion Yard</a>
+    <a href="the-nebula-academy.html" class="mobile-menu__link">The Nebula Academy</a>
+  </div>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero hero--short" id="hero">
+    <div class="hero__bg">
+      <div class="hero__stars"></div>
+    </div>
+    <div class="hero__content">
+      <h1 class="hero__title" style="font-size: 2.5rem;">How to Become a Writer</h1>
+      <p class="hero__subtitle">Your guide to publishing in The Writer's Room</p>
+    </div>
+  </section>
+
+  <!-- ===== GUIDE CONTENT ===== -->
+  <section class="section">
+    <div class="container">
+      <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+        <h2 style="font-family: var(--font-primary); font-size: 2rem; margin-bottom: 1rem;">Join the Digital Literary Ecosystem</h2>
+        <p style="color: var(--text-secondary); line-height: 1.6; font-size: 1.1rem;">
+          The Writer's Room is a space where writers clarify their inner world, construct thoughtful narratives, and share essays on philosophy, theology, and the human condition. Here is how you can step inside and publish your work.
+        </p>
+      </div>
+
+      <div class="onboarding-grid">
+        <!-- Step 1 -->
+        <div class="onboarding-step">
+          <div class="step-num">01</div>
+          <div class="step-title">Create your Account</div>
+          <div class="step-desc">
+            Sign up for an account at The Nebula House. During registration, make sure to check the <strong>"Register as a Writer"</strong> checkbox option.
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="onboarding-step">
+          <div class="step-num">02</div>
+          <div class="step-title">Verify your Email</div>
+          <div class="step-desc">
+            A confirmation link will be delivered to your inbox. Verify your email address to activate your writer privileges and receive your welcome package.
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="onboarding-step">
+          <div class="step-num">03</div>
+          <div class="step-title">Set up your Profile</div>
+          <div class="step-desc">
+            Navigate to your profile dashboard. Upload a clean profile photo and add a bio describing your thoughts, goals, or areas of writing interest.
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="onboarding-step">
+          <div class="step-num">04</div>
+          <div class="step-title">Write your Story</div>
+          <div class="step-desc">
+            Click <strong>"Write a Story"</strong> to access the Quill editor. Design your essay, attach tags, and specify a cover image to illustrate your writing.
+          </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="onboarding-step">
+          <div class="step-num">05</div>
+          <div class="step-title">Submit for Review</div>
+          <div class="step-desc">
+            Submit your draft. Our editors will review your piece. You will receive an instant email and in-app alert as soon as your story is approved and live!
+          </div>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="onboarding-step">
+          <div class="step-num">06</div>
+          <div class="step-title">Engage & Build</div>
+          <div class="step-desc">
+            Once live, readers can like, rate, and comment. Follow other writers to stay updated, or request mentorship to refine your structure and style.
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 4rem;">
+        <button onclick="openAuthModal()" class="btn" style="padding: 1rem 3rem;"><span>Join the Room Now</span> <span class="arrow">→</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <a href="index.html"><img src="assets/images/room-icon.png" alt="The Nebula House" class="footer__logo-img"></a>
+          <p class="footer__brand-tagline">From Imagination to Infinity.</p>
+          <p class="footer__brand-tagline">A digital literary ecosystem.</p>
+        </div>
+        <div class="footer__rooms">
+          <h4 class="footer__heading">Rooms</h4>
+          <a href="the-chapter-room.html" class="footer__link">The Chapter Room</a>
+          <a href="the-writers-room.html" class="footer__link">The Writer's Room</a>
+          <a href="the-nebula-academy.html" class="footer__link">The Nebula Academy</a>
+          <a href="the-publishing-room.html" class="footer__link">The Publishing Room</a>
+          <a href="the-opinion-yard.html" class="footer__link">The Opinion Yard</a>
+          <a href="my-thoughts.html" class="footer__link">My Thoughts</a>
+        </div>
+        <div class="footer__connect">
+          <h4 class="footer__heading">Connect</h4>
+          <a href="mailto:kelechioji@thenebulahouse.com" class="footer__link">Email</a>
+          <a href="https://www.instagram.com/the_nebula_house" target="_blank" rel="noopener" class="footer__link">Instagram</a>
+          <a href="https://youtube.com/@kelechi_oji" target="_blank" rel="noopener" class="footer__link">YouTube</a>
+        </div>
+      </div>
+      <div class="footer__bottom"><p>&copy; 2026 The Nebula House. All Rights Reserved.</p></div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

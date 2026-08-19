@@ -319,6 +319,17 @@
       }
     });
 
+    // Strip inline color and background color on paste to ensure compatibility with dark theme
+    quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+      delta.forEach(op => {
+        if (op.attributes) {
+          delete op.attributes.color;
+          delete op.attributes.background;
+        }
+      });
+      return delta;
+    });
+
     // ─── Edit Story Pre-population ───
     const urlParams = new URLSearchParams(window.location.search);
     const editId = urlParams.get('edit');

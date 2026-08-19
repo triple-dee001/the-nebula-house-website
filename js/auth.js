@@ -25,10 +25,30 @@ function updateNavbarAuth(user) {
       const initial = (user.name || user.email || 'U')[0].toUpperCase();
       icon.innerHTML = `<div style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:#fff;">${initial}</div>`;
     }
+
+    // Insert Notification Bell
+    let bell = document.getElementById('nav-bell-icon');
+    if (!bell) {
+      bell = document.createElement('div');
+      bell.id = 'nav-bell-icon';
+      bell.style.cssText = 'position:relative; cursor:pointer; display:flex; align-items:center; justify-content:center; margin-right:1.25rem; color:#fff;';
+      bell.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        <span id="nav-bell-badge" style="display:none; position:absolute; top:-4px; right:-4px; background:#ef4444; color:#fff; font-size:0.68rem; font-weight:800; border-radius:50%; min-width:14px; height:14px; padding:2px; display:flex; align-items:center; justify-content:center; border:2px solid #000; box-sizing:content-box; line-height:1;">0</span>
+      `;
+      icon.parentNode.insertBefore(bell, icon);
+      injectNotificationsDropdown();
+    }
+    loadNotificationsList();
+
   } else {
     icon.href = '#';
     icon.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`;
     icon.onclick = (e) => { e.preventDefault(); openAuthModal(); };
+
+    // Remove Notification Bell
+    const bell = document.getElementById('nav-bell-icon');
+    if (bell) bell.remove();
   }
 }
 
@@ -50,9 +70,12 @@ function injectAuthModal() {
         <div id="auth-name-group" style="display:none; margin-bottom:1rem;">
           <input type="text" id="auth-name" class="nebula-auth-input" placeholder="Your name" autocomplete="name">
         </div>
-        <div id="auth-writer-group" style="display:none; margin-bottom:1rem; align-items:center; gap:0.5rem;">
-          <input type="checkbox" id="auth-is-writer" style="width:auto; margin:0; cursor:pointer;">
-          <label for="auth-is-writer" style="color:rgba(255,255,255,0.75); font-size:0.88rem; cursor:pointer; user-select:none;">Register as a Writer</label>
+        <div id="auth-writer-group" style="display:none; margin-bottom:1rem; flex-direction:column; gap:0.4rem; align-items:flex-start;">
+          <div style="display:flex; align-items:center; gap:0.5rem; width:100%;">
+            <input type="checkbox" id="auth-is-writer" style="width:auto; margin:0; cursor:pointer;">
+            <label for="auth-is-writer" style="color:rgba(255,255,255,0.75); font-size:0.88rem; cursor:pointer; user-select:none;">Register as a Writer</label>
+          </div>
+          <a href="/how-to-become-a-writer" target="_blank" style="color:#bb86fc; font-size:0.78rem; text-decoration:none; margin-left:1.4rem;">View Writer Guide & Onboarding →</a>
         </div>
         <div style="margin-bottom:1rem;">
           <input type="email" id="auth-email" class="nebula-auth-input" placeholder="Email address" autocomplete="email">
@@ -326,3 +349,162 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Refresh from server in background (api.js handles this via its IIFE)
 });
+
+function injectNotificationsDropdown() {
+  if (document.getElementById('notifications-dropdown-container')) return;
+
+  const style = document.createElement('style');
+  style.id = 'notifications-dropdown-style';
+  style.textContent = `
+    #notifications-dropdown-container {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      width: 320px;
+      background: #0f0f0f;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      display: none;
+      flex-direction: column;
+      z-index: 10005;
+      margin-top: 0.5rem;
+      max-height: 400px;
+      font-family: inherit;
+    }
+    #notifications-dropdown-container.open { display: flex; }
+    .notif-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .notif-title { font-weight: 700; font-size: 0.95rem; color: #fff; }
+    .notif-clear-btn { font-size: 0.78rem; color: #bb86fc; background: none; border: none; cursor: pointer; padding: 0; }
+    .notif-clear-btn:hover { text-decoration: underline; }
+    .notif-list { overflow-y: auto; flex: 1; min-height: 50px; max-height: 320px; }
+    .notif-item {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      cursor: pointer;
+      transition: background 0.2s;
+      position: relative;
+    }
+    .notif-item:hover { background: rgba(255,255,255,0.03); }
+    .notif-item.unread { background: rgba(187,134,252,0.03); }
+    .notif-item.unread::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 6px;
+      background: #bb86fc;
+      border-radius: 50%;
+    }
+    .notif-item-title { font-weight: 600; font-size: 0.85rem; color: #fff; margin-bottom: 0.2rem; }
+    .notif-item-msg { font-size: 0.78rem; color: rgba(255,255,255,0.55); line-height: 1.4; }
+    .notif-item-time { font-size: 0.7rem; color: rgba(255,255,255,0.3); margin-top: 0.3rem; }
+    .notif-empty { text-align: center; padding: 2rem 1rem; color: rgba(255,255,255,0.4); font-size: 0.85rem; }
+  `;
+  document.head.appendChild(style);
+
+  const container = document.createElement('div');
+  container.id = 'notifications-dropdown-container';
+  container.innerHTML = `
+    <div class="notif-header">
+      <span class="notif-title">Notifications</span>
+      <button class="notif-clear-btn" id="notif-clear-all">Mark all as read</button>
+    </div>
+    <div class="notif-list" id="notif-list-el">
+      <div class="notif-empty">Loading notifications...</div>
+    </div>
+  `;
+  
+  const bell = document.getElementById('nav-bell-icon');
+  bell.appendChild(container);
+
+  // Toggle open
+  bell.addEventListener('click', (e) => {
+    e.stopPropagation();
+    container.classList.toggle('open');
+    if (container.classList.contains('open')) {
+      loadNotificationsList();
+    }
+  });
+
+  document.addEventListener('click', () => {
+    container.classList.remove('open');
+  });
+
+  document.getElementById('notif-clear-all').addEventListener('click', async (e) => {
+    e.stopPropagation();
+    try {
+      await apiRequest('/notifications/read-all', { method: 'PUT' });
+      loadNotificationsList();
+    } catch (err) {
+      console.error(err);
+    }
+  });
+}
+
+async function loadNotificationsList() {
+  const listEl = document.getElementById('notif-list-el');
+  const badgeEl = document.getElementById('nav-bell-badge');
+  if (!listEl) return;
+
+  try {
+    const notifs = await apiRequest('/notifications');
+    const unread = notifs.filter(n => !n.isRead);
+    
+    if (badgeEl) {
+      if (unread.length > 0) {
+        badgeEl.textContent = unread.length;
+        badgeEl.style.display = 'flex';
+      } else {
+        badgeEl.style.display = 'none';
+      }
+    }
+
+    if (notifs.length === 0) {
+      listEl.innerHTML = `<div class="notif-empty">No notifications yet.</div>`;
+      return;
+    }
+
+    listEl.innerHTML = notifs.map(n => {
+      const timeStr = new Date(n.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      return `
+        <div class="notif-item ${n.isRead ? '' : 'unread'}" data-id="${n.id}">
+          <div class="notif-item-title">${escapeHtml(n.title)}</div>
+          <div class="notif-item-msg">${escapeHtml(n.message)}</div>
+          <div class="notif-item-time">${timeStr}</div>
+        </div>
+      `;
+    }).join('');
+
+    // Add click event for items
+    listEl.querySelectorAll('.notif-item').forEach(item => {
+      item.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const id = item.dataset.id;
+        try {
+          await apiRequest(`/notifications/${id}/read`, { method: 'PUT' });
+          item.classList.remove('unread');
+          loadNotificationsList();
+        } catch (err) {
+          console.error(err);
+        }
+      });
+    });
+
+  } catch (err) {
+    listEl.innerHTML = `<div class="notif-empty" style="color:#ef4444;">Failed to load notifications</div>`;
+  }
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+}

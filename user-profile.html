@@ -171,8 +171,12 @@
             <div class="profile-stat__label">Stories Published</div>
           </div>
           <div class="profile-stat">
-            <div class="profile-stat__value" id="profile-total-count">0</div>
-            <div class="profile-stat__label">Total Stories</div>
+            <div class="profile-stat__value" id="profile-followers-count">0</div>
+            <div class="profile-stat__label">Followers</div>
+          </div>
+          <div class="profile-stat">
+            <div class="profile-stat__value" id="profile-following-count">0</div>
+            <div class="profile-stat__label">Following</div>
           </div>
         </div>
 
@@ -272,6 +276,8 @@
         : '';
       document.getElementById('profile-bio').value = userData.bio || '';
       document.getElementById('input-name').value = userData.name || '';
+      document.getElementById('profile-followers-count').textContent = userData.followersCount || 0;
+      document.getElementById('profile-following-count').textContent = userData.followingCount || 0;
 
       // ─── Edit Name ───
       document.getElementById('btn-edit-name').addEventListener('click', () => {

@@ -188,6 +188,10 @@
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
         All Articles
       </a>
+      <a href="#" data-tab="challenges">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Challenges
+      </a>
       <a href="#" data-tab="nominations">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
         Nominations
@@ -364,6 +368,64 @@
         </div>
       </div>
 
+      <!-- Challenges Tab -->
+      <div class="tab-panel" id="tab-challenges">
+        <!-- Create Challenge Form -->
+        <div class="panel" style="margin-bottom: 2rem;">
+          <div class="panel__header"><span class="panel__title">Create Monthly Challenge</span></div>
+          <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div>
+                <label style="display:block; font-size:0.8rem; color:var(--admin-muted); margin-bottom:0.4rem; font-weight:600; text-transform:uppercase;">Challenge Title</label>
+                <input type="text" id="challenge-title" style="width:100%; background:rgba(255,255,255,0.03); border:1px solid var(--admin-border); border-radius:6px; padding:0.65rem 0.85rem; color:#fff; outline:none; font-family:inherit;" placeholder="e.g. August 2026 Challenge">
+              </div>
+              <div>
+                <label style="display:block; font-size:0.8rem; color:var(--admin-muted); margin-bottom:0.4rem; font-weight:600; text-transform:uppercase;">Theme</label>
+                <input type="text" id="challenge-theme" style="width:100%; background:rgba(255,255,255,0.03); border:1px solid var(--admin-border); border-radius:6px; padding:0.65rem 0.85rem; color:#fff; outline:none; font-family:inherit;" placeholder="e.g. Solitude & Reflection">
+              </div>
+            </div>
+            <div>
+              <label style="display:block; font-size:0.8rem; color:var(--admin-muted); margin-bottom:0.4rem; font-weight:600; text-transform:uppercase;">Description / Instructions</label>
+              <textarea id="challenge-desc" rows="4" style="width:100%; background:rgba(255,255,255,0.03); border:1px solid var(--admin-border); border-radius:6px; padding:0.65rem 0.85rem; color:#fff; outline:none; font-family:inherit; resize:vertical;" placeholder="Write some guidelines for the writers..."></textarea>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div>
+                <label style="display:block; font-size:0.8rem; color:var(--admin-muted); margin-bottom:0.4rem; font-weight:600; text-transform:uppercase;">Start Date</label>
+                <input type="date" id="challenge-start" style="width:100%; background:rgba(255,255,255,0.03); border:1px solid var(--admin-border); border-radius:6px; padding:0.65rem 0.85rem; color:#fff; outline:none; font-family:inherit;">
+              </div>
+              <div>
+                <label style="display:block; font-size:0.8rem; color:var(--admin-muted); margin-bottom:0.4rem; font-weight:600; text-transform:uppercase;">End Date</label>
+                <input type="date" id="challenge-end" style="width:100%; background:rgba(255,255,255,0.03); border:1px solid var(--admin-border); border-radius:6px; padding:0.65rem 0.85rem; color:#fff; outline:none; font-family:inherit;">
+              </div>
+            </div>
+            <div>
+              <button class="panel__action" id="btn-create-challenge" style="padding:0.6rem 1.5rem; background:#fff; color:#000; font-weight:600; border:none; display:inline-flex; align-items:center; gap:0.5rem; cursor:pointer;">Create & Launch Challenge</button>
+              <span id="challenge-status" style="margin-left: 1rem; font-size:0.85rem;"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Challenges list -->
+        <div class="panel">
+          <div class="panel__header"><span class="panel__title">Existing Challenges</span></div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Theme</th>
+                <th>Timeline</th>
+                <th>Submissions</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="challenges-list-table">
+              <!-- Loaded dynamically -->
+            </tbody>
+          </table>
+          <div class="empty-state" id="challenges-empty" style="display:none;">No challenges created yet.</div>
+        </div>
+      </div>
+
     </div><!-- /admin-content -->
   </main>
 </div>
@@ -403,6 +465,7 @@
     }
     document.getElementById('admin-page-sub').textContent = `Welcome back, ${user.name || user.email}.`;
     await loadDashboard();
+    initChallengesForm();
     document.getElementById('admin-loader').style.display = 'none';
     document.getElementById('admin-content').style.display = 'block';
 
@@ -513,6 +576,7 @@
     renderArticlesTable(posts);
     renderNewsletterTable(subs);
     renderNominationsTable(noms);
+    await loadChallenges();
   }
 
   function renderUsersTable(users) {
@@ -606,6 +670,93 @@
         <td>${n.submittedAt ? new Date(n.submittedAt).toLocaleDateString() : '—'}</td>
       </tr>`).join('');
   }
+
+  async function loadChallenges() {
+    try {
+      const challenges = await apiRequest('/challenges');
+      renderChallengesTable(challenges);
+    } catch (err) {
+      console.error('Failed to load challenges:', err);
+    }
+  }
+
+  function renderChallengesTable(challenges) {
+    const tbody = document.getElementById('challenges-list-table');
+    const emptyEl = document.getElementById('challenges-empty');
+    if (!tbody || !emptyEl) return;
+    
+    emptyEl.style.display = challenges.length ? 'none' : 'block';
+    
+    tbody.innerHTML = challenges.map(c => {
+      const isExpired = new Date(c.endDate) < new Date();
+      const statusLabel = isExpired ? 'Expired' : 'Active';
+      const statusBadgeClass = isExpired ? 'badge--rejected' : 'badge--verified';
+      
+      const start = new Date(c.startDate).toLocaleDateString();
+      const end = new Date(c.endDate).toLocaleDateString();
+      const subCount = c._count?.posts || 0;
+      
+      return `
+        <tr>
+          <td style="font-weight:500;">${escapeHtml(c.title)}</td>
+          <td>${escapeHtml(c.theme)}</td>
+          <td>${start} – ${end}</td>
+          <td>${subCount} submissions</td>
+          <td><span class="badge ${statusBadgeClass}">${statusLabel}</span></td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function initChallengesForm() {
+    const btnCreate = document.getElementById('btn-create-challenge');
+    if (btnCreate) {
+      btnCreate.addEventListener('click', async () => {
+        const title = document.getElementById('challenge-title').value.trim();
+        const theme = document.getElementById('challenge-theme').value.trim();
+        const description = document.getElementById('challenge-desc').value.trim();
+        const startDate = document.getElementById('challenge-start').value;
+        const endDate = document.getElementById('challenge-end').value;
+        const statusEl = document.getElementById('challenge-status');
+        
+        if (!title || !theme || !description || !startDate || !endDate) {
+          statusEl.textContent = 'All fields are required.';
+          statusEl.style.color = 'var(--admin-danger)';
+          return;
+        }
+        
+        btnCreate.disabled = true;
+        statusEl.style.color = 'var(--admin-muted)';
+        statusEl.textContent = 'Launching challenge...';
+        
+        try {
+          await apiRequest('/challenges', {
+            method: 'POST',
+            body: JSON.stringify({ title, theme, description, startDate, endDate }),
+          });
+          
+          statusEl.style.color = 'var(--admin-success)';
+          statusEl.textContent = 'Challenge created and launched!';
+          
+          // Clear inputs
+          document.getElementById('challenge-title').value = '';
+          document.getElementById('challenge-theme').value = '';
+          document.getElementById('challenge-desc').value = '';
+          document.getElementById('challenge-start').value = '';
+          document.getElementById('challenge-end').value = '';
+          
+          // Reload
+          await loadDashboard();
+        } catch (err) {
+          statusEl.style.color = 'var(--admin-danger)';
+          statusEl.textContent = 'Error: ' + err.message;
+        } finally {
+          btnCreate.disabled = false;
+        }
+      });
+    }
+  }
+
 
   // Rename to avoid conflict with api.js function names
   async function doApprovePost(postId) {
