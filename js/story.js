@@ -53,8 +53,21 @@ async function loadStory(id) {
     // Cover Image
     const imgContainer = document.getElementById('story-image-container');
     const imgEl = document.getElementById('story-image');
-    if (post.coverImage) {
-      imgEl.src = post.coverImage;
+    let coverUrl = post.coverImage;
+    if (!coverUrl && post.body) {
+      const match = post.body.match(/<img[^>]+src=["']([^"']+)["']/i);
+      if (match) coverUrl = match[1];
+    }
+
+    if (coverUrl) {
+      function formatImageUrl(url) {
+        if (!url) return '';
+        if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url;
+        if (url.startsWith('/')) return url;
+        if (url.startsWith('assets/')) return '/' + url;
+        return 'https://the-nebula-house-backend.onrender.com/' + url;
+      }
+      imgEl.src = formatImageUrl(coverUrl);
       imgContainer.style.display = 'block';
     } else {
       imgContainer.style.display = 'none';

@@ -224,9 +224,21 @@ async function loadFeed(tag = '') {
       const date = new Date(p.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
       const wordCount = (p.excerpt || '').split(/\s+/).length * 10;
       const readTime = Math.max(1, Math.ceil(wordCount / 200));
-      const coverSrc = p.coverImage
-        ? (p.coverImage.startsWith('http') || p.coverImage.startsWith('data:') || p.coverImage.startsWith('assets/') || p.coverImage.startsWith('/') ? p.coverImage : 'https://the-nebula-house-backend.onrender.com/' + p.coverImage)
-        : 'assets/images/room-icon.png';
+      let rawCover = p.coverImage;
+      if (!rawCover && p.excerpt) {
+        const m = (p.excerpt || '').match(/<img[^>]+src=["']([^"']+)["']/i);
+        if (m) rawCover = m[1];
+      }
+      let coverSrc = 'assets/images/room-icon.png';
+      if (rawCover) {
+        if (rawCover.startsWith('http://') || rawCover.startsWith('https://') || rawCover.startsWith('data:')) {
+          coverSrc = rawCover;
+        } else if (rawCover.startsWith('/') || rawCover.startsWith('assets/')) {
+          coverSrc = rawCover;
+        } else {
+          coverSrc = 'https://the-nebula-house-backend.onrender.com/' + rawCover;
+        }
+      }
 
       return `
         <div class="wr-article" style="cursor:pointer;" onclick="window.location.href='story.html?id=${p.id}'">
