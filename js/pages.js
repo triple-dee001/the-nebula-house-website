@@ -141,8 +141,14 @@ async function initMyThoughts() {
         
       if (existingTitles.includes(p.title.trim().toLowerCase())) return;
 
+      function slugify(text) {
+        if (!text) return '';
+        return text.toString().toLowerCase().trim()
+          .replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
+      }
+      const slug = p.slug || slugify(p.title) || p.id;
       const card = document.createElement('a');
-      card.href = `story.html?id=${p.id}`;
+      card.href = `/story/${slug}`;
       card.className = 'post-card reveal visible';
       card.innerHTML = `
         <h3 class="post-card__title">${escapeHtml(p.title)}</h3>

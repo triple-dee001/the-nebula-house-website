@@ -242,13 +242,22 @@
         postsSec.style.display = 'block';
 
         const postsContainer = document.getElementById('profile-posts');
+        function slugify(text) {
+          if (!text) return '';
+          return text.toString().toLowerCase().trim()
+            .replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
+        }
+
         if (posts && posts.length > 0) {
-          postsContainer.innerHTML = posts.map(p => `
+          postsContainer.innerHTML = posts.map(p => {
+            const slug = p.slug || slugify(p.title) || p.id;
+            return `
             <div class="profile-post">
-              <a href="story.html?id=${p.id}" class="profile-post__title">${p.title}</a>
+              <a href="/story/${slug}" class="profile-post__title">${p.title}</a>
               <div class="profile-post__meta">${new Date(p.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} &nbsp;·&nbsp; 👁 ${p.views || 0}</div>
             </div>
-          `).join('');
+          `;
+          }).join('');
         } else {
           postsContainer.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding: 2rem 0;">No published articles found for this writer.</p>';
         }

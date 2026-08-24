@@ -3,7 +3,18 @@
   "rewrites": [
     {
       "source": "/story/:slug",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(WhatsApp|facebookexternalhit|Twitterbot|LinkedInBot|TelegramBot|Slackbot).*"
+        }
+      ],
       "destination": "https://the-nebula-house-backend.onrender.com/api/posts/share/:slug"
+    },
+    {
+      "source": "/story/:slug",
+      "destination": "/story.html?slug=:slug"
     }
   ],
   "headers": [

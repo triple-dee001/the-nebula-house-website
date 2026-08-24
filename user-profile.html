@@ -368,10 +368,19 @@
                               : 'Rejected';
             const rejectNote = p.status === 'REJECTED' && p.rejectReason
               ? `<span style="color:#f87171;">— ${p.rejectReason}</span>` : '';
+            function slugify(text) {
+              if (!text) return '';
+              return text.toString().toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
+            }
+            const storySlug = p.slug || slugify(p.title) || p.id;
+            const titleHtml = p.status === 'PUBLISHED' 
+              ? `<a href="/story/${storySlug}" style="color:#fff;text-decoration:none;" class="story-card__title">${p.title}</a>`
+              : `<div class="story-card__title">${p.title}</div>`;
+
             return `
               <div class="story-card">
                 <div class="story-card__info">
-                  <div class="story-card__title">${p.title}</div>
+                  ${titleHtml}
                   <div class="story-card__meta">
                     <span class="story-badge ${badgeClass}">${statusLabel}</span>
                     <span>${new Date(p.createdAt).toLocaleDateString('en-US', { month: 'short', day:'numeric', year:'numeric' })}</span>

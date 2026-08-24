@@ -25,10 +25,9 @@ async function loadStory(id) {
     const post = await nebulaGetPost(id);
     currentStory = post;
 
-    // Update browser URL bar cleanly to clean routing if slug exists
-    if (post.slug) {
-      window.history.replaceState({}, '', `/story/${post.slug}`);
-    }
+    const storySlug = getStorySlug(post);
+    window.history.replaceState({}, '', `/story/${storySlug}`);
+    document.title = `${post.title} | The Nebula House`;
 
     // 2. Hide loader, show content container
     if (loadingEl) loadingEl.style.display = 'none';
@@ -87,16 +86,6 @@ async function loadStory(id) {
 
     // Views
     document.getElementById('post-views').textContent = `${post.views || 0} views`;
-
-    // Edit button authorization check
-    const editBtn = document.getElementById('btn-edit-story');
-    const currentUser = getCurrentUser();
-    if (currentUser && (currentUser.id === post.authorId || isAdmin(currentUser))) {
-      if (editBtn) {
-        editBtn.style.display = 'inline-block';
-        editBtn.href = `write.html?edit=${post.id}`;
-      }
-    }
 
     // Breadcrumb adjustment
     const breadcrumbParent = document.getElementById('breadcrumb-parent');
@@ -197,9 +186,8 @@ function initInteractions(post) {
   const shareBtn = document.getElementById('share-btn');
   if (shareBtn) {
     shareBtn.onclick = async () => {
-      const cleanUrl = post.slug 
-        ? `${window.location.origin}/story/${post.slug}`
-        : window.location.href;
+      const storySlug = getStorySlug(post);
+      const cleanUrl = `${window.location.origin}/story/${storySlug}`;
 
       const shareData = {
         title: post.title,
@@ -321,4 +309,17 @@ function escapeHtml(unsafe) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+
+function getStorySlug(post) {
+  if (!post) return '';
+  if (post.slug) return post.slug;
+  if (post.title) {
+    const generated = post.title.toLowerCase().trim()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/[\s_-]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    if (generated) return generated;
+  }
+  return post.id || '';
 }

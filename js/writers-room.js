@@ -9,6 +9,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
 let selectedMentorId = null;
 
+function slugify(text) {
+  if (!text) return '';
+  return text.toString().toLowerCase().trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function getArticleLink(p) {
+  if (!p) return '/the-writers-room.html';
+  const slug = p.slug || slugify(p.title) || p.id;
+  return `/story/${slug}`;
+}
+
 async function initWritersRoom() {
   // ─── Write Button Auth Guard ───
   const btnWrite = document.getElementById('btn-write');
@@ -241,7 +255,7 @@ async function loadFeed(tag = '') {
       }
 
       return `
-        <div class="wr-article" style="cursor:pointer;" onclick="window.location.href='story.html?id=${p.id}'">
+        <div class="wr-article" style="cursor:pointer;" onclick="window.location.href='${getArticleLink(p)}'">
           <div style="flex:1; min-width:0;">
             <div class="wr-article__meta">
               <div class="wr-article__avatar">
@@ -342,7 +356,7 @@ async function loadChallengesTab() {
                 </div>
                 <span style="cursor:pointer;" onclick="window.location.href='${p.author?.slug ? 'writer.html?slug=' + p.author.slug : 'writer.html?id=' + p.author?.id}'">${p.author?.name || 'Anonymous'}</span>
               </div>
-              <a href="story.html?id=${p.id}" class="wr-article__title" style="text-decoration:none;color:#fff;display:block;cursor:pointer;">${escapeHtml(p.title)}</a>
+              <a href="${getArticleLink(p)}" class="wr-article__title" style="text-decoration:none;color:#fff;display:block;cursor:pointer;">${escapeHtml(p.title)}</a>
               <div class="wr-article__excerpt">${escapeHtml(p.excerpt || '')}</div>
               <div class="wr-article__footer">
                 <span>${date}</span>
