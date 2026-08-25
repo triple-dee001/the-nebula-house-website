@@ -622,30 +622,45 @@
   function renderApprovalsTable(pending) {
     const tbody = document.getElementById('approvals-list');
     document.getElementById('approvals-empty').style.display = pending.length ? 'none' : 'block';
-    tbody.innerHTML = pending.map(p => `
+    function slugify(text) {
+      if (!text) return '';
+      return text.toString().toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
+    }
+
+    tbody.innerHTML = pending.map(p => {
+      const slug = p.slug || slugify(p.title) || p.id;
+      return `
       <tr>
-        <td style="font-weight:500; max-width:180px;">${p.title || 'Untitled'}</td>
+        <td style="font-weight:500; max-width:180px;"><a href="/story/${slug}" target="_blank" style="color:#fff;text-decoration:underline;">${escapeHtml(p.title || 'Untitled')}</a></td>
         <td>${p.author?.name || p.author?.email || '—'}</td>
-        <td style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${p.excerpt||''}">${p.excerpt || '—'}</td>
+        <td style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeHtml(p.excerpt||'')}">${escapeHtml(p.excerpt || '—')}</td>
         <td>${p.createdAt ? new Date(p.createdAt).toLocaleDateString() : '—'}</td>
         <td style="display:flex; gap:0.4rem;">
           <button class="btn-approve" onclick="doApprovePost('${p.id}')">Approve</button>
           <button class="btn-reject" onclick="doRejectPost('${p.id}')">Reject</button>
         </td>
-      </tr>`).join('');
+      </tr>`;
+    }).join('');
   }
 
   function renderArticlesTable(posts) {
     const tbody = document.getElementById('all-articles-list');
     document.getElementById('all-articles-empty').style.display = posts.length ? 'none' : 'block';
-    tbody.innerHTML = posts.map(p => `
+    function slugify(text) {
+      if (!text) return '';
+      return text.toString().toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
+    }
+    tbody.innerHTML = posts.map(p => {
+      const slug = p.slug || slugify(p.title) || p.id;
+      return `
       <tr>
-        <td style="font-weight:500;">${p.title || 'Untitled'}</td>
+        <td style="font-weight:500;"><a href="/story/${slug}" target="_blank" style="color:#fff;text-decoration:underline;">${escapeHtml(p.title || 'Untitled')}</a></td>
         <td>${p.author?.name || '—'}</td>
         <td><span class="badge badge--${(p.status||'PUBLISHED').toLowerCase()}">${p.status||'PUBLISHED'}</span></td>
         <td>${p.createdAt ? new Date(p.createdAt).toLocaleDateString() : '—'}</td>
         <td><button class="btn-delete" onclick="doDeletePost('${p.id}')">Delete</button></td>
-      </tr>`).join('');
+      </tr>`;
+    }).join('');
   }
 
   function renderNewsletterTable(subs) {
