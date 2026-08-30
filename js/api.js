@@ -224,10 +224,11 @@ async function nebulaDeletePost(postId) {
 }
 
 // ─── NEWSLETTER ───────────────────────────────
-async function nebulaSubscribeNewsletter(email, name = '') {
+async function nebulaSubscribeNewsletter(email, firstName = '', lastName = '', name = '') {
+  const fullName = name || `${firstName} ${lastName}`.trim();
   return apiRequest('/newsletter/subscribe', {
     method: 'POST',
-    body: JSON.stringify({ email, name }),
+    body: JSON.stringify({ email, firstName, lastName, name: fullName }),
   });
 }
 

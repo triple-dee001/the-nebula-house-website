@@ -1107,14 +1107,15 @@ input, textarea {
 
 .newsletter__form {
   display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
   max-width: 480px;
   margin: 0 auto;
-  border: 1px solid var(--border-color);
-  transition: border-color var(--transition-base);
 }
 
-.newsletter__form:focus-within {
-  border-color: var(--border-hover);
+.newsletter__inputs-row {
+  display: flex;
+  gap: var(--space-md);
 }
 
 .newsletter__input {
@@ -1125,6 +1126,13 @@ input, textarea {
   font-weight: var(--font-weight-light);
   letter-spacing: 0.02em;
   background: transparent;
+  border: 1px solid var(--border-color);
+  transition: border-color var(--transition-base);
+}
+
+.newsletter__input:focus {
+  border-color: var(--border-hover);
+  outline: none;
 }
 
 .newsletter__input::placeholder {
@@ -1139,6 +1147,7 @@ input, textarea {
   text-transform: uppercase;
   color: var(--color-black);
   background: var(--color-white);
+  border: 1px solid var(--color-white);
   cursor: pointer;
   transition: all var(--transition-base);
 }
@@ -1742,6 +1751,7 @@ input, textarea {
   }
 
   .newsletter__form,
+  .newsletter__inputs-row,
   .coming-soon__form {
     flex-direction: column;
   }

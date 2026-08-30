@@ -143,7 +143,11 @@
         <h2 class="newsletter__title">Want To Hear More of Kelechi's Thoughts?</h2>
         <p class="newsletter__desc">Subscribe to receive personal essays, reflections, and updates.</p>
         <form class="newsletter__form" id="newsletterForm">
-          <input type="email" class="newsletter__input" placeholder="Enter your email" required>
+          <div class="newsletter__inputs-row">
+            <input type="text" class="newsletter__input" name="firstName" placeholder="First Name" required>
+            <input type="text" class="newsletter__input" name="lastName" placeholder="Last Name" required>
+          </div>
+          <input type="email" class="newsletter__input" name="email" placeholder="Enter your email" required>
           <button type="submit" class="newsletter__submit">Subscribe</button>
         </form>
         <p class="newsletter__success">Thank you for subscribing! New thoughts coming soon.</p>

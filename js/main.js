@@ -148,17 +148,25 @@ function initNewsletterForm() {
   forms.forEach(form => {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const input = form.querySelector('input[type="email"]');
+      const emailInput = form.querySelector('input[type="email"]');
+      const firstNameInput = form.querySelector('input[name="firstName"], input[placeholder*="First"]');
+      const lastNameInput = form.querySelector('input[name="lastName"], input[placeholder*="Last"]');
       const btn = form.querySelector('button[type="submit"], .newsletter__submit');
       const successMsg = form.parentElement.querySelector('.newsletter__success');
-      const email = input ? input.value.trim() : '';
+
+      const email = emailInput ? emailInput.value.trim() : '';
+      const firstName = firstNameInput ? firstNameInput.value.trim() : '';
+      const lastName = lastNameInput ? lastNameInput.value.trim() : '';
+
       if (!email) return;
 
       if (btn) { btn.disabled = true; btn.textContent = 'Subscribing...'; }
 
       try {
-        await nebulaSubscribeNewsletter(email);
-        if (input) input.value = '';
+        await nebulaSubscribeNewsletter(email, firstName, lastName);
+        if (emailInput) emailInput.value = '';
+        if (firstNameInput) firstNameInput.value = '';
+        if (lastNameInput) lastNameInput.value = '';
         if (successMsg) {
           successMsg.classList.add('visible');
           setTimeout(() => successMsg.classList.remove('visible'), 4000);

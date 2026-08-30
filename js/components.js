@@ -205,7 +205,8 @@ function injectNewsletterPopup() {
       <div class="popup-icon">✦</div>
       <h2 class="popup-title">Join The Nebula House</h2>
       <p class="popup-sub">Stories, essays, book discussions and creative insights — delivered straight to your inbox.</p>
-      <input type="text" class="popup-input" id="popup-name" placeholder="Your first name" autocomplete="given-name">
+      <input type="text" class="popup-input" id="popup-firstname" placeholder="First Name" autocomplete="given-name">
+      <input type="text" class="popup-input" id="popup-lastname" placeholder="Last Name" autocomplete="family-name">
       <input type="email" class="popup-input" id="popup-email" placeholder="Your email address" autocomplete="email">
       <button class="popup-btn" id="popup-submit-btn">Subscribe — It's Free</button>
       <div class="popup-success" id="popup-success">🎉 You're in! Welcome to The Nebula House.</div>
@@ -226,7 +227,8 @@ function injectNewsletterPopup() {
   overlay.addEventListener('click', (e) => { if (e.target === overlay) closePopup(); });
 
   document.getElementById('popup-submit-btn').addEventListener('click', async () => {
-    const name = document.getElementById('popup-name').value.trim();
+    const firstName = document.getElementById('popup-firstname').value.trim();
+    const lastName = document.getElementById('popup-lastname').value.trim();
     const email = document.getElementById('popup-email').value.trim();
     const btn = document.getElementById('popup-submit-btn');
     const successEl = document.getElementById('popup-success');
@@ -239,7 +241,7 @@ function injectNewsletterPopup() {
 
     try {
       if (typeof nebulaSubscribeNewsletter === 'function') {
-        await nebulaSubscribeNewsletter(email, name);
+        await nebulaSubscribeNewsletter(email, firstName, lastName);
       }
       localStorage.setItem('nebula_newsletter_subscribed', 'true');
       successEl.style.display = 'block';

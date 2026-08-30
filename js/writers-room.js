@@ -190,11 +190,20 @@ async function initWritersRoom() {
   if (newsletterForm) {
     newsletterForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const input = newsletterForm.querySelector('input[type="email"]');
-      if (input && input.value) {
+      const emailInput = newsletterForm.querySelector('input[type="email"]');
+      const firstNameInput = newsletterForm.querySelector('input[name="firstName"], input[placeholder*="First"]');
+      const lastNameInput = newsletterForm.querySelector('input[name="lastName"], input[placeholder*="Last"]');
+      
+      const email = emailInput ? emailInput.value.trim() : '';
+      const firstName = firstNameInput ? firstNameInput.value.trim() : '';
+      const lastName = lastNameInput ? lastNameInput.value.trim() : '';
+
+      if (email) {
         try {
-          await nebulaSubscribeNewsletter(input.value);
-          input.value = '';
+          await nebulaSubscribeNewsletter(email, firstName, lastName);
+          if (emailInput) emailInput.value = '';
+          if (firstNameInput) firstNameInput.value = '';
+          if (lastNameInput) lastNameInput.value = '';
           const msg = document.getElementById('wr-newsletter-success');
           if (msg) {
             msg.style.display = 'block';
