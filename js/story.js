@@ -37,6 +37,67 @@ async function loadStory(id) {
     document.getElementById('story-title').textContent = post.title;
     document.getElementById('breadcrumb-title').textContent = post.title;
     document.getElementById('story-author').textContent = post.author?.name || 'Anonymous';
+
+    const authorLink = document.getElementById('story-author-link');
+    if (authorLink && post.author) {
+      const authorTarget = post.author.slug ? `writer.html?slug=${post.author.slug}` : `writer.html?id=${post.author.id || post.authorId}`;
+      authorLink.href = authorTarget;
+    }
+
+    // Follow Button
+    const followBtn = document.getElementById('btn-follow-author');
+    const currentUser = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+    const authorId = post.author?.id || post.authorId;
+
+    if (followBtn && authorId) {
+      if (currentUser && currentUser.id === authorId) {
+        followBtn.style.display = 'none';
+      } else {
+        followBtn.style.display = 'inline-block';
+        let isFollowing = !!post.author?.following;
+
+        function updateFollowBtnUI(following) {
+          if (following) {
+            followBtn.textContent = 'Following';
+            followBtn.style.background = 'transparent';
+            followBtn.style.color = '#fff';
+            followBtn.style.borderColor = 'rgba(255,255,255,0.4)';
+          } else {
+            followBtn.textContent = 'Follow';
+            followBtn.style.background = '#fff';
+            followBtn.style.color = '#000';
+            followBtn.style.borderColor = '#fff';
+          }
+        }
+
+        updateFollowBtnUI(isFollowing);
+
+        followBtn.onclick = async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          if (typeof getToken !== 'function' || !getToken() || !currentUser) {
+            if (typeof openAuthModal === 'function') {
+              openAuthModal();
+            } else {
+              alert('Please sign in to follow writers.');
+            }
+            return;
+          }
+
+          followBtn.disabled = true;
+          try {
+            const res = await nebulaToggleFollow(authorId);
+            isFollowing = !!res.following;
+            updateFollowBtnUI(isFollowing);
+          } catch (err) {
+            alert(err.message || 'Failed to update follow status');
+          } finally {
+            followBtn.disabled = false;
+          }
+        };
+      }
+    }
     
     // Date
     const dateObj = new Date(post.createdAt);
@@ -89,11 +150,7 @@ async function loadStory(id) {
 
     // Breadcrumb adjustment
     const breadcrumbParent = document.getElementById('breadcrumb-parent');
-    const isOwnerPost = post.author?.email === 'kelechioji@thenebulahouse.com' || post.author?.email === 'danieldurojaiye42@gmail.com';
-    if (isOwnerPost) {
-      breadcrumbParent.textContent = 'My Thoughts';
-      breadcrumbParent.href = 'my-thoughts.html';
-    } else {
+    if (breadcrumbParent) {
       breadcrumbParent.textContent = "The Writer's Room";
       breadcrumbParent.href = 'the-writers-room.html';
     }

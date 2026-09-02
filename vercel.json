@@ -1,5 +1,9 @@
 {
   "cleanUrls": true,
+  "redirects": [
+    { "source": "/my-thoughts", "destination": "/the-writers-room", "permanent": false },
+    { "source": "/my-thoughts.html", "destination": "/the-writers-room", "permanent": false }
+  ],
   "rewrites": [
     {
       "source": "/story/:slug",
