@@ -225,9 +225,13 @@ async function loadFeed(tag = '') {
   if (!feed) return;
 
   // Visual loading feedback
-  feed.style.opacity = '0.4';
-  feed.style.transition = 'opacity 0.15s ease';
   if (empty) empty.style.display = 'none';
+  if (!feed.children.length || !feed.innerHTML.trim() || feed.querySelector('.wr-empty-feed-loading')) {
+    feed.innerHTML = '<div class="wr-empty-feed-loading" style="text-align:center; padding:3rem 1rem; color:var(--text-muted); font-size:0.95rem;">Loading feed...</div>';
+  } else {
+    feed.style.opacity = '0.4';
+    feed.style.transition = 'opacity 0.15s ease';
+  }
 
   try {
     const data = await nebulaGetPosts(1, 15, tag);
@@ -237,6 +241,7 @@ async function loadFeed(tag = '') {
     const userIsAdmin = user && (user.role === 'ADMIN' || user.role === 'SUPER_ADMIN');
 
     if (posts.length === 0) {
+      feed.innerHTML = '';
       if (empty) empty.style.display = 'block';
       return;
     }
