@@ -7,6 +7,127 @@ document.addEventListener('DOMContentLoaded', () => {
   initWritersRoom();
 });
 
+function initWritersRoom() {
+  // ─── TABS NAVIGATION ──────────────────────────
+  const tabs = document.querySelectorAll('.wr-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      e.preventDefault();
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const targetTab = tab.getAttribute('data-tab');
+      document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+
+      const targetContent = document.getElementById(`cnt-${targetTab}`);
+      if (targetContent) targetContent.style.display = 'block';
+
+      if (targetTab === 'feed') {
+        loadFeed();
+      } else if (targetTab === 'writers') {
+        loadWritersTab();
+      } else if (targetTab === 'challenges') {
+        loadChallengesTab();
+      } else if (targetTab === 'mentorship') {
+        loadMentorshipTab();
+        loadMentorshipRequests();
+      }
+    });
+  });
+
+  // ─── MENTORSHIP SUB-TABS ──────────────────────
+  const btnBrowseMentors = document.getElementById('btn-browse-mentors');
+  const btnMyRequests = document.getElementById('btn-my-requests');
+  const cntBrowse = document.getElementById('mentorship-browse');
+  const cntRequests = document.getElementById('mentorship-requests');
+
+  if (btnBrowseMentors && btnMyRequests && cntBrowse && cntRequests) {
+    btnBrowseMentors.addEventListener('click', () => {
+      cntBrowse.style.display = 'block';
+      cntRequests.style.display = 'none';
+      btnBrowseMentors.style.background = '#fff';
+      btnBrowseMentors.style.color = '#000';
+      btnMyRequests.style.background = 'rgba(255,255,255,0.08)';
+      btnMyRequests.style.color = '#fff';
+    });
+    btnMyRequests.addEventListener('click', () => {
+      cntBrowse.style.display = 'none';
+      cntRequests.style.display = 'block';
+      btnMyRequests.style.background = '#fff';
+      btnMyRequests.style.color = '#000';
+      btnBrowseMentors.style.background = 'rgba(255,255,255,0.08)';
+      btnBrowseMentors.style.color = '#fff';
+      loadMentorshipRequests();
+    });
+  }
+
+  // ─── SIDEBAR TOPIC FILTERING ──────────────────
+  document.querySelectorAll('.wr-sidebar__topic').forEach(topicBtn => {
+    topicBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const tagText = topicBtn.textContent.trim();
+      const feedTab = document.querySelector('.wr-tab[data-tab="feed"]');
+      if (feedTab) feedTab.click();
+      loadFeed(tagText);
+    });
+  });
+
+  // ─── WRITE BUTTON HANDLER ──────────────────────
+  const btnWrite = document.getElementById('btn-write');
+  if (btnWrite) {
+    btnWrite.addEventListener('click', (e) => {
+      e.preventDefault();
+      const user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+      if (!user || typeof getToken !== 'function' || !getToken()) {
+        if (typeof openAuthModal === 'function') openAuthModal();
+        return;
+      }
+      window.location.href = 'write.html';
+    });
+  }
+
+  // ─── MENTORSHIP MODAL LISTENERS ───────────────
+  const modal = document.getElementById('mentorship-request-modal');
+  const btnCloseModal = document.getElementById('btn-close-mentor-modal');
+  const btnCloseModalX = document.getElementById('btn-close-mentor-modal-x');
+  if (modal) {
+    if (btnCloseModal) btnCloseModal.addEventListener('click', () => modal.classList.remove('open'));
+    if (btnCloseModalX) btnCloseModalX.addEventListener('click', () => modal.classList.remove('open'));
+  }
+  const btnSubmitReq = document.getElementById('btn-submit-mentor-request');
+  if (btnSubmitReq) {
+    btnSubmitReq.addEventListener('click', async () => {
+      const mentorId = document.getElementById('mentor-req-id')?.value;
+      const message = document.getElementById('mentor-req-message')?.value;
+      if (!message || !message.trim()) {
+        alert('Please enter a message explaining your goals.');
+        return;
+      }
+      btnSubmitReq.disabled = true;
+      btnSubmitReq.textContent = 'Sending...';
+      try {
+        if (typeof nebulaRequestMentorship === 'function') {
+          await nebulaRequestMentorship(mentorId, message);
+          alert('Mentorship request sent successfully!');
+          if (modal) modal.classList.remove('open');
+          const msgInput = document.getElementById('mentor-req-message');
+          if (msgInput) msgInput.value = '';
+          await loadMentorshipRequests();
+        }
+      } catch (err) {
+        alert(err.message || 'Failed to send request');
+      } finally {
+        btnSubmitReq.disabled = false;
+        btnSubmitReq.textContent = 'Send Request';
+      }
+    });
+  }
+
+  // ─── INITIAL LOAD ──────────────────────────────
+  loadFeed();
+  loadFeaturedWritersSidebar();
+}
+
 let selectedMentorId = null;
 
 function slugify(text) {
