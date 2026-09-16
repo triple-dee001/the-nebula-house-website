@@ -221,7 +221,7 @@ input, textarea {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  margin-right: auto;
+  margin-right: 0;
 }
 
 .navbar__logo a {
@@ -388,27 +388,27 @@ input, textarea {
   transition: opacity var(--transition-base);
   text-decoration: none;
   z-index: 1001;
+  margin-left: auto;
 }
 
 .navbar__account:hover {
   opacity: 1;
 }
 
-/* On mobile, show account icon + hamburger side by side */
+/* On mobile, show logo on far left, account icon + hamburger on far right */
 @media (max-width: 768px) {
   .navbar__inner {
-    gap: 0;
     padding: 0 var(--space-md);
-    justify-content: flex-start;
+    justify-content: space-between;
   }
   .navbar__logo {
     order: 1;
-    margin-right: auto;
+    margin-right: 0;
   }
   .navbar__account {
     order: 2;
     margin-left: auto;
-    padding: var(--space-sm);
+    padding: var(--space-xs);
   }
   .navbar__toggle {
     order: 3;
