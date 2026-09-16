@@ -218,12 +218,19 @@ input, textarea {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-right: auto;
 }
 
 .navbar__logo a {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: var(--space-sm);
+  margin: 0;
+  padding: 0;
 }
 
 .navbar__logo a:hover {
@@ -235,6 +242,7 @@ input, textarea {
   width: auto;
   margin-top: -30px;
   margin-bottom: -30px;
+  object-position: left center;
   transition: opacity var(--transition-base);
 }
 
@@ -390,6 +398,12 @@ input, textarea {
 @media (max-width: 768px) {
   .navbar__inner {
     gap: 0;
+    padding: 0 var(--space-md);
+    justify-content: flex-start;
+  }
+  .navbar__logo {
+    order: 1;
+    margin-right: auto;
   }
   .navbar__account {
     order: 2;
