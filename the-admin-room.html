@@ -587,16 +587,26 @@
         ? `<span class="badge badge--verified" title="${escapeHtml(u.mentorBio || '')}">Yes</span>`
         : `<span class="badge badge--unverified">No</span>`;
 
+      const isWriterUser = u.isWriter === true || u.role === 'WRITER' || u.role === 'ADMIN' || u.role === 'SUPER_ADMIN';
+      const roleDisplay = u.role || (u.isWriter ? 'WRITER' : 'USER');
+      const roleBadgeClass = u.role === 'ADMIN' || u.role === 'SUPER_ADMIN' ? 'admin' : (u.isWriter ? 'verified' : 'user');
+
       return `
         <tr>
           <td style="font-weight:500;">${u.name || 'N/A'}</td>
           <td>${u.email}</td>
-          <td><span class="badge badge--${u.role === 'ADMIN' || u.role === 'SUPER_ADMIN' ? 'admin' : 'user'}">${u.role || 'USER'}</span></td>
+          <td><span class="badge badge--${roleBadgeClass}">${roleDisplay}</span></td>
           <td><span class="badge badge--${u.emailVerified ? 'verified' : 'unverified'}">${u.emailVerified ? 'Verified' : 'Unverified'}</span></td>
           <td>${mentorBadge}</td>
           <td>${u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—'}</td>
           <td style="display:flex; gap:0.4rem; flex-wrap:wrap;">
-            ${u.role === 'USER' ? `<button class="btn-make-admin" onclick="grantAdmin('${u.id}','${u.email}')">Make Admin</button>` : `<button class="btn-reject" onclick="revokeAdmin('${u.id}','${u.email}')">Revoke</button>`}
+            ${u.role === 'USER' || u.role === 'WRITER' ? `<button class="btn-make-admin" onclick="grantAdmin('${u.id}','${u.email}')">Make Admin</button>` : `<button class="btn-reject" onclick="revokeAdmin('${u.id}','${u.email}')">Revoke Admin</button>`}
+            
+            ${isWriterUser 
+              ? `<button class="btn-reject" onclick="toggleWriter('${u.id}', false)">Make Reader</button>`
+              : `<button class="btn-make-admin" onclick="toggleWriter('${u.id}', true)">Make Writer</button>`
+            }
+            
             ${u.isMentor ? `<button class="btn-reject" onclick="toggleMentor('${u.id}', false)">Revoke Mentor</button>` : `<button class="btn-make-admin" onclick="toggleMentor('${u.id}', true)">Make Mentor</button>`}
             ${!u.emailVerified ? `<button class="btn-make-admin" onclick="forceVerifyAdmin('${u.id}','${u.name || u.email}')" style="background:rgba(74,222,128,0.2);border-color:rgba(74,222,128,0.4);color:#4ade80;">✓ Verify</button>` : ''}
             <button class="btn-delete" onclick="deleteUserAdmin('${u.id}')">Delete</button>
@@ -819,6 +829,21 @@
       await adminUpdateUserRole(uid, 'ADMIN');
       await loadDashboard();
     } catch (err) { alert(err.message); }
+  }
+
+  async function toggleWriter(uid, makeWriter) {
+    const actionText = makeWriter ? 'make this user a Writer' : 'demote this user to a Reader';
+    if (!confirm(`Are you sure you want to ${actionText}?`)) return;
+    try {
+      await apiRequest(`/admin/users/${uid}/writer`, {
+        method: 'PUT',
+        body: JSON.stringify({ isWriter: makeWriter }),
+      });
+      alert(`User is now a ${makeWriter ? 'Writer' : 'Reader'}!`);
+      await loadDashboard();
+    } catch (err) {
+      alert(err.message || 'Failed to update user writer status');
+    }
   }
 
   async function toggleMentor(uid, makeMentor) {
