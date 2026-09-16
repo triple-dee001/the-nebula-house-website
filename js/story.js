@@ -24,6 +24,46 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 let currentStory = null;
 
+function slugify(text) {
+  if (!text) return '';
+  return text.toString().toLowerCase().trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function getStoryUrlPath(post) {
+  if (!post) return '/story';
+  const authorSlug = post.author?.slug || slugify(post.author?.name) || 'author';
+  const postSlug = post.slug || slugify(post.title) || post.id;
+  return `/story/${authorSlug}/${postSlug}`;
+}
+
+function isStorySaved(storyId) {
+  try {
+    const saved = JSON.parse(localStorage.getItem('nebula_saved_stories') || '[]');
+    return saved.includes(storyId);
+  } catch (e) { return false; }
+}
+
+function toggleSaveStory(event, storyId) {
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  try {
+    let saved = JSON.parse(localStorage.getItem('nebula_saved_stories') || '[]');
+    if (saved.includes(storyId)) {
+      saved = saved.filter(id => id !== storyId);
+    } else {
+      saved.push(storyId);
+    }
+    localStorage.setItem('nebula_saved_stories', JSON.stringify(saved));
+  } catch (e) {
+    console.error('Save story error:', e);
+  }
+}
+
 async function loadStory(id) {
   const loadingEl = document.getElementById('story-loading');
   const contentEl = document.getElementById('story-content');
@@ -33,8 +73,8 @@ async function loadStory(id) {
     const post = await nebulaGetPost(id);
     currentStory = post;
 
-    const storySlug = getStorySlug(post);
-    window.history.replaceState({}, '', `/story/${storySlug}`);
+    const cleanUrlPath = getStoryUrlPath(post);
+    window.history.replaceState({}, '', cleanUrlPath);
     document.title = `${post.title} | The Nebula House`;
 
     // 2. Hide loader, show content container
@@ -45,6 +85,29 @@ async function loadStory(id) {
     document.getElementById('story-title').textContent = post.title;
     document.getElementById('breadcrumb-title').textContent = post.title;
     document.getElementById('story-author').textContent = post.author?.name || 'Anonymous';
+
+    // Subtitle
+    const subtitleEl = document.getElementById('story-subtitle');
+    if (subtitleEl) {
+      if (post.subtitle) {
+        subtitleEl.textContent = post.subtitle;
+        subtitleEl.style.display = 'block';
+      } else {
+        subtitleEl.style.display = 'none';
+      }
+    }
+
+    // Author Avatar
+    const avatarContainer = document.getElementById('story-author-avatar-container');
+    if (avatarContainer) {
+      if (post.author?.photo) {
+        const imgSrc = post.author.photo.startsWith('http') || post.author.photo.startsWith('data:') ? post.author.photo : 'https://the-nebula-house-backend.onrender.com' + post.author.photo;
+        avatarContainer.innerHTML = `<img src="${imgSrc}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+      } else {
+        const initial = (post.author?.name || 'A')[0].toUpperCase();
+        avatarContainer.innerHTML = `<span id="story-author-initial">${initial}</span>`;
+      }
+    }
 
     const authorLink = document.getElementById('story-author-link');
     if (authorLink && post.author) {
@@ -118,6 +181,131 @@ async function loadStory(id) {
     const readTime = Math.max(1, Math.ceil(wordCount / 200));
     document.getElementById('story-read-time').textContent = `${readTime} min read`;
 
+    // Stats Population (Top & Bottom Bars)
+    const views = post.views || 0;
+    const likes = post._count?.likes || 0;
+    const commentsCount = post.comments?.length || 0;
+
+    const viewsTop = document.getElementById('views-count-top');
+    if (viewsTop) viewsTop.textContent = views;
+
+    const postViews = document.getElementById('post-views');
+    if (postViews) postViews.textContent = `${views} views`;
+
+    const likeTop = document.getElementById('like-count-top');
+    if (likeTop) likeTop.textContent = likes;
+
+    const likeBottom = document.getElementById('like-count');
+    if (likeBottom) likeBottom.textContent = likes;
+
+    const commentTop = document.getElementById('comment-count-top');
+    if (commentTop) commentTop.textContent = commentsCount;
+
+    const commentBottom = document.getElementById('comment-count-bottom');
+    if (commentBottom) commentBottom.textContent = commentsCount;
+
+    // Save Story Bookmarks
+    const saveTop = document.getElementById('btn-save-story-top');
+    const saveBottom = document.getElementById('btn-save-story-bottom');
+    
+    function updateSaveBtnsUI() {
+      const saved = isStorySaved(post.id);
+      const color = saved ? '#bb86fc' : 'inherit';
+      const fill = saved ? 'currentColor' : 'none';
+
+      if (saveTop) {
+        saveTop.style.color = color;
+        const svg = saveTop.querySelector('svg');
+        if (svg) svg.setAttribute('fill', fill);
+      }
+      if (saveBottom) {
+        saveBottom.style.color = color;
+        const svg = saveBottom.querySelector('svg');
+        if (svg) svg.setAttribute('fill', fill);
+      }
+    }
+
+    updateSaveBtnsUI();
+
+    const handleSaveToggle = (e) => {
+      toggleSaveStory(e, post.id);
+      updateSaveBtnsUI();
+    };
+
+    if (saveTop) saveTop.onclick = handleSaveToggle;
+    if (saveBottom) saveBottom.onclick = handleSaveToggle;
+
+    // --- Audio Reader Engine (Web Speech API + Custom Voice Recording) ---
+    const audioBtn = document.getElementById('btn-audio-listen');
+    const audioLabel = document.getElementById('audio-btn-label');
+
+    if (audioBtn) {
+      audioBtn.onclick = () => {
+        // If author uploaded custom narration audio URL:
+        if (post.audioUrl) {
+          let audioObj = window.currentStoryAudioObj;
+          if (!audioObj) {
+            audioObj = new Audio(post.audioUrl.startsWith('http') ? post.audioUrl : 'https://the-nebula-house-backend.onrender.com/' + post.audioUrl);
+            window.currentStoryAudioObj = audioObj;
+          }
+          if (audioObj.paused) {
+            audioObj.play();
+            audioLabel.textContent = 'Pause';
+          } else {
+            audioObj.pause();
+            audioLabel.textContent = 'Listen';
+          }
+          return;
+        }
+
+        // Native SpeechSynthesis (Web Speech API)
+        if (!('speechSynthesis' in window)) {
+          alert('Speech synthesis is not supported on your browser.');
+          return;
+        }
+
+        if (window.speechSynthesis.speaking) {
+          if (window.speechSynthesis.paused) {
+            window.speechSynthesis.resume();
+            audioLabel.textContent = 'Playing...';
+          } else {
+            window.speechSynthesis.pause();
+            audioLabel.textContent = 'Paused';
+          }
+        } else {
+          // Extract text from body
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = post.body || '';
+          const plainText = `${post.title}. ${tempDiv.innerText || tempDiv.textContent}`;
+
+          const speechSynthUtterance = new SpeechSynthesisUtterance(plainText);
+          speechSynthUtterance.rate = 0.95;
+          speechSynthUtterance.pitch = 1.0;
+
+          speechSynthUtterance.onstart = () => {
+            audioLabel.textContent = 'Playing...';
+            audioBtn.style.background = 'rgba(187,134,252,0.2)';
+            audioBtn.style.borderColor = '#bb86fc';
+          };
+
+          speechSynthUtterance.onend = () => {
+            audioLabel.textContent = 'Listen';
+            audioBtn.style.background = 'rgba(255,255,255,0.06)';
+            audioBtn.style.borderColor = 'rgba(255,255,255,0.12)';
+          };
+
+          speechSynthUtterance.onerror = (err) => {
+            console.error('Speech error:', err);
+            audioLabel.textContent = 'Listen';
+            audioBtn.style.background = 'rgba(255,255,255,0.06)';
+          };
+
+          window.speechSynthesis.cancel(); // Reset
+          window.speechSynthesis.speak(speechSynthUtterance);
+        }
+      };
+    }
+
     // Cover Image (Only display top header image if it's NOT already embedded inside article body)
     const imgContainer = document.getElementById('story-image-container');
     const imgEl = document.getElementById('story-image');
@@ -152,9 +340,6 @@ async function loadStory(id) {
         tagsContainer.appendChild(span);
       });
     }
-
-    // Views
-    document.getElementById('post-views').textContent = `${post.views || 0} views`;
 
     // Breadcrumb adjustment
     const breadcrumbParent = document.getElementById('breadcrumb-parent');

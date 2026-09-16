@@ -6,6 +6,10 @@
   ],
   "rewrites": [
     {
+      "source": "/story/:authorSlug/:slug",
+      "destination": "https://the-nebula-house-backend.onrender.com/api/posts/share/:slug"
+    },
+    {
       "source": "/story/:slug",
       "destination": "https://the-nebula-house-backend.onrender.com/api/posts/share/:slug"
     }

@@ -19,204 +19,58 @@ function slugify(text) {
 
 function getArticleLink(p) {
   if (!p) return '/the-writers-room.html';
-  const slug = p.slug || slugify(p.title) || p.id;
-  return `/story/${slug}`;
+  const authorSlug = p.author?.slug || slugify(p.author?.name) || 'author';
+  const postSlug = p.slug || slugify(p.title) || p.id;
+  return `/story/${authorSlug}/${postSlug}`;
 }
 
-async function initWritersRoom() {
-  // ─── Write Button Auth Guard ───
-  const btnWrite = document.getElementById('btn-write');
-  if (btnWrite) {
-    btnWrite.addEventListener('click', () => {
-      const user = getCurrentUser();
-      if (!user || !getToken()) {
-        openAuthModal();
-        window.addEventListener('nebula-auth-change', function handler(e) {
-          if (e.detail.user) {
-            window.removeEventListener('nebula-auth-change', handler);
-            if (!e.detail.user.emailVerified) {
-              alert('Please verify your email before writing. Check your inbox for the verification link.');
-              return;
-            }
-            window.location.href = 'write.html';
-          }
-        });
-        return;
+function isStorySaved(storyId) {
+  try {
+    const saved = JSON.parse(localStorage.getItem('nebula_saved_stories') || '[]');
+    return saved.includes(storyId);
+  } catch (e) { return false; }
+}
+
+function toggleSaveStory(event, storyId) {
+  event.preventDefault();
+  event.stopPropagation();
+  try {
+    let saved = JSON.parse(localStorage.getItem('nebula_saved_stories') || '[]');
+    const btn = event.currentTarget;
+    if (saved.includes(storyId)) {
+      saved = saved.filter(id => id !== storyId);
+      if (btn) {
+        btn.style.color = 'var(--text-muted)';
+        btn.setAttribute('title', 'Save story');
       }
-      if (!user.emailVerified) {
-        alert('Please verify your email before writing. Check your inbox for the verification link.');
-        return;
+    } else {
+      saved.push(storyId);
+      if (btn) {
+        btn.style.color = '#bb86fc';
+        btn.setAttribute('title', 'Saved to reading list');
       }
-      window.location.href = 'write.html';
-    });
-  }
-
-  // ─── Load Initial Feed & Sidebar Concurrently (Non-Blocking) ───
-  loadFeed();
-  loadFeaturedWritersSidebar();
-
-  // ─── Trending Topics Tag Filtering ───
-  let activeTag = '';
-  document.querySelectorAll('.wr-sidebar__topic').forEach(tagEl => {
-    tagEl.addEventListener('click', async (e) => {
-      e.preventDefault();
-      const tagText = tagEl.textContent.trim();
-      
-      // Toggle active tag state
-      if (activeTag === tagText) {
-        activeTag = '';
-        tagEl.style.background = '';
-        tagEl.style.color = '';
-      } else {
-        document.querySelectorAll('.wr-sidebar__topic').forEach(el => {
-          el.style.background = '';
-          el.style.color = '';
-        });
-        activeTag = tagText;
-        tagEl.style.background = '#ffffff';
-        tagEl.style.color = '#000000';
-      }
-      
-      // Switch back to community feed tab if on another tab
-      const feedTab = document.querySelector('.wr-tab[data-tab="feed"]');
-      if (feedTab && !feedTab.classList.contains('active')) {
-        document.querySelectorAll('.wr-tab').forEach(t => t.classList.remove('active'));
-        feedTab.classList.add('active');
-        document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
-        const target = document.getElementById('cnt-feed');
-        if (target) target.style.display = 'block';
-      }
-
-      await loadFeed(activeTag);
-    });
-  });
-
-  // ─── Tab Switching ───
-  document.querySelectorAll('.wr-tab').forEach(tab => {
-    tab.addEventListener('click', async (e) => {
-      e.preventDefault();
-      
-      // Reset active tabs
-      document.querySelectorAll('.wr-tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-
-      // Hide all contents
-      document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
-
-      // Show targeted content
-      const targetId = 'cnt-' + tab.dataset.tab;
-      const target = document.getElementById(targetId);
-      if (target) target.style.display = 'block';
-
-      // Load tab-specific content
-      if (tab.dataset.tab === 'challenges') {
-        await loadChallengesTab();
-      } else if (tab.dataset.tab === 'mentorship') {
-        await loadMentorshipTab();
-      } else if (tab.dataset.tab === 'feed') {
-        await loadFeed();
-      } else if (tab.dataset.tab === 'writers') {
-        await loadWritersTab();
-      }
-    });
-  });
-
-  // ─── Mentorship Modal Wire-up ───
-  const btnCloseModal = document.getElementById('btn-close-mentor-modal');
-  if (btnCloseModal) {
-    btnCloseModal.addEventListener('click', () => {
-      document.getElementById('mentorship-request-modal').classList.remove('open');
-    });
-  }
-
-  const btnCloseModalX = document.getElementById('btn-close-mentor-modal-x');
-  if (btnCloseModalX) {
-    btnCloseModalX.addEventListener('click', () => {
-      document.getElementById('mentorship-request-modal').classList.remove('open');
-    });
-  }
-
-  const btnSubmitReq = document.getElementById('btn-submit-mentor-request');
-  if (btnSubmitReq) {
-    btnSubmitReq.addEventListener('click', async () => {
-      const mentorId = document.getElementById('mentor-req-id').value;
-      const message = document.getElementById('mentor-req-message').value.trim();
-      if (!mentorId) return;
-
-      btnSubmitReq.disabled = true;
-      btnSubmitReq.textContent = 'Sending...';
-
-      try {
-        await nebulaRequestMentorship(mentorId, message);
-        document.getElementById('mentorship-request-modal').classList.remove('open');
-        document.getElementById('mentor-req-message').value = '';
-        alert('Mentorship request successfully sent!');
-        await loadMentorshipRequests();
-      } catch (err) {
-        alert(err.message);
-      }
-      btnSubmitReq.disabled = false;
-      btnSubmitReq.textContent = 'Send Request';
-    });
-  }
-
-  // ─── Mentorship sub-tabs ───
-  const btnBrowse = document.getElementById('btn-browse-mentors');
-  const btnMyReq = document.getElementById('btn-my-requests');
-
-  if (btnBrowse && btnMyReq) {
-    btnBrowse.addEventListener('click', () => {
-      btnBrowse.style.background = '#fff';
-      btnBrowse.style.color = '#000';
-      btnMyReq.style.background = 'rgba(255,255,255,0.08)';
-      btnMyReq.style.color = '#fff';
-      document.getElementById('mentorship-browse').style.display = 'block';
-      document.getElementById('mentorship-requests').style.display = 'none';
-    });
-
-    btnMyReq.addEventListener('click', async () => {
-      btnMyReq.style.background = '#fff';
-      btnMyReq.style.color = '#000';
-      btnBrowse.style.background = 'rgba(255,255,255,0.08)';
-      btnBrowse.style.color = '#fff';
-      document.getElementById('mentorship-browse').style.display = 'none';
-      document.getElementById('mentorship-requests').style.display = 'block';
-      await loadMentorshipRequests();
-    });
-  }
-
-  // ─── Newsletter Form ───
-  const newsletterForm = document.getElementById('wr-newsletter-form');
-  if (newsletterForm) {
-    newsletterForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const emailInput = newsletterForm.querySelector('input[type="email"]');
-      const firstNameInput = newsletterForm.querySelector('input[name="firstName"], input[placeholder*="First"]');
-      const lastNameInput = newsletterForm.querySelector('input[name="lastName"], input[placeholder*="Last"]');
-      
-      const email = emailInput ? emailInput.value.trim() : '';
-      const firstName = firstNameInput ? firstNameInput.value.trim() : '';
-      const lastName = lastNameInput ? lastNameInput.value.trim() : '';
-
-      if (email) {
-        try {
-          await nebulaSubscribeNewsletter(email, firstName, lastName);
-          if (emailInput) emailInput.value = '';
-          if (firstNameInput) firstNameInput.value = '';
-          if (lastNameInput) lastNameInput.value = '';
-          const msg = document.getElementById('wr-newsletter-success');
-          if (msg) {
-            msg.style.display = 'block';
-            setTimeout(() => { msg.style.display = 'none'; }, 3000);
-          }
-        } catch (err) {
-          alert(err.message || 'Newsletter subscription failed');
-        }
-      }
-    });
+    }
+    localStorage.setItem('nebula_saved_stories', JSON.stringify(saved));
+  } catch (e) {
+    console.error('Save story error:', e);
   }
 }
 
+function toggleCardMenu(event, menuId) {
+  event.preventDefault();
+  event.stopPropagation();
+  document.querySelectorAll('.wr-card-menu-dropdown').forEach(m => {
+    if (m.id !== menuId) m.style.display = 'none';
+  });
+  const menu = document.getElementById(menuId);
+  if (menu) {
+    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+  }
+}
+
+document.addEventListener('click', () => {
+  document.querySelectorAll('.wr-card-menu-dropdown').forEach(m => m.style.display = 'none');
+});
 
 // ─── FEED TAB ────────────────────────────────
 async function loadFeed(tag = '') {
@@ -252,9 +106,9 @@ async function loadFeed(tag = '') {
     }
     if (empty) empty.style.display = 'none';
 
-    feed.innerHTML = posts.map(p => {
+    feed.innerHTML = posts.map((p, idx) => {
       const initial = (p.author?.name || 'A')[0].toUpperCase();
-      const date = new Date(p.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      const date = new Date(p.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
       const wordCount = (p.excerpt || '').split(/\s+/).length * 10;
       const readTime = Math.max(1, Math.ceil(wordCount / 200));
       let rawCover = p.coverImage;
@@ -275,30 +129,73 @@ async function loadFeed(tag = '') {
 
       const articleUrl = getArticleLink(p);
       const authorUrl = p.author?.slug ? `writer.html?slug=${p.author.slug}` : `writer.html?id=${p.author?.id}`;
+      const saved = isStorySaved(p.id);
+      const menuId = `card-menu-${p.id}-${idx}`;
 
       return `
-        <a href="${articleUrl}" class="wr-article" style="text-decoration:none; color:inherit; display:grid;">
+        <a href="${articleUrl}" class="wr-article" style="text-decoration:none; color:inherit; display:grid; position:relative;">
           <div style="flex:1; min-width:0;">
             <div class="wr-article__meta">
               <div class="wr-article__avatar">
                 ${p.author?.photo ? `<img src="${p.author.photo.startsWith('http') || p.author.photo.startsWith('data:') ? p.author.photo : 'https://the-nebula-house-backend.onrender.com' + p.author.photo}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;display:block;">` : `<div style="width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">${initial}</div>`}
               </div>
-              <span style="cursor:pointer; position:relative; z-index:2;" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='${authorUrl}';">${escapeHtml(p.author?.name || 'Anonymous')}</span>
-            </div>
-            <div class="wr-article__title" style="color:#fff;font-weight:700;font-size:1.05rem;line-height:1.3;margin-bottom:0.4rem;">${escapeHtml(p.title)}</div>
-            ${p.subtitle ? `<div style="color:rgba(255,255,255,0.6);font-size:0.9rem;margin-bottom:0.4rem;">${escapeHtml(p.subtitle)}</div>` : ''}
-            <div class="wr-article__excerpt">${escapeHtml(p.excerpt || '')}</div>
-            <div class="wr-article__footer">
-              <span>${date}</span>
+              <span style="cursor:pointer; position:relative; z-index:2; font-weight:500;" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='${authorUrl}';">${escapeHtml(p.author?.name || 'Anonymous')}</span>
               <span>·</span>
+              <span>${date}</span>
+            </div>
+
+            <div class="wr-article__title" style="color:#fff;font-weight:700;font-size:1.15rem;line-height:1.3;margin-bottom:0.4rem;">${escapeHtml(p.title)}</div>
+            ${p.subtitle ? `<div style="color:rgba(255,255,255,0.65);font-size:0.92rem;margin-bottom:0.4rem;">${escapeHtml(p.subtitle)}</div>` : ''}
+            <div class="wr-article__excerpt">${escapeHtml(p.excerpt || '')}</div>
+
+            <div class="wr-article__footer" style="display:flex; align-items:center; gap:1.25rem; margin-top:1rem; font-size:0.82rem; color:var(--text-muted);">
               <span>${readTime} min read</span>
-              ${p.tags ? p.tags.split(',').slice(0,2).map(t => `<span style="background:rgba(255,255,255,0.06);padding:0.15rem 0.5rem;border-radius:12px;font-size:0.75rem;">${t.trim()}</span>`).join('') : ''}
-              <span style="margin-left:auto; color:var(--text-muted);">
-                ♥ ${p._count?.likes || 0} · 💬 ${p._count?.comments || 0}
-              </span>
-              ${userIsAdmin ? `<button class="wr-article__delete" style="margin-left:1rem; position:relative; z-index:2;" onclick="event.preventDefault(); event.stopPropagation(); handleDeletePost('${p.id}');">Delete</button>` : ''}
+              ${p.tags ? p.tags.split(',').slice(0,1).map(t => `<span style="background:rgba(255,255,255,0.06);padding:0.15rem 0.55rem;border-radius:12px;font-size:0.75rem;">${t.trim()}</span>`).join('') : ''}
+              
+              <div style="margin-left:auto; display:flex; align-items:center; gap:1rem;">
+                <span title="Views" style="display:inline-flex; align-items:center; gap:0.25rem;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  ${p.views || 0}
+                </span>
+
+                <span title="Likes" style="display:inline-flex; align-items:center; gap:0.25rem;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                  ${p._count?.likes || 0}
+                </span>
+
+                <span title="Comments" style="display:inline-flex; align-items:center; gap:0.25rem;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  ${p._count?.comments || 0}
+                </span>
+
+                <button title="${saved ? 'Saved to reading list' : 'Save story'}" style="background:none; border:none; color:${saved ? '#bb86fc' : 'var(--text-muted)'}; cursor:pointer; padding:0.2rem; display:flex; align-items:center; position:relative; z-index:2;" onclick="toggleSaveStory(event, '${p.id}')">
+                  <svg viewBox="0 0 24 24" fill="${saved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                </button>
+
+                <div style="position:relative; display:inline-block;">
+                  <button title="More options" style="background:none; border:none; color:var(--text-muted); cursor:pointer; padding:0.2rem; display:flex; align-items:center; position:relative; z-index:2;" onclick="toggleCardMenu(event, '${menuId}')">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="18" r="2"/></svg>
+                  </button>
+
+                  <div id="${menuId}" class="wr-card-menu-dropdown" style="display:none; position:absolute; right:0; top:100%; z-index:100; background:#181818; border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:0.4rem 0; min-width:160px; box-shadow:0 10px 25px rgba(0,0,0,0.5);">
+                    <div style="padding:0.5rem 1rem; font-size:0.8rem; color:#fff; cursor:pointer; hover:background:rgba(255,255,255,0.05);" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='${authorUrl}';">
+                      Follow author
+                    </div>
+                    <div style="padding:0.5rem 1rem; font-size:0.8rem; color:#fff; cursor:pointer;" onclick="event.preventDefault(); event.stopPropagation(); navigator.clipboard.writeText(window.location.origin + '${articleUrl}'); alert('Story link copied to clipboard!');">
+                      Copy story link
+                    </div>
+                    ${userIsAdmin ? `
+                      <div style="padding:0.5rem 1rem; font-size:0.8rem; color:#e55; cursor:pointer; border-top:1px solid rgba(255,255,255,0.08);" onclick="event.preventDefault(); event.stopPropagation(); handleDeletePost('${p.id}');">
+                        Delete story
+                      </div>
+                    ` : ''}
+                  </div>
+                </div>
+
+              </div>
             </div>
           </div>
+
           <div style="flex-shrink:0;width:140px;height:100px;border-radius:6px;overflow:hidden;background:#111;">
             <img src="${coverSrc}" alt="${escapeHtml(p.title)}" style="width:100%;height:100%;object-fit:${p.coverImage ? 'cover' : 'contain'};padding:${p.coverImage ? '0' : '20px'};box-sizing:border-box;opacity:${p.coverImage ? '1' : '0.4'};" onerror="this.src='assets/images/room-icon.png';this.style.objectFit='contain';this.style.padding='20px';this.style.opacity='0.4';">
           </div>

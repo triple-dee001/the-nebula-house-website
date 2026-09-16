@@ -82,16 +82,62 @@
           <span id="breadcrumb-title">Story</span>
         </div>
 
-        <div class="article-header">
-          <h1 class="article-header__title" id="story-title">Story Title</h1>
-          <p class="article-header__author" style="display:flex; align-items:center; flex-wrap:wrap; gap:0.5rem;">
-            by <a href="#" id="story-author-link" style="color:inherit; text-decoration:none;"><span id="story-author">Author</span></a>
-            <button id="btn-follow-author" style="display:none; margin-left:0.5rem; padding:0.25rem 0.85rem; border-radius:20px; font-size:0.8rem; font-weight:600; cursor:pointer; transition:all 0.2s; border:1px solid rgba(255,255,255,0.3); background:rgba(255,255,255,0.1); color:#fff;">Follow</button>
-          </p>
-          <div class="article-header__meta" style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-            <span id="story-date">Date</span>
-            <span>·</span>
-            <span id="story-read-time">1 min read</span>
+        <div class="article-header" style="margin-bottom: 2rem;">
+          <h1 class="article-header__title" id="story-title" style="font-family: var(--font-primary); font-size: 2.4rem; font-weight: 700; line-height: 1.25; margin-bottom: 0.75rem; color: #fff;">Story Title</h1>
+          <p id="story-subtitle" style="font-size: 1.15rem; color: rgba(255,255,255,0.7); line-height: 1.5; margin-bottom: 1.5rem; display: none;"></p>
+          
+          <!-- Medium-style Author Row (Side-by-side) -->
+          <div style="display: flex; align-items: center; gap: 1rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08);">
+            <div id="story-author-avatar-container" style="width: 44px; height: 44px; border-radius: 50%; overflow: hidden; background: rgba(255,255,255,0.1); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; color: #fff;">
+              <span id="story-author-initial">A</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.2rem;">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <a href="#" id="story-author-link" style="color: #fff; text-decoration: none; font-weight: 600; font-size: 1rem;"><span id="story-author">Author</span></a>
+                <button id="btn-follow-author" style="display: none; padding: 0.2rem 0.75rem; border-radius: 20px; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.3); background: #fff; color: #000;">Follow</button>
+              </div>
+              <div style="font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.4rem;">
+                <span id="story-read-time">1 min read</span>
+                <span>·</span>
+                <span id="story-date">Date</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Medium-Style Interaction Bar (TOP) -->
+        <div class="story-interaction-bar" style="display: flex; align-items: center; justify-content: space-between; padding: 0.8rem 0; border-top: 1px solid rgba(255,255,255,0.08); border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 2rem; color: var(--text-muted); font-size: 0.9rem;">
+          <div style="display: flex; align-items: center; gap: 1.5rem;">
+            <button class="like-btn" id="like-btn-top" aria-label="Like this post" style="background: none; border: none; color: inherit; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; padding: 0;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              <span id="like-count-top">0</span>
+            </button>
+            <a href="#comments-section" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 0.4rem;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <span id="comment-count-top">0</span>
+            </a>
+            <span style="display: flex; align-items: center; gap: 0.4rem;" title="Views">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <span id="views-count-top">0</span>
+            </span>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 1.25rem;">
+            <!-- Listen Audio Button -->
+            <button id="btn-audio-listen" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #fff; padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; transition: all 0.2s;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+              <span id="audio-btn-label">Listen</span>
+            </button>
+
+            <!-- Save Bookmark Button -->
+            <button id="btn-save-story-top" title="Save story" style="background: none; border: none; color: inherit; cursor: pointer; padding: 0; display: flex; align-items: center;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            </button>
+
+            <!-- Share Button -->
+            <button id="share-btn-top" title="Share story" style="background: none; border: none; color: inherit; cursor: pointer; padding: 0; display: flex; align-items: center;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            </button>
           </div>
         </div>
 
@@ -107,27 +153,32 @@
           <!-- Tags go here -->
         </div>
 
-        <div class="post-interactions" style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1.5rem; margin-top: 2rem;">
-          <div class="post-stats" style="display: flex; align-items: center; width: 100%;">
-            <span class="stat-item" id="post-views">0 views</span>
-            <span class="stat-item" style="margin-left: 1.5rem;">
-              <button class="like-btn" id="like-btn" aria-label="Like this post">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-              </button>
+        <!-- Medium-Style Interaction Bar (BOTTOM) -->
+        <div class="story-interaction-bar" style="display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; border-top: 1px solid rgba(255,255,255,0.08); border-bottom: 1px solid rgba(255,255,255,0.08); margin-top: 2.5rem; color: var(--text-muted); font-size: 0.9rem;">
+          <div style="display: flex; align-items: center; gap: 1.5rem;">
+            <button class="like-btn" id="like-btn" aria-label="Like this post" style="background: none; border: none; color: inherit; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; padding: 0;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
               <span id="like-count">0</span>
+            </button>
+            <a href="#comments-section" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 0.4rem;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <span id="comment-count-bottom">0</span>
+            </a>
+            <span style="display: flex; align-items: center; gap: 0.4rem;" title="Views">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <span id="post-views">0 views</span>
             </span>
-            <span class="stat-item" style="margin-left: 2rem;">
-              <button class="share-btn" id="share-btn" aria-label="Share this post" style="background: none; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 0.5rem; padding: 0.2rem 0.5rem; transition: all 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="if(document.getElementById('share-label').textContent !== 'Link Copied!') this.style.color='var(--text-muted)'">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-                  <circle cx="18" cy="5" r="3"></circle>
-                  <circle cx="6" cy="12" r="3"></circle>
-                  <circle cx="18" cy="19" r="3"></circle>
-                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                </svg>
-                <span id="share-label" style="font-size: 0.95rem; font-family: var(--font-secondary);">Share</span>
-              </button>
-            </span>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 1.25rem;">
+            <button id="btn-save-story-bottom" title="Save story" style="background: none; border: none; color: inherit; cursor: pointer; padding: 0; display: flex; align-items: center;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            </button>
+
+            <button class="share-btn" id="share-btn" aria-label="Share this post" style="background: none; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 0.4rem; padding: 0;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              <span id="share-label" style="font-size: 0.95rem; font-family: var(--font-secondary);">Share</span>
+            </button>
           </div>
         </div>
 
