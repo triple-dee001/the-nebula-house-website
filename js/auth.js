@@ -80,12 +80,25 @@ function injectAuthModal() {
         <div id="auth-name-group" style="display:none; margin-bottom:1rem;">
           <input type="text" id="auth-name" class="nebula-auth-input" placeholder="Your name" autocomplete="name">
         </div>
-        <div id="auth-writer-group" style="display:none; margin-bottom:1rem; flex-direction:column; gap:0.4rem; align-items:flex-start;">
-          <div style="display:flex; align-items:center; gap:0.5rem; width:100%;">
-            <input type="checkbox" id="auth-is-writer" style="width:auto; margin:0; cursor:pointer;">
-            <label for="auth-is-writer" style="color:rgba(255,255,255,0.75); font-size:0.88rem; cursor:pointer; user-select:none;">Register as a Writer</label>
+        <div id="auth-role-group" style="display:none; margin-bottom:1.25rem;">
+          <div style="font-size:0.8rem; font-weight:600; color:rgba(255,255,255,0.6); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:0.5rem;">Select Account Type</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+            
+            <label id="auth-role-card-reader" style="display:flex; flex-direction:column; align-items:center; padding:0.75rem 0.5rem; border:2px solid #bb86fc; border-radius:10px; background:rgba(187,134,252,0.12); cursor:pointer; text-align:center; transition:all 0.2s;">
+              <input type="radio" name="authRole" value="reader" checked style="display:none;">
+              <span style="font-size:1.3rem; margin-bottom:0.2rem;">📖</span>
+              <span style="font-weight:700; font-size:0.88rem; color:#fff;">Reader</span>
+              <span style="font-size:0.72rem; color:rgba(255,255,255,0.5); margin-top:0.2rem;">Read & comment</span>
+            </label>
+
+            <label id="auth-role-card-writer" style="display:flex; flex-direction:column; align-items:center; padding:0.75rem 0.5rem; border:1px solid rgba(255,255,255,0.15); border-radius:10px; background:rgba(255,255,255,0.03); cursor:pointer; text-align:center; transition:all 0.2s;">
+              <input type="radio" name="authRole" value="writer" style="display:none;">
+              <span style="font-size:1.3rem; margin-bottom:0.2rem;">✍️</span>
+              <span style="font-weight:700; font-size:0.88rem; color:#fff;">Writer</span>
+              <span style="font-size:0.72rem; color:rgba(255,255,255,0.5); margin-top:0.2rem;">Publish & mentor</span>
+            </label>
+
           </div>
-          <a href="/how-to-become-a-writer" target="_blank" style="color:#bb86fc; font-size:0.78rem; text-decoration:none; margin-left:1.4rem;">View Writer Guide & Onboarding →</a>
         </div>
         <div style="margin-bottom:1rem;">
           <input type="email" id="auth-email" class="nebula-auth-input" placeholder="Email address" autocomplete="email">
@@ -171,6 +184,28 @@ function injectAuthModal() {
   document.getElementById('auth-overlay').onclick = closeAuthModal;
   document.getElementById('auth-close').onclick = closeAuthModal;
 
+  let selectedAccountType = 'reader';
+
+  const cardReader = document.getElementById('auth-role-card-reader');
+  const cardWriter = document.getElementById('auth-role-card-writer');
+
+  if (cardReader && cardWriter) {
+    cardReader.addEventListener('click', () => {
+      selectedAccountType = 'reader';
+      cardReader.style.border = '2px solid #bb86fc';
+      cardReader.style.background = 'rgba(187,134,252,0.12)';
+      cardWriter.style.border = '1px solid rgba(255,255,255,0.15)';
+      cardWriter.style.background = 'rgba(255,255,255,0.03)';
+    });
+    cardWriter.addEventListener('click', () => {
+      selectedAccountType = 'writer';
+      cardWriter.style.border = '2px solid #bb86fc';
+      cardWriter.style.background = 'rgba(187,134,252,0.12)';
+      cardReader.style.border = '1px solid rgba(255,255,255,0.15)';
+      cardReader.style.background = 'rgba(255,255,255,0.03)';
+    });
+  }
+
   // Toggle sign in / sign up
   document.getElementById('auth-switch-btn').addEventListener('click', (e) => {
     e.preventDefault();
@@ -181,7 +216,7 @@ function injectAuthModal() {
     document.getElementById('auth-switch-text').textContent = isSignUp ? 'Already have an account?' : "Don't have an account?";
     document.getElementById('auth-switch-btn').textContent = isSignUp ? 'Sign In' : 'Sign Up';
     document.getElementById('auth-name-group').style.display = isSignUp ? 'block' : 'none';
-    document.getElementById('auth-writer-group').style.display = isSignUp ? 'flex' : 'none';
+    document.getElementById('auth-role-group').style.display = isSignUp ? 'block' : 'none';
     document.getElementById('auth-forgot-link').style.display = isSignUp ? 'none' : 'inline';
     hideAuthError();
   });
@@ -225,7 +260,7 @@ function injectAuthModal() {
     const password = document.getElementById('auth-password').value;
     const btn = document.getElementById('auth-submit');
 
-    const isWriter = isSignUp ? document.getElementById('auth-is-writer').checked : false;
+    const isWriter = isSignUp ? selectedAccountType === 'writer' : false;
 
     if (!email || !password) return showAuthError('Please fill in all fields');
     if (isSignUp && !name) return showAuthError('Please enter your name');
@@ -236,7 +271,8 @@ function injectAuthModal() {
     try {
       if (isSignUp) {
         await nebulaRegister(name, email, password, isWriter);
-        showSuccessView('📬', 'Check Your Email', `We've sent a verification link to ${email}. Please verify before signing in.`);
+        const roleMsg = isWriter ? 'Writer' : 'Reader';
+        showSuccessView('📬', 'Check Your Email', `We've sent a verification link to ${email}. Once verified, your ${roleMsg} account will be ready!`);
       } else {
         const user = await nebulaLogin(email, password);
         closeAuthModal();
@@ -517,4 +553,54 @@ async function loadNotificationsList() {
 function escapeHtml(str) {
   if (!str) return '';
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+}
+
+function showWriterUpgradeModal() {
+  let modal = document.getElementById('nebula-writer-upgrade-modal');
+  if (modal) return;
+  
+  modal = document.createElement('div');
+  modal.id = 'nebula-writer-upgrade-modal';
+  modal.style.cssText = 'position:fixed; inset:0; z-index:10005; display:flex; align-items:center; justify-content:center; padding:1rem; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px);';
+  modal.innerHTML = `
+    <div style="background:#0f0f0f; border:1px solid rgba(255,255,255,0.12); border-radius:14px; padding:2rem; max-width:440px; width:100%; text-align:center; box-shadow:0 20px 40px rgba(0,0,0,0.6); font-family:var(--font-secondary,sans-serif);">
+      <div style="font-size:2.8rem; margin-bottom:0.75rem;">✍️</div>
+      <h2 style="font-family:var(--font-primary,'Cormorant Garamond'),serif; font-size:1.6rem; color:#fff; margin-bottom:0.5rem;">Upgrade to a Writer Account</h2>
+      <p style="color:rgba(255,255,255,0.7); font-size:0.92rem; line-height:1.5; margin-bottom:1.5rem;">
+        Your account is currently set to <strong>Reader</strong>. To write stories, participate in monthly challenges, and join the directory, upgrade to a <strong>Writer</strong> account!
+      </p>
+      <div style="display:flex; gap:0.75rem; justify-content:center;">
+        <button id="btn-cancel-upgrade" style="padding:0.65rem 1.25rem; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:8px; color:#fff; font-weight:600; cursor:pointer;">Cancel</button>
+        <button id="btn-confirm-upgrade" style="padding:0.65rem 1.5rem; background:#bb86fc; border:none; border-radius:8px; color:#000; font-weight:700; cursor:pointer;">Upgrade to Writer ✨</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  document.getElementById('btn-cancel-upgrade').onclick = () => {
+    modal.remove();
+    if (window.location.pathname.includes('write.html')) {
+      window.location.href = 'the-writers-room.html';
+    }
+  };
+
+  document.getElementById('btn-confirm-upgrade').onclick = async () => {
+    const btn = document.getElementById('btn-confirm-upgrade');
+    btn.disabled = true;
+    btn.textContent = 'Upgrading...';
+    try {
+      const updated = await nebulaUpgradeToWriter();
+      modal.remove();
+      alert('🎉 Congratulations! Your account has been upgraded to Writer.');
+      if (window.location.pathname.includes('write.html')) {
+        window.location.reload();
+      } else {
+        window.location.href = 'write.html';
+      }
+    } catch (err) {
+      alert(err.message || 'Upgrade failed. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Upgrade to Writer ✨';
+    }
+  };
 }

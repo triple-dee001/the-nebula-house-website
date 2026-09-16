@@ -45,10 +45,22 @@ async function apiRequest(path, options = {}) {
 
 // ─── AUTH ─────────────────────────────────────
 async function nebulaRegister(name, email, password, isWriter) {
+  const accountType = isWriter === 'writer' || isWriter === true ? 'writer' : 'reader';
   return apiRequest('/auth/register', {
     method: 'POST',
-    body: JSON.stringify({ name, email, password, isWriter }),
+    body: JSON.stringify({ name, email, password, isWriter: accountType === 'writer', accountType }),
   });
+}
+
+async function nebulaUpgradeToWriter() {
+  const data = await apiRequest('/users/me', {
+    method: 'PUT',
+    body: JSON.stringify({ isWriter: true }),
+  });
+  const current = getCurrentUser() || {};
+  const updated = { ...current, ...data, isWriter: true, role: data.role || 'WRITER' };
+  setStoredUser(updated);
+  return updated;
 }
 
 async function nebulaLogin(email, password) {

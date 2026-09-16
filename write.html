@@ -261,7 +261,19 @@
       setTimeout(async () => {
         const user = getCurrentUser();
         if (!user) {
+          if (typeof openAuthModal === 'function') openAuthModal();
           window.location.href = 'the-writers-room.html';
+          return;
+        }
+
+        const isUserWriter = user.isWriter === true || user.role === 'WRITER' || user.role === 'ADMIN' || user.role === 'SUPER_ADMIN';
+        if (!isUserWriter) {
+          if (typeof showWriterUpgradeModal === 'function') {
+            showWriterUpgradeModal();
+          } else {
+            alert('Your account is set to Reader. Please upgrade to a Writer account to publish stories.');
+            window.location.href = 'the-writers-room.html';
+          }
           return;
         }
         // Show user avatar

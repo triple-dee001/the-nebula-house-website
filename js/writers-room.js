@@ -82,6 +82,15 @@ function initWritersRoom() {
         if (typeof openAuthModal === 'function') openAuthModal();
         return;
       }
+      const isUserWriter = user.isWriter === true || user.role === 'WRITER' || user.role === 'ADMIN' || user.role === 'SUPER_ADMIN';
+      if (!isUserWriter) {
+        if (typeof showWriterUpgradeModal === 'function') {
+          showWriterUpgradeModal();
+        } else {
+          alert('Your account is set to Reader. Please upgrade to a Writer account to publish stories.');
+        }
+        return;
+      }
       window.location.href = 'write.html';
     });
   }
