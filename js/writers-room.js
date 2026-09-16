@@ -227,7 +227,12 @@ async function loadFeed(tag = '') {
   // Visual loading feedback
   if (empty) empty.style.display = 'none';
   if (!feed.children.length || !feed.innerHTML.trim() || feed.querySelector('.wr-empty-feed-loading')) {
-    feed.innerHTML = '<div class="wr-empty-feed-loading" style="text-align:center; padding:3rem 1rem; color:var(--text-muted); font-size:0.95rem;">Loading feed...</div>';
+    feed.innerHTML = `
+      <div class="wr-empty-feed-loading" style="text-align: center; padding: 4rem 1rem; color: var(--text-muted); font-family: var(--font-secondary);">
+        <div style="font-size: 1.1rem; font-weight: 500; margin-bottom: 0.5rem; color: #fff;">Loading Feed...</div>
+        <div style="font-size: 0.85rem; opacity: 0.6;">Fetching stories from the Nebula community</div>
+      </div>
+    `;
   } else {
     feed.style.opacity = '0.4';
     feed.style.transition = 'opacity 0.15s ease';
@@ -268,14 +273,17 @@ async function loadFeed(tag = '') {
         }
       }
 
+      const articleUrl = getArticleLink(p);
+      const authorUrl = p.author?.slug ? `writer.html?slug=${p.author.slug}` : `writer.html?id=${p.author?.id}`;
+
       return `
-        <div class="wr-article" style="cursor:pointer;" onclick="window.location.href='${getArticleLink(p)}'">
+        <a href="${articleUrl}" class="wr-article" style="text-decoration:none; color:inherit; display:grid;">
           <div style="flex:1; min-width:0;">
             <div class="wr-article__meta">
               <div class="wr-article__avatar">
                 ${p.author?.photo ? `<img src="${p.author.photo.startsWith('http') || p.author.photo.startsWith('data:') ? p.author.photo : 'https://the-nebula-house-backend.onrender.com' + p.author.photo}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;display:block;">` : `<div style="width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;">${initial}</div>`}
               </div>
-              <span style="cursor:pointer;" onclick="event.stopPropagation();window.location.href='${p.author?.slug ? 'writer.html?slug=' + p.author.slug : 'writer.html?id=' + p.author?.id}'">${p.author?.name || 'Anonymous'}</span>
+              <span style="cursor:pointer; position:relative; z-index:2;" onclick="event.preventDefault(); event.stopPropagation(); window.location.href='${authorUrl}';">${escapeHtml(p.author?.name || 'Anonymous')}</span>
             </div>
             <div class="wr-article__title" style="color:#fff;font-weight:700;font-size:1.05rem;line-height:1.3;margin-bottom:0.4rem;">${escapeHtml(p.title)}</div>
             ${p.subtitle ? `<div style="color:rgba(255,255,255,0.6);font-size:0.9rem;margin-bottom:0.4rem;">${escapeHtml(p.subtitle)}</div>` : ''}
@@ -288,13 +296,13 @@ async function loadFeed(tag = '') {
               <span style="margin-left:auto; color:var(--text-muted);">
                 ♥ ${p._count?.likes || 0} · 💬 ${p._count?.comments || 0}
               </span>
-              ${userIsAdmin ? `<button class="wr-article__delete" style="margin-left:1rem;" onclick="event.stopPropagation();handleDeletePost('${p.id}')">Delete</button>` : ''}
+              ${userIsAdmin ? `<button class="wr-article__delete" style="margin-left:1rem; position:relative; z-index:2;" onclick="event.preventDefault(); event.stopPropagation(); handleDeletePost('${p.id}');">Delete</button>` : ''}
             </div>
           </div>
           <div style="flex-shrink:0;width:140px;height:100px;border-radius:6px;overflow:hidden;background:#111;">
             <img src="${coverSrc}" alt="${escapeHtml(p.title)}" style="width:100%;height:100%;object-fit:${p.coverImage ? 'cover' : 'contain'};padding:${p.coverImage ? '0' : '20px'};box-sizing:border-box;opacity:${p.coverImage ? '1' : '0.4'};" onerror="this.src='assets/images/room-icon.png';this.style.objectFit='contain';this.style.padding='20px';this.style.opacity='0.4';">
           </div>
-        </div>
+        </a>
       `;
     }).join('');
 

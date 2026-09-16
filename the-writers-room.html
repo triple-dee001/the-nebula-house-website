@@ -332,10 +332,14 @@
           <!-- Feed Container -->
           <div class="tab-content active" id="cnt-feed">
             <div id="wr-feed">
-              <div class="wr-empty" id="wr-empty-state">
-                <h3>No stories yet</h3>
-                <p>Be the first to publish. Click "Write" to begin crafting your story.</p>
+              <div class="wr-empty-feed-loading" style="text-align: center; padding: 4rem 1rem; color: var(--text-muted); font-family: var(--font-secondary);">
+                <div style="font-size: 1.1rem; font-weight: 500; margin-bottom: 0.5rem; color: #fff;">Loading Feed...</div>
+                <div style="font-size: 0.85rem; opacity: 0.6;">Fetching stories from the Nebula community</div>
               </div>
+            </div>
+            <div class="wr-empty" id="wr-empty-state" style="display:none;">
+              <h3>No stories yet</h3>
+              <p>Be the first to publish. Click "Write" to begin crafting your story.</p>
             </div>
           </div>
 

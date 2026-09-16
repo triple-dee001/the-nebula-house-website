@@ -4,7 +4,15 @@
 
 document.addEventListener('DOMContentLoaded', async () => {
   const urlParams = new URLSearchParams(window.location.search);
-  const storyId = urlParams.get('id') || urlParams.get('slug');
+  let storyId = urlParams.get('slug') || urlParams.get('id');
+
+  if (!storyId) {
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    const storyIdx = pathParts.indexOf('story');
+    if (storyIdx !== -1 && pathParts[storyIdx + 1]) {
+      storyId = decodeURIComponent(pathParts[storyIdx + 1]);
+    }
+  }
 
   if (!storyId) {
     showError('No story ID or slug specified in the URL.');
