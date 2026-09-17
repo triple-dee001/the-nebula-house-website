@@ -236,7 +236,7 @@ async function nebulaAddComment(postId, body, guestName = '', parentId = null) {
 }
 
 async function nebulaToggleCommentLike(commentId) {
-  return apiRequest(`/posts/comments/${commentId}/like`, { method: 'POST' });
+  return apiRequest(`/comments/${commentId}/like`, { method: 'POST' });
 }
 
 async function nebulaDeleteComment(postId, commentId) {
