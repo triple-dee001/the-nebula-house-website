@@ -2782,3 +2782,124 @@ input, textarea {
   }
 }
 
+/* ============================================
+   COMMENTS & THREADS (DP, Replies, Likes)
+   ============================================ */
+.comment {
+  position: relative;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.comment__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.comment__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.comment__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.comment__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.comment__author-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.comment__author {
+  font-weight: 600;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.comment__guest-badge {
+  font-size: 0.78rem;
+  color: #a78bfa;
+  font-weight: 500;
+}
+
+.comment__date {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.comment__body {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+  margin-left: 2.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.comment__actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-left: 2.75rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.comment__action-btn {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.comment__action-btn:hover {
+  color: #fff;
+}
+
+.comment__action-btn.liked {
+  color: #ff4757;
+}
+
+.comment__reply-box {
+  margin-left: 2.75rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+}
+
+.comment-replies {
+  margin-left: 2.25rem;
+  margin-top: 0.75rem;
+  padding-left: 1rem;
+  border-left: 2px solid rgba(255, 255, 255, 0.08);
+}
+

@@ -228,11 +228,15 @@ async function nebulaToggleLike(postId) {
   return apiRequest(`/posts/${postId}/like`, { method: 'POST' });
 }
 
-async function nebulaAddComment(postId, body, guestName = '') {
+async function nebulaAddComment(postId, body, guestName = '', parentId = null) {
   return apiRequest(`/posts/${postId}/comments`, {
     method: 'POST',
-    body: JSON.stringify({ body, guestName }),
+    body: JSON.stringify({ body, guestName, parentId }),
   });
+}
+
+async function nebulaToggleCommentLike(commentId) {
+  return apiRequest(`/posts/comments/${commentId}/like`, { method: 'POST' });
 }
 
 async function nebulaDeleteComment(postId, commentId) {

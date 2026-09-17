@@ -496,7 +496,7 @@ function initInteractions(post) {
   if (shareBtn) shareBtn.onclick = handleShare;
   if (shareBtnTop) shareBtnTop.onclick = handleShare;
 
-  // --- Comments ---
+  // --- Comments Engine ---
   const form = document.getElementById('comment-form');
   const input = document.getElementById('comment-input');
   const list = document.getElementById('comments-list');
@@ -509,13 +509,212 @@ function initInteractions(post) {
     guestNameContainer.style.display = 'block';
   }
 
+  function formatRelativeTime(dateInput) {
+    if (!dateInput) return '';
+    const date = new Date(dateInput);
+    const now = new Date();
+    const diffInSecs = Math.floor((now - date) / 1000);
+    
+    if (diffInSecs < 60) return 'Just now';
+    const diffInMins = Math.floor(diffInSecs / 60);
+    if (diffInMins < 60) return `${diffInMins}m ago`;
+    const diffInHours = Math.floor(diffInMins / 60);
+    if (diffInHours < 24) return `${diffInHours}h ago`;
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays < 7) return `${diffInDays}d ago`;
+    
+    return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function formatAvatarUrl(photo) {
+    if (!photo) return null;
+    if (photo.startsWith('http://') || photo.startsWith('https://') || photo.startsWith('data:')) return photo;
+    return 'https://the-nebula-house-backend.onrender.com' + (photo.startsWith('/') ? photo : '/' + photo);
+  }
+
+  function createCommentNode(c, repliesMap) {
+    const commentDiv = document.createElement('div');
+    commentDiv.className = 'comment';
+    commentDiv.id = `comment-${c.id}`;
+
+    const isGuest = !c.authorId || c.isGuest;
+    const authorName = c.author?.name || c.guestName || 'Guest Reader';
+    const firstLetter = (authorName[0] || 'G').toUpperCase();
+    const photoUrl = formatAvatarUrl(c.author?.photo);
+
+    const avatarHtml = photoUrl
+      ? `<div class="comment__avatar"><img src="${photoUrl}" alt="${escapeHtml(authorName)}"></div>`
+      : `<div class="comment__avatar"><span>${firstLetter}</span></div>`;
+
+    const nameHtml = isGuest
+      ? `<span class="comment__author">${escapeHtml(authorName)}</span> <span class="comment__guest-badge">(Guest)</span>`
+      : `<span class="comment__author">${escapeHtml(authorName)}</span>`;
+
+    const dateStr = formatRelativeTime(c.createdAt);
+
+    let likesCount = typeof c.likesCount === 'number' ? c.likesCount : (c.likes ? c.likes.length : 0);
+    let isLiked = !!c.liked;
+
+    commentDiv.innerHTML = `
+      <div class="comment__header">
+        ${avatarHtml}
+        <div class="comment__meta">
+          <div class="comment__author-row">${nameHtml}</div>
+          <span class="comment__date">${dateStr}</span>
+        </div>
+      </div>
+      <div class="comment__body">${escapeHtml(c.body)}</div>
+      <div class="comment__actions">
+        <button class="comment__action-btn ${isLiked ? 'liked' : ''}" data-action="like-comment">
+          <svg viewBox="0 0 24 24" fill="${isLiked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+          <span class="like-count">${likesCount}</span>
+        </button>
+        <button class="comment__action-btn" data-action="reply-comment">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span>Reply</span>
+        </button>
+      </div>
+
+      <!-- Inline Reply Box (Hidden by default) -->
+      <div class="comment__reply-box" style="display: none;">
+        <form class="comment-reply-form">
+          ${!getCurrentUser() ? `
+            <div style="margin-bottom: 0.5rem;">
+              <input type="text" class="reply-guest-name" placeholder="Your Name (e.g. Reader) - Optional" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); color: #fff; padding: 0.4rem 0.75rem; border-radius: 4px; width: 100%; font-size: 0.88rem;">
+            </div>
+          ` : ''}
+          <textarea class="reply-input" placeholder="Write a reply..." required style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); color: #fff; padding: 0.5rem 0.75rem; border-radius: 4px; width: 100%; font-size: 0.9rem; min-height: 60px; resize: vertical;"></textarea>
+          <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem;">
+            <button type="button" class="btn btn--outline cancel-reply-btn" style="padding: 0.25rem 0.75rem; font-size: 0.8rem;">Cancel</button>
+            <button type="submit" class="btn submit-reply-btn" style="padding: 0.25rem 0.75rem; font-size: 0.8rem;"><span>Reply</span></button>
+          </div>
+        </form>
+      </div>
+
+      <div class="comment-replies"></div>
+    `;
+
+    // --- Like Comment Event ---
+    const likeBtn = commentDiv.querySelector('[data-action="like-comment"]');
+    const likeCountSpan = likeBtn.querySelector('.like-count');
+    const likeSvg = likeBtn.querySelector('svg');
+
+    likeBtn.onclick = async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Optimistic UI toggle
+      if (isLiked) {
+        isLiked = false;
+        likesCount = Math.max(0, likesCount - 1);
+      } else {
+        isLiked = true;
+        likesCount++;
+      }
+
+      likeBtn.classList.toggle('liked', isLiked);
+      likeSvg.setAttribute('fill', isLiked ? 'currentColor' : 'none');
+      likeCountSpan.textContent = likesCount;
+
+      try {
+        const res = await nebulaToggleCommentLike(c.id);
+        if (typeof res.count === 'number') {
+          likesCount = res.count;
+          likeCountSpan.textContent = likesCount;
+        }
+        if (typeof res.liked === 'boolean') {
+          isLiked = res.liked;
+          likeBtn.classList.toggle('liked', isLiked);
+          likeSvg.setAttribute('fill', isLiked ? 'currentColor' : 'none');
+        }
+      } catch (err) {
+        // Revert on error
+        isLiked = !isLiked;
+        likesCount = isLiked ? likesCount + 1 : Math.max(0, likesCount - 1);
+        likeBtn.classList.toggle('liked', isLiked);
+        likeSvg.setAttribute('fill', isLiked ? 'currentColor' : 'none');
+        likeCountSpan.textContent = likesCount;
+        alert(err.message || 'Failed to toggle comment like');
+      }
+    };
+
+    // --- Reply Toggle Event ---
+    const replyBtn = commentDiv.querySelector('[data-action="reply-comment"]');
+    const replyBox = commentDiv.querySelector('.comment__reply-box');
+    const cancelReplyBtn = commentDiv.querySelector('.cancel-reply-btn');
+    const replyForm = commentDiv.querySelector('.comment-reply-form');
+    const replyInput = commentDiv.querySelector('.reply-input');
+    const replyGuestInput = commentDiv.querySelector('.reply-guest-name');
+
+    replyBtn.onclick = () => {
+      const isVisible = replyBox.style.display === 'block';
+      replyBox.style.display = isVisible ? 'none' : 'block';
+      if (!isVisible) replyInput.focus();
+    };
+
+    cancelReplyBtn.onclick = () => {
+      replyBox.style.display = 'none';
+      replyInput.value = '';
+    };
+
+    replyForm.onsubmit = async (e) => {
+      e.preventDefault();
+      const text = replyInput.value.trim();
+      if (!text) return;
+
+      const user = getCurrentUser();
+      const guestName = (!user && replyGuestInput) ? replyGuestInput.value.trim() : '';
+
+      const submitBtn = replyForm.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+
+      try {
+        const savedReply = await nebulaAddComment(post.id, text, guestName, c.id);
+        post.comments = post.comments || [];
+        const newReplyObj = {
+          ...savedReply,
+          author: savedReply.author || {
+            name: user ? user.name : (guestName || 'Guest Reader'),
+            photo: user ? user.photo : null
+          },
+          isGuest: !savedReply.authorId,
+          likesCount: 0,
+          liked: false,
+        };
+        post.comments.push(newReplyObj);
+
+        replyInput.value = '';
+        replyBox.style.display = 'none';
+        renderComments(post.comments);
+      } catch (err) {
+        alert(err.message || 'Failed to submit reply');
+      } finally {
+        submitBtn.disabled = false;
+      }
+    };
+
+    // --- Render Child Replies recursively ---
+    const childReplies = repliesMap.get(c.id) || [];
+    const repliesContainer = commentDiv.querySelector('.comment-replies');
+    if (childReplies.length > 0) {
+      childReplies.forEach(child => {
+        repliesContainer.appendChild(createCommentNode(child, repliesMap));
+      });
+    } else {
+      repliesContainer.style.display = 'none';
+    }
+
+    return commentDiv;
+  }
+
   function renderComments(comments) {
-    const total = comments.length;
+    const total = (comments || []).length;
     if (countEl) {
       countEl.textContent = `${total} Comment${total !== 1 ? 's' : ''}`;
     }
 
-    // Also update top and bottom comment counts
     const commentTop = document.getElementById('comment-count-top');
     if (commentTop) commentTop.textContent = total;
     const commentBottom = document.getElementById('comment-count-bottom');
@@ -527,25 +726,22 @@ function initInteractions(post) {
       return;
     }
 
-    // Render in chronological order
+    // Map parent and child replies
+    const repliesMap = new Map();
+    const topLevelComments = [];
+
     comments.forEach(c => {
-      const commentDiv = document.createElement('div');
-      commentDiv.className = 'comment';
-      
-      const dateStr = new Date(c.createdAt).toLocaleDateString(undefined, {
-        month: 'short', day: 'numeric', year: 'numeric'
-      });
+      if (c.parentId) {
+        if (!repliesMap.has(c.parentId)) repliesMap.set(c.parentId, []);
+        repliesMap.get(c.parentId).push(c);
+      } else {
+        topLevelComments.push(c);
+      }
+    });
 
-      const authorName = c.author?.name || c.guestName || 'Guest Reader';
-
-      commentDiv.innerHTML = `
-        <div class="comment__header">
-          <span class="comment__author">${escapeHtml(authorName)}</span>
-          <span class="comment__date">${dateStr}</span>
-        </div>
-        <div class="comment__body">${escapeHtml(c.body)}</div>
-      `;
-      list.appendChild(commentDiv);
+    // Render top-level comments (which render their child replies recursively)
+    topLevelComments.forEach(c => {
+      list.appendChild(createCommentNode(c, repliesMap));
     });
   }
 
@@ -564,16 +760,18 @@ function initInteractions(post) {
     btn.disabled = true;
     
     try {
-      const savedComment = await nebulaAddComment(post.id, text, guestName);
+      const savedComment = await nebulaAddComment(post.id, text, guestName, null);
       
-      // Push new comment directly to array and re-render
       post.comments = post.comments || [];
       const newCommentObj = {
         ...savedComment,
         author: savedComment.author || {
           name: user ? user.name : (guestName || 'Guest Reader'),
           photo: user ? user.photo : null
-        }
+        },
+        isGuest: !savedComment.authorId,
+        likesCount: 0,
+        liked: false,
       };
       post.comments.unshift(newCommentObj);
       
