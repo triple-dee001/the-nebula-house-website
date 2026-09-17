@@ -501,14 +501,28 @@ function initInteractions(post) {
   const input = document.getElementById('comment-input');
   const list = document.getElementById('comments-list');
   const countEl = document.getElementById('comment-count');
+  const guestNameContainer = document.getElementById('guest-name-container');
+  const guestNameInput = document.getElementById('guest-name-input');
+
+  const currentUser = getCurrentUser();
+  if (!currentUser && guestNameContainer) {
+    guestNameContainer.style.display = 'block';
+  }
 
   function renderComments(comments) {
+    const total = comments.length;
     if (countEl) {
-      countEl.textContent = `${comments.length} Comment${comments.length !== 1 ? 's' : ''}`;
+      countEl.textContent = `${total} Comment${total !== 1 ? 's' : ''}`;
     }
+
+    // Also update top and bottom comment counts
+    const commentTop = document.getElementById('comment-count-top');
+    if (commentTop) commentTop.textContent = total;
+    const commentBottom = document.getElementById('comment-count-bottom');
+    if (commentBottom) commentBottom.textContent = total;
     
     list.innerHTML = '';
-    if (comments.length === 0) {
+    if (total === 0) {
       list.innerHTML = '<p style="color: var(--text-muted); font-style: italic;">No comments yet. Be the first to share your thoughts.</p>';
       return;
     }
@@ -522,9 +536,11 @@ function initInteractions(post) {
         month: 'short', day: 'numeric', year: 'numeric'
       });
 
+      const authorName = c.author?.name || c.guestName || 'Guest Reader';
+
       commentDiv.innerHTML = `
         <div class="comment__header">
-          <span class="comment__author">${escapeHtml(c.author?.name || 'Anonymous Reader')}</span>
+          <span class="comment__author">${escapeHtml(authorName)}</span>
           <span class="comment__date">${dateStr}</span>
         </div>
         <div class="comment__body">${escapeHtml(c.body)}</div>
@@ -542,31 +558,27 @@ function initInteractions(post) {
     if (!text) return;
 
     const user = getCurrentUser();
-    if (!user || !getToken()) {
-      openAuthModal();
-      return;
-    }
-
-    if (!user.emailVerified) {
-      alert('Please verify your email before posting a comment. Check your inbox for the verification link.');
-      return;
-    }
+    const guestName = (!user && guestNameInput) ? guestNameInput.value.trim() : '';
 
     const btn = form.querySelector('button[type="submit"]');
     btn.disabled = true;
     
     try {
-      const savedComment = await nebulaAddComment(post.id, text);
+      const savedComment = await nebulaAddComment(post.id, text, guestName);
       
       // Push new comment directly to array and re-render
       post.comments = post.comments || [];
-      // Backend returns the comment object with author fields
-      post.comments.unshift({
+      const newCommentObj = {
         ...savedComment,
-        author: { name: user.name, photo: user.photo }
-      });
+        author: savedComment.author || {
+          name: user ? user.name : (guestName || 'Guest Reader'),
+          photo: user ? user.photo : null
+        }
+      };
+      post.comments.unshift(newCommentObj);
       
       input.value = '';
+      if (guestNameInput) guestNameInput.value = '';
       renderComments(post.comments);
     } catch (err) {
       alert(err.message || 'Failed to submit comment.');

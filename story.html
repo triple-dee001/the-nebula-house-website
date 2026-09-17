@@ -189,8 +189,11 @@
             <span id="comment-count" style="font-size: 1rem; color: var(--text-muted);">0 Comments</span>
           </div>
           <form class="comment-form" id="comment-form">
+            <div id="guest-name-container" style="display: none; margin-bottom: 0.75rem;">
+              <input type="text" id="guest-name-input" placeholder="Your Name (e.g. Reader) - Optional" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); color: #fff; padding: 0.6rem 1rem; border-radius: 6px; width: 100%; font-size: 0.95rem; font-family: var(--font-secondary);">
+            </div>
             <textarea class="comment-input" id="comment-input" placeholder="Share your thoughts..." required></textarea>
-            <div style="display: flex; justify-content: flex-end;">
+            <div style="display: flex; justify-content: flex-end; margin-top: 0.75rem;">
               <button type="submit" class="btn"><span>Post Comment</span> <span class="arrow">→</span></button>
             </div>
           </form>
