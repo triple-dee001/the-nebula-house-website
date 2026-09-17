@@ -18,7 +18,6 @@ function updateNavbarAuth(user) {
   if (!actionsWrapper) {
     actionsWrapper = document.createElement('div');
     actionsWrapper.className = 'navbar__actions';
-    actionsWrapper.style.cssText = 'display:flex; align-items:center; gap:1.25rem; margin-left:auto;';
     icon.parentNode.insertBefore(actionsWrapper, icon);
     actionsWrapper.appendChild(icon);
   }

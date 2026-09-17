@@ -377,6 +377,15 @@ input, textarea {
   transform: rotate(-45deg) translate(5px, -5px);
 }
 
+/* Actions wrapper (account icon + notifications bell) */
+.navbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-left: auto;
+  z-index: 1001;
+}
+
 /* Account Icon (always visible, sits beside hamburger on mobile) */
 .navbar__account {
   display: flex;
@@ -388,7 +397,6 @@ input, textarea {
   transition: opacity var(--transition-base);
   text-decoration: none;
   z-index: 1001;
-  margin-left: auto;
 }
 
 .navbar__account:hover {
@@ -403,12 +411,19 @@ input, textarea {
   }
   .navbar__logo {
     order: 1;
-    margin-right: 0;
+    margin-right: auto;
   }
-  .navbar__account {
+  .navbar__logo-img {
+    height: 80px;
+    margin-top: -8px;
+    margin-bottom: -8px;
+  }
+  .navbar__account,
+  .navbar__actions {
     order: 2;
     margin-left: auto;
     padding: var(--space-xs);
+    gap: 0.75rem;
   }
   .navbar__toggle {
     order: 3;
