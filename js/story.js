@@ -385,30 +385,33 @@ function showError(msg) {
 function initInteractions(post) {
   const likeBtn = document.getElementById('like-btn');
   const likeCountEl = document.getElementById('like-count');
+  const likeBtnTop = document.getElementById('like-btn-top');
+  const likeCountTopEl = document.getElementById('like-count-top');
   
   let likeCount = post._count?.likes || 0;
   let hasLiked = post.liked || false;
 
+  const filledSvg = `<svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
+  const outlineSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
+
   function updateLikeUI() {
-    likeCountEl.textContent = likeCount;
-    if (hasLiked) {
-      likeBtn.classList.add('liked');
-      likeBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
-    } else {
-      likeBtn.classList.remove('liked');
-      likeBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
-    }
+    [likeBtn, likeBtnTop].forEach(btn => {
+      if (!btn) return;
+      if (hasLiked) {
+        btn.classList.add('liked');
+        btn.style.color = '#ff4757';
+        btn.innerHTML = `${filledSvg}<span>${likeCount}</span>`;
+      } else {
+        btn.classList.remove('liked');
+        btn.style.color = 'inherit';
+        btn.innerHTML = `${outlineSvg}<span>${likeCount}</span>`;
+      }
+    });
   }
 
   updateLikeUI();
 
-  likeBtn.onclick = async () => {
-    const user = getCurrentUser();
-    if (!user || !getToken()) {
-      openAuthModal();
-      return;
-    }
-
+  const handleLikeToggle = async () => {
     // Optimistic UI toggle
     if (hasLiked) {
       hasLiked = false;
@@ -418,58 +421,80 @@ function initInteractions(post) {
       likeCount++;
     }
     updateLikeUI();
-    likeBtn.style.transform = 'scale(1.25)';
-    setTimeout(() => { likeBtn.style.transform = 'scale(1)'; }, 150);
+
+    [likeBtn, likeBtnTop].forEach(btn => {
+      if (btn) {
+        btn.style.transform = 'scale(1.25)';
+        setTimeout(() => { btn.style.transform = 'scale(1)'; }, 150);
+      }
+    });
 
     try {
-      await nebulaToggleLike(post.id);
+      const res = await nebulaToggleLike(post.id);
+      if (typeof res.count === 'number') {
+        likeCount = res.count;
+      }
+      if (typeof res.liked === 'boolean') {
+        hasLiked = res.liked;
+      }
+      updateLikeUI();
     } catch (err) {
       // Revert if API call fails
       hasLiked = !hasLiked;
       likeCount = hasLiked ? likeCount + 1 : Math.max(0, likeCount - 1);
       updateLikeUI();
-      alert(err.message);
+      alert(err.message || 'Failed to toggle like');
     }
   };
 
+  if (likeBtn) likeBtn.onclick = handleLikeToggle;
+  if (likeBtnTop) likeBtnTop.onclick = handleLikeToggle;
+
   // --- Share Post ---
   const shareBtn = document.getElementById('share-btn');
-  if (shareBtn) {
-    shareBtn.onclick = async () => {
-      const storySlug = getStorySlug(post);
-      const cleanUrl = `${window.location.origin}/story/${storySlug}`;
+  const shareBtnTop = document.getElementById('share-btn-top');
 
-      const shareData = {
-        title: post.title,
-        text: post.excerpt || `Read "${post.title}" on The Nebula House.`,
-        url: cleanUrl
-      };
+  const handleShare = async () => {
+    const storySlug = getStorySlug(post);
+    const cleanUrl = `${window.location.origin}/story/${storySlug}`;
 
-      if (navigator.share) {
-        try {
-          await navigator.share(shareData);
-        } catch (err) {
-          console.log('Error sharing:', err);
-        }
-      } else {
-        // Fallback: Copy link
-        try {
-          await navigator.clipboard.writeText(cleanUrl);
-          const shareLabel = document.getElementById('share-label');
-          if (shareLabel) {
-            shareLabel.textContent = 'Link Copied!';
-            shareBtn.style.color = '#4caf50';
-            setTimeout(() => {
-              shareLabel.textContent = 'Share';
-              shareBtn.style.color = 'var(--text-muted)';
-            }, 2000);
-          }
-        } catch (err) {
-          alert('Could not copy link to clipboard.');
-        }
-      }
+    const shareData = {
+      title: post.title,
+      text: post.excerpt || `Read "${post.title}" on The Nebula House.`,
+      url: cleanUrl
     };
-  }
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.log('Error sharing:', err);
+      }
+    } else {
+      // Fallback: Copy link
+      try {
+        await navigator.clipboard.writeText(cleanUrl);
+        const shareLabel = document.getElementById('share-label');
+        if (shareLabel) {
+          shareLabel.textContent = 'Link Copied!';
+          if (shareBtn) shareBtn.style.color = '#4caf50';
+          if (shareBtnTop) shareBtnTop.style.color = '#4caf50';
+          setTimeout(() => {
+            shareLabel.textContent = 'Share';
+            if (shareBtn) shareBtn.style.color = 'var(--text-muted)';
+            if (shareBtnTop) shareBtnTop.style.color = 'inherit';
+          }, 2000);
+        } else {
+          alert('Link copied to clipboard!');
+        }
+      } catch (err) {
+        alert('Could not copy link to clipboard.');
+      }
+    }
+  };
+
+  if (shareBtn) shareBtn.onclick = handleShare;
+  if (shareBtnTop) shareBtnTop.onclick = handleShare;
 
   // --- Comments ---
   const form = document.getElementById('comment-form');

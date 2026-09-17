@@ -18,11 +18,22 @@ function getStoredUser() {
 function setStoredUser(u) { localStorage.setItem('nebula_user', JSON.stringify(u)); }
 function clearStoredUser() { localStorage.removeItem('nebula_user'); }
 
+function getGuestId() {
+  let guestId = localStorage.getItem('nebula_guest_id');
+  if (!guestId) {
+    guestId = 'guest_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+    localStorage.setItem('nebula_guest_id', guestId);
+  }
+  return guestId;
+}
+
 // ─── CORE FETCH WRAPPER ───────────────────────
 async function apiRequest(path, options = {}) {
   const token = getToken();
+  const guestId = getGuestId();
   const headers = { 
     'Content-Type': 'application/json',
+    'X-Guest-ID': guestId,
     'Cache-Control': 'no-cache, no-store, must-revalidate',
     'Pragma': 'no-cache',
     'Expires': '0',
