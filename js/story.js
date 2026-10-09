@@ -306,13 +306,15 @@ async function loadStory(id) {
       };
     }
 
-    // Cover Image (Only display top header image if it's NOT already embedded inside article body)
     const imgContainer = document.getElementById('story-image-container');
     const imgEl = document.getElementById('story-image');
-    let coverUrl = post.coverImage;
+    let coverUrl = post.coverImage ? post.coverImage.trim() : '';
     const bodyHasImage = post.body && coverUrl && post.body.includes(coverUrl);
 
-    if (coverUrl && !bodyHasImage) {
+    // Hide container immediately by default
+    if (imgContainer) imgContainer.style.display = 'none';
+
+    if (coverUrl && coverUrl !== 'null' && coverUrl !== 'undefined' && !bodyHasImage) {
       function formatImageUrl(url) {
         if (!url) return '';
         if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url;
@@ -320,10 +322,20 @@ async function loadStory(id) {
         if (url.startsWith('assets/')) return '/' + url;
         return 'https://the-nebula-house-backend.onrender.com/' + url;
       }
-      imgEl.src = formatImageUrl(coverUrl);
-      imgContainer.style.display = 'block';
+
+      if (imgEl) {
+        // If the image fails to load (e.g. 404 or broken path), hide container completely so no broken image icon or alt text shows
+        imgEl.onerror = () => {
+          if (imgContainer) imgContainer.style.display = 'none';
+        };
+        imgEl.onload = () => {
+          if (imgContainer) imgContainer.style.display = 'block';
+        };
+        imgEl.src = formatImageUrl(coverUrl);
+      }
     } else {
       if (imgContainer) imgContainer.style.display = 'none';
+      if (imgEl) imgEl.removeAttribute('src');
     }
 
     // Body formatting

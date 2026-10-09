@@ -1099,11 +1099,16 @@
 
     // ── Cover image ──
     const coverEl = document.getElementById('pv-cover');
-    if (post.coverImage) {
-      coverEl.src = post.coverImage;
-      coverEl.style.display = 'block';
-    } else {
+    if (coverEl) {
       coverEl.style.display = 'none';
+      const cleanCover = post.coverImage ? post.coverImage.trim() : '';
+      if (cleanCover && cleanCover !== 'null' && cleanCover !== 'undefined') {
+        coverEl.onerror = () => { coverEl.style.display = 'none'; };
+        coverEl.onload = () => { coverEl.style.display = 'block'; };
+        coverEl.src = cleanCover;
+      } else {
+        coverEl.removeAttribute('src');
+      }
     }
 
     // ── Body content ──
