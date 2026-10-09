@@ -357,6 +357,17 @@ async function adminDeletePost(postId) {
 async function adminGetNewsletter() { return apiRequest('/admin/newsletter'); }
 async function adminGetNominations() { return apiRequest('/admin/nominations'); }
 
+// ─── NOTIFICATIONS ───────────────────────────
+async function nebulaGetNotifications() {
+  return apiRequest('/notifications');
+}
+async function nebulaMarkNotificationRead(id) {
+  return apiRequest(`/notifications/${id}/read`, { method: 'PUT' });
+}
+async function nebulaMarkAllNotificationsRead() {
+  return apiRequest('/notifications/read-all', { method: 'PUT' });
+}
+
 // ─── INIT ON PAGE LOAD ────────────────────────
 // Refresh user from server on every page load to keep session fresh
 (async () => {

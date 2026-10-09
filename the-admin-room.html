@@ -332,7 +332,23 @@
         <h1 id="admin-page-title">Dashboard Overview</h1>
         <p id="admin-page-sub">Welcome back, Admin.</p>
       </div>
-      <button class="btn-logout" id="admin-logout">Log Out</button>
+      <div class="admin-topbar__actions" style="display:flex; align-items:center; gap:1rem;">
+        <div id="admin-bell-btn" style="position:relative; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#fff; padding:0.5rem; border:1px solid var(--admin-border); border-radius:7px; background:rgba(255,255,255,0.03);" title="Notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span id="admin-bell-badge" style="display:none; position:absolute; top:-5px; right:-5px; background:#ef4444; color:#fff; font-size:0.65rem; font-weight:800; border-radius:50%; min-width:16px; height:16px; padding:1px; display:flex; align-items:center; justify-content:center; border:2px solid #000; box-sizing:border-box; line-height:1;">0</span>
+          
+          <div id="admin-notif-dropdown" style="position:absolute; top:calc(100% + 8px); right:0; width:330px; background:#0f0f0f; border:1px solid var(--admin-border); border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,0.8); display:none; flex-direction:column; z-index:10005; font-family:inherit; text-align:left;">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:0.85rem 1rem; border-bottom:1px solid rgba(255,255,255,0.08);">
+              <span style="font-weight:700; font-size:0.92rem; color:#fff;">Notifications</span>
+              <button id="admin-notif-read-all" style="font-size:0.75rem; color:#bb86fc; background:none; border:none; cursor:pointer; padding:0;">Mark all read</button>
+            </div>
+            <div id="admin-notif-list" style="overflow-y:auto; max-height:320px; min-height:60px;">
+              <div style="text-align:center; padding:2rem 1rem; color:var(--admin-muted); font-size:0.85rem;">Loading notifications...</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn-logout" id="admin-logout">Log Out</button>
+      </div>
     </div>
 
     <div id="admin-loader" class="admin-loader">Loading dashboard...</div>
@@ -633,6 +649,7 @@
     document.getElementById('admin-page-sub').textContent = `Welcome back, ${user.name || user.email}.`;
     await loadDashboard();
     initChallengesForm();
+    initAdminNotificationsUI();
     document.getElementById('admin-loader').style.display = 'none';
     document.getElementById('admin-content').style.display = 'block';
 
@@ -745,7 +762,96 @@
     renderNewsletterTable(subs);
     renderNominationsTable(noms);
     await loadChallenges();
+    await loadAdminNotifications();
   }
+
+  // ─── ADMIN NOTIFICATIONS ─────────────────────
+  async function loadAdminNotifications() {
+    const listEl = document.getElementById('admin-notif-list');
+    const badgeEl = document.getElementById('admin-bell-badge');
+    if (!listEl) return;
+
+    try {
+      const notifs = await nebulaGetNotifications();
+      const unread = notifs.filter(n => !n.isRead);
+
+      if (badgeEl) {
+        if (unread.length > 0) {
+          badgeEl.textContent = unread.length;
+          badgeEl.style.display = 'flex';
+        } else {
+          badgeEl.style.display = 'none';
+        }
+      }
+
+      if (notifs.length === 0) {
+        listEl.innerHTML = `<div style="text-align:center; padding:2rem 1rem; color:var(--admin-muted); font-size:0.85rem;">No notifications yet.</div>`;
+        return;
+      }
+
+      listEl.innerHTML = notifs.map(n => {
+        const timeStr = new Date(n.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        return `
+          <div class="admin-notif-item" data-id="${n.id}" style="padding:0.85rem 1rem; border-bottom:1px solid rgba(255,255,255,0.05); cursor:pointer; background:${n.isRead ? 'transparent' : 'rgba(255,255,255,0.03)'}; transition:background 0.15s;">
+            <div style="font-weight:600; font-size:0.85rem; color:#fff; display:flex; align-items:center; justify-content:space-between; margin-bottom:0.25rem;">
+              <span>${escapeHtml(n.title)}</span>
+              ${!n.isRead ? `<span style="width:6px; height:6px; border-radius:50%; background:#bb86fc; display:inline-block;"></span>` : ''}
+            </div>
+            <div style="font-size:0.8rem; color:rgba(255,255,255,0.6); line-height:1.4;">${escapeHtml(n.message)}</div>
+            <div style="font-size:0.72rem; color:var(--admin-muted); margin-top:0.35rem;">${timeStr}</div>
+          </div>
+        `;
+      }).join('');
+
+      listEl.querySelectorAll('.admin-notif-item').forEach(item => {
+        item.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const id = item.dataset.id;
+          try {
+            await nebulaMarkNotificationRead(id);
+            await loadAdminNotifications();
+          } catch (err) {
+            console.error('Failed to mark admin notif read:', err);
+          }
+        });
+      });
+    } catch (err) {
+      listEl.innerHTML = `<div style="text-align:center; padding:1.5rem 1rem; color:var(--admin-danger); font-size:0.85rem;">Could not load notifications</div>`;
+    }
+  }
+
+  function initAdminNotificationsUI() {
+    const bellBtn = document.getElementById('admin-bell-btn');
+    const dropdown = document.getElementById('admin-notif-dropdown');
+    const readAllBtn = document.getElementById('admin-notif-read-all');
+    if (!bellBtn || !dropdown) return;
+
+    bellBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = dropdown.style.display === 'flex';
+      dropdown.style.display = isOpen ? 'none' : 'flex';
+      if (!isOpen) loadAdminNotifications();
+    });
+
+    document.addEventListener('click', () => {
+      dropdown.style.display = 'none';
+    });
+
+    dropdown.addEventListener('click', (e) => e.stopPropagation());
+
+    if (readAllBtn) {
+      readAllBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        try {
+          await nebulaMarkAllNotificationsRead();
+          await loadAdminNotifications();
+        } catch (err) {
+          console.error(err);
+        }
+      });
+    }
+  }
+
 
   function renderUsersTable(users) {
     const tbody = document.getElementById('all-users-list');
