@@ -340,6 +340,9 @@ async function adminGetPosts(params = {}) {
   const q = new URLSearchParams(params);
   return apiRequest(`/admin/posts?${q}`);
 }
+async function adminGetPost(postId) {
+  return apiRequest(`/admin/posts/${postId}`);
+}
 async function adminApprovePost(postId) {
   return apiRequest(`/admin/posts/${postId}/approve`, { method: 'PUT' });
 }

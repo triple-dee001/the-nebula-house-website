@@ -152,6 +152,37 @@
 
     /* Loader */
     .admin-loader { text-align: center; padding: 3rem; color: var(--admin-muted); font-size: 0.9rem; }
+
+    /* Preview Modal */
+    .preview-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+      z-index: 9999; overflow-y: auto; padding: 2rem 1rem;
+    }
+    .preview-overlay.open { display: flex; align-items: flex-start; justify-content: center; }
+    .preview-modal {
+      background: #0e0e0e; border: 1px solid var(--admin-border); border-radius: 14px;
+      width: 100%; max-width: 780px; padding: 2.5rem; position: relative; margin: auto;
+    }
+    .preview-modal__close {
+      position: absolute; top: 1.25rem; right: 1.25rem;
+      background: rgba(255,255,255,0.07); border: 1px solid var(--admin-border);
+      color: #fff; border-radius: 50%; width: 32px; height: 32px;
+      font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+    }
+    .preview-modal__close:hover { background: rgba(255,255,255,0.15); }
+    .preview-modal__title { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.3; }
+    .preview-modal__meta { font-size: 0.83rem; color: var(--admin-muted); margin-bottom: 1.75rem; }
+    .preview-modal__body { font-size: 0.97rem; line-height: 1.85; color: rgba(255,255,255,0.85); }
+    .preview-modal__body img { max-width: 100%; border-radius: 8px; margin: 1rem 0; }
+    .preview-modal__body p { margin-bottom: 1rem; }
+    .preview-modal__body h1,.preview-modal__body h2,.preview-modal__body h3 { margin: 1.5rem 0 0.5rem; }
+    .preview-modal__actions { display: flex; gap: 0.75rem; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--admin-border); }
+    .btn-preview {
+      padding: 0.3rem 0.75rem; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid var(--admin-border);
+      border-radius: 5px; font-size: 0.8rem; cursor: pointer; transition: all 0.15s;
+    }
+    .btn-preview:hover { background: rgba(255,255,255,0.14); }
   </style>
 </head>
 <body>
@@ -430,6 +461,21 @@
   </main>
 </div>
 
+<!-- Article Preview Modal -->
+<div class="preview-overlay" id="preview-overlay">
+  <div class="preview-modal">
+    <button class="preview-modal__close" onclick="closePreview()" title="Close">✕</button>
+    <div class="preview-modal__title" id="preview-title"></div>
+    <div class="preview-modal__meta" id="preview-meta"></div>
+    <div class="preview-modal__body" id="preview-body"></div>
+    <div class="preview-modal__actions">
+      <button class="btn-approve" id="preview-approve-btn" onclick="previewApprove()">Approve</button>
+      <button class="btn-reject" id="preview-reject-btn" onclick="previewReject()">Reject</button>
+      <button class="btn-preview" onclick="closePreview()">Close</button>
+    </div>
+  </div>
+</div>
+
 <!-- Scripts -->
 <script src="js/api.js?v=20260819"></script>
   <script src="js/auth.js?v=20260819"></script>
@@ -632,20 +678,18 @@
   function renderApprovalsTable(pending) {
     const tbody = document.getElementById('approvals-list');
     document.getElementById('approvals-empty').style.display = pending.length ? 'none' : 'block';
-    function slugify(text) {
-      if (!text) return '';
-      return text.toString().toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
-    }
 
     tbody.innerHTML = pending.map(p => {
-      const slug = p.slug || slugify(p.title) || p.id;
       return `
       <tr>
-        <td style="font-weight:500; max-width:180px;"><a href="/story/${slug}" target="_blank" style="color:#fff;text-decoration:underline;">${escapeHtml(p.title || 'Untitled')}</a></td>
+        <td style="font-weight:500; max-width:180px;">
+          <button class="btn-preview" onclick="openPreview('${p.id}')" style="text-align:left; font-weight:600; font-size:0.88rem; padding:0; background:none; border:none; color:#fff; cursor:pointer; text-decoration:underline; text-underline-offset:3px;">${escapeHtml(p.title || 'Untitled')}</button>
+        </td>
         <td>${p.author?.name || p.author?.email || '—'}</td>
         <td style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeHtml(p.excerpt||'')}">${escapeHtml(p.excerpt || '—')}</td>
         <td>${p.createdAt ? new Date(p.createdAt).toLocaleDateString() : '—'}</td>
-        <td style="display:flex; gap:0.4rem;">
+        <td style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+          <button class="btn-preview" onclick="openPreview('${p.id}')">Preview</button>
           <button class="btn-approve" onclick="doApprovePost('${p.id}')">Approve</button>
           <button class="btn-reject" onclick="doRejectPost('${p.id}')">Reject</button>
         </td>
@@ -783,6 +827,55 @@
   }
 
 
+  // ─── Preview Modal ───
+  let _previewPostId = null;
+
+  async function openPreview(postId) {
+    _previewPostId = postId;
+    const overlay = document.getElementById('preview-overlay');
+    document.getElementById('preview-title').textContent = 'Loading…';
+    document.getElementById('preview-meta').textContent = '';
+    document.getElementById('preview-body').innerHTML = '';
+    overlay.classList.add('open');
+
+    try {
+      // Fetch full post data from the admin single-post endpoint
+      const post = await adminGetPost(postId);
+
+      if (!post) throw new Error('Post not found');
+
+      document.getElementById('preview-title').textContent = post.title || 'Untitled';
+      document.getElementById('preview-meta').textContent =
+        `By ${post.author?.name || post.author?.email || 'Unknown'} · Submitted ${post.createdAt ? new Date(post.createdAt).toLocaleDateString('en-GB', { year:'numeric', month:'long', day:'numeric' }) : '—'}`;
+      document.getElementById('preview-body').innerHTML = post.content || post.body || '<em style="color:var(--admin-muted)">No content available.</em>';
+    } catch (err) {
+      document.getElementById('preview-title').textContent = 'Could not load article';
+      document.getElementById('preview-body').innerHTML = `<span style="color:var(--admin-danger)">${escapeHtml(err.message)}</span>`;
+    }
+  }
+
+  function closePreview() {
+    document.getElementById('preview-overlay').classList.remove('open');
+    _previewPostId = null;
+  }
+
+  async function previewApprove() {
+    if (!_previewPostId) return;
+    closePreview();
+    await doApprovePost(_previewPostId);
+  }
+
+  async function previewReject() {
+    if (!_previewPostId) return;
+    closePreview();
+    await doRejectPost(_previewPostId);
+  }
+
+  // Close overlay on backdrop click
+  document.getElementById('preview-overlay')?.addEventListener('click', function(e) {
+    if (e.target === this) closePreview();
+  });
+
   // Rename to avoid conflict with api.js function names
   async function doApprovePost(postId) {
     if (!confirm("Approve this article? It will go live in the Writer's Room.")) return;
@@ -878,30 +971,7 @@
     } catch (err) { alert(err.message); }
   }
 
-  // ─── Content Actions ───
-  async function adminApprovePost(postId) {
-    if (!confirm("Approve this article? It will go live in the Writer's Room.")) return;
-    try {
-      await adminApprovePost(postId);
-      await loadDashboard();
-    } catch (err) { alert(err.message); }
-  }
-
-  async function adminRejectPost(postId) {
-    const reason = prompt('Reason for rejection (optional, will be visible to author):') || '';
-    try {
-      await adminRejectPost(postId, reason);
-      await loadDashboard();
-    } catch (err) { alert(err.message); }
-  }
-
-  async function adminDeletePost(postId) {
-    if (!confirm('Permanently delete this article? This cannot be undone.')) return;
-    try {
-      await adminDeletePost(postId);
-      await loadDashboard();
-    } catch (err) { alert(err.message); }
-  }
+  // ─── Content Actions ─── (handled by doApprovePost / doRejectPost / doDeletePost above)
 
   async function deleteUserAdmin(uid) {
     if (!confirm('Delete this user account? This cannot be undone.')) return;
