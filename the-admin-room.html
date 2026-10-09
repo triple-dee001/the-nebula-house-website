@@ -153,36 +153,108 @@
     /* Loader */
     .admin-loader { text-align: center; padding: 3rem; color: var(--admin-muted); font-size: 0.9rem; }
 
-    /* Preview Modal */
+    /* Preview Modal — mirrors the real story page */
     .preview-overlay {
-      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85);
-      z-index: 9999; overflow-y: auto; padding: 2rem 1rem;
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 9999; overflow-y: auto;
     }
     .preview-overlay.open { display: flex; align-items: flex-start; justify-content: center; }
-    .preview-modal {
-      background: #0e0e0e; border: 1px solid var(--admin-border); border-radius: 14px;
-      width: 100%; max-width: 780px; padding: 2.5rem; position: relative; margin: auto;
+
+    /* Floating admin bar pinned to top */
+    .preview-adminbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 10000;
+      background: rgba(5,5,5,0.95); backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: none; align-items: center; justify-content: space-between;
+      padding: 0.65rem 1.5rem; gap: 1rem;
     }
-    .preview-modal__close {
-      position: absolute; top: 1.25rem; right: 1.25rem;
-      background: rgba(255,255,255,0.07); border: 1px solid var(--admin-border);
-      color: #fff; border-radius: 50%; width: 32px; height: 32px;
-      font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
-      transition: background 0.15s;
+    .preview-overlay.open .preview-adminbar { display: flex; }
+    .preview-adminbar__label {
+      font-size: 0.78rem; color: rgba(255,255,255,0.4);
+      text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;
     }
-    .preview-modal__close:hover { background: rgba(255,255,255,0.15); }
-    .preview-modal__title { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.3; }
-    .preview-modal__meta { font-size: 0.83rem; color: var(--admin-muted); margin-bottom: 1.75rem; }
-    .preview-modal__body { font-size: 0.97rem; line-height: 1.85; color: rgba(255,255,255,0.85); }
-    .preview-modal__body img { max-width: 100%; border-radius: 8px; margin: 1rem 0; }
-    .preview-modal__body p { margin-bottom: 1rem; }
-    .preview-modal__body h1,.preview-modal__body h2,.preview-modal__body h3 { margin: 1.5rem 0 0.5rem; }
-    .preview-modal__actions { display: flex; gap: 0.75rem; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--admin-border); }
+    .preview-adminbar__actions { display: flex; gap: 0.6rem; align-items: center; }
+
+    /* Story viewport — matches the real site look */
+    .preview-story-wrap {
+      width: 100%; max-width: 720px;
+      margin: 0 auto;
+      padding: 5rem 1.5rem 4rem;
+      color: #fff;
+    }
+
+    /* Article header */
+    .pv-title {
+      font-family: var(--font-primary, 'Georgia', serif);
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700; line-height: 1.25;
+      margin-bottom: 0.75rem; color: #fff;
+    }
+    .pv-subtitle {
+      font-size: 1.1rem; color: rgba(255,255,255,0.65);
+      line-height: 1.5; margin-bottom: 1.5rem;
+    }
+
+    /* Author row */
+    .pv-author-row {
+      display: flex; align-items: center; gap: 0.85rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 1.5rem;
+    }
+    .pv-avatar {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 1rem; color: #fff; flex-shrink: 0;
+      overflow: hidden;
+    }
+    .pv-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .pv-author-name { font-weight: 600; font-size: 0.95rem; color: #fff; }
+    .pv-author-sub { font-size: 0.82rem; color: rgba(255,255,255,0.45); margin-top: 0.15rem; }
+
+    /* Cover image */
+    .pv-cover {
+      width: 100%; border-radius: 6px;
+      box-shadow: 0 6px 30px rgba(0,0,0,0.55);
+      margin-bottom: 2rem; display: block;
+    }
+
+    /* Article body — matches .article-body on the real site */
+    .pv-body {
+      font-size: 1.05rem; line-height: 1.9;
+      color: rgba(255,255,255,0.88);
+      font-family: var(--font-secondary, 'Inter', sans-serif);
+    }
+    .pv-body p  { margin-bottom: 1.25rem; }
+    .pv-body h1, .pv-body h2, .pv-body h3 { font-family: var(--font-primary, 'Georgia', serif); margin: 2rem 0 0.75rem; color: #fff; line-height: 1.3; }
+    .pv-body h1 { font-size: 1.7rem; }
+    .pv-body h2 { font-size: 1.4rem; }
+    .pv-body h3 { font-size: 1.15rem; }
+    .pv-body img { display: block; max-width: 100%; height: auto; border-radius: 8px; margin: 2rem auto; box-shadow: 0 8px 30px rgba(0,0,0,0.6); }
+    .pv-body blockquote { border-left: 3px solid rgba(255,255,255,0.25); margin: 1.5rem 0; padding: 0.5rem 0 0.5rem 1.25rem; color: rgba(255,255,255,0.6); font-style: italic; }
+    .pv-body a { color: rgba(255,255,255,0.75); text-decoration: underline; }
+    .pv-body ul, .pv-body ol { padding-left: 1.5rem; margin-bottom: 1.25rem; }
+    .pv-body li { margin-bottom: 0.4rem; }
+    .pv-body strong { color: #fff; }
+
+    /* Pending banner */
+    .pv-pending-banner {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(255,183,77,0.1); border: 1px solid rgba(255,183,77,0.25);
+      color: #ffb74d; font-size: 0.78rem; font-weight: 600;
+      padding: 0.3rem 0.8rem; border-radius: 20px; margin-bottom: 1.25rem;
+      text-transform: uppercase; letter-spacing: 0.07em;
+    }
+
     .btn-preview {
-      padding: 0.3rem 0.75rem; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid var(--admin-border);
-      border-radius: 5px; font-size: 0.8rem; cursor: pointer; transition: all 0.15s;
+      padding: 0.4rem 1rem; background: transparent; color: rgba(255,255,255,0.6);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px; font-size: 0.82rem; cursor: pointer; transition: all 0.15s;
+      font-family: inherit;
     }
-    .btn-preview:hover { background: rgba(255,255,255,0.14); }
+    .btn-preview:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
   </style>
 </head>
 <body>
@@ -461,18 +533,44 @@
   </main>
 </div>
 
-<!-- Article Preview Modal -->
+<!-- Article Preview Modal — full story-page experience -->
 <div class="preview-overlay" id="preview-overlay">
-  <div class="preview-modal">
-    <button class="preview-modal__close" onclick="closePreview()" title="Close">✕</button>
-    <div class="preview-modal__title" id="preview-title"></div>
-    <div class="preview-modal__meta" id="preview-meta"></div>
-    <div class="preview-modal__body" id="preview-body"></div>
-    <div class="preview-modal__actions">
-      <button class="btn-approve" id="preview-approve-btn" onclick="previewApprove()">Approve</button>
-      <button class="btn-reject" id="preview-reject-btn" onclick="previewReject()">Reject</button>
-      <button class="btn-preview" onclick="closePreview()">Close</button>
+
+  <!-- Pinned admin action bar -->
+  <div class="preview-adminbar">
+    <span class="preview-adminbar__label">⚠ Admin Preview — Pending Article</span>
+    <div class="preview-adminbar__actions">
+      <button class="btn-approve" onclick="previewApprove()">✓ Approve</button>
+      <button class="btn-reject" onclick="previewReject()">✕ Reject</button>
+      <button class="btn-preview" onclick="closePreview()">← Back to Dashboard</button>
     </div>
+  </div>
+
+  <!-- Story content area (scrollable) -->
+  <div class="preview-story-wrap">
+
+    <!-- Pending badge -->
+    <div class="pv-pending-banner">⏳ Pending Review</div>
+
+    <!-- Title & subtitle -->
+    <h1 class="pv-title" id="pv-title">Loading…</h1>
+    <p class="pv-subtitle" id="pv-subtitle" style="display:none;"></p>
+
+    <!-- Author row -->
+    <div class="pv-author-row">
+      <div class="pv-avatar" id="pv-avatar">?</div>
+      <div>
+        <div class="pv-author-name" id="pv-author-name">—</div>
+        <div class="pv-author-sub" id="pv-author-sub">—</div>
+      </div>
+    </div>
+
+    <!-- Cover image -->
+    <img class="pv-cover" id="pv-cover" src="" alt="Cover image" style="display:none;">
+
+    <!-- Article body -->
+    <div class="pv-body" id="pv-body"></div>
+
   </div>
 </div>
 
@@ -834,43 +932,71 @@
 
   function openPreview(postId) {
     _previewPostId = postId;
-    const overlay = document.getElementById('preview-overlay');
-    overlay.classList.add('open');
+    document.getElementById('preview-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
 
-    // Look up from the cached pending list — no extra API call needed for meta
     const post = pendingCache.find(p => p.id === postId);
 
     if (!post) {
-      document.getElementById('preview-title').textContent = 'Article not found';
-      document.getElementById('preview-meta').textContent = '';
-      document.getElementById('preview-body').innerHTML = '<em style="color:var(--admin-muted)">Could not find this article in the pending list.</em>';
+      document.getElementById('pv-title').textContent = 'Article not found';
+      document.getElementById('pv-body').innerHTML = '<em style="color:rgba(255,255,255,0.4)">Could not find this article in the pending list.</em>';
       return;
     }
 
-    // Show meta immediately from cache
-    document.getElementById('preview-title').textContent = post.title || 'Untitled';
-    document.getElementById('preview-meta').textContent =
-      `By ${post.author?.name || post.author?.email || 'Unknown'} · Submitted ${post.createdAt ? new Date(post.createdAt).toLocaleDateString('en-GB', { year:'numeric', month:'long', day:'numeric' }) : '—'}`;
+    // ── Title & subtitle ──
+    document.getElementById('pv-title').textContent = post.title || 'Untitled';
+    const subtitleEl = document.getElementById('pv-subtitle');
+    if (post.subtitle) {
+      subtitleEl.textContent = post.subtitle;
+      subtitleEl.style.display = '';
+    } else {
+      subtitleEl.style.display = 'none';
+    }
 
-    // If body/content is already in the cache, show it right away
+    // ── Author avatar (photo or initial) ──
+    const authorName = post.author?.name || post.author?.email || 'Unknown';
+    const avatarEl = document.getElementById('pv-avatar');
+    if (post.author?.photo) {
+      avatarEl.innerHTML = `<img src="${post.author.photo}" alt="${escapeHtml(authorName)}">`;
+    } else {
+      avatarEl.textContent = authorName.charAt(0).toUpperCase();
+    }
+
+    // ── Author meta row ──
+    document.getElementById('pv-author-name').textContent = authorName;
+    const wordCount = (post.body || post.content || '').replace(/<[^>]*>/g, '').split(/\s+/).filter(Boolean).length;
+    const readMins = Math.max(1, Math.round(wordCount / 200));
+    const dateStr = post.createdAt ? new Date(post.createdAt).toLocaleDateString('en-GB', { year:'numeric', month:'long', day:'numeric' }) : '—';
+    document.getElementById('pv-author-sub').textContent = `${readMins} min read · Submitted ${dateStr}`;
+
+    // ── Cover image ──
+    const coverEl = document.getElementById('pv-cover');
+    if (post.coverImage) {
+      coverEl.src = post.coverImage;
+      coverEl.style.display = 'block';
+    } else {
+      coverEl.style.display = 'none';
+    }
+
+    // ── Body content ──
     const cachedBody = post.body || post.content;
     if (cachedBody) {
-      document.getElementById('preview-body').innerHTML = cachedBody;
+      document.getElementById('pv-body').innerHTML = cachedBody;
     } else {
-      // Body not in list response — fetch the full post from the admin endpoint
-      document.getElementById('preview-body').innerHTML = '<em style="color:var(--admin-muted)">Loading content…</em>';
+      document.getElementById('pv-body').innerHTML = '<em style="color:rgba(255,255,255,0.4)">Loading content…</em>';
       adminGetPost(postId)
         .then(full => {
-          document.getElementById('preview-body').innerHTML = full.body || full.content || '<em style="color:var(--admin-muted)">No content available.</em>';
+          document.getElementById('pv-body').innerHTML = full.body || full.content || '<em style="color:rgba(255,255,255,0.4)">No content available.</em>';
         })
         .catch(() => {
-          document.getElementById('preview-body').innerHTML = '<em style="color:var(--admin-muted)">Content could not be loaded. You can still approve or reject based on the excerpt above.</em>';
+          document.getElementById('pv-body').innerHTML = '<em style="color:rgba(255,255,255,0.4)">Content could not be loaded — you can still approve or reject from the dashboard.</em>';
         });
     }
   }
 
   function closePreview() {
     document.getElementById('preview-overlay').classList.remove('open');
+    document.body.style.overflow = '';
     _previewPostId = null;
   }
 
