@@ -538,11 +538,23 @@
 
   <!-- Pinned admin action bar -->
   <div class="preview-adminbar">
-    <span class="preview-adminbar__label">⚠ Admin Preview — Pending Article</span>
+    <span class="preview-adminbar__label">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px; margin-right:0.35rem;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      Admin Preview — Pending Article
+    </span>
     <div class="preview-adminbar__actions">
-      <button class="btn-approve" onclick="previewApprove()">✓ Approve</button>
-      <button class="btn-reject" onclick="previewReject()">✕ Reject</button>
-      <button class="btn-preview" onclick="closePreview()">← Back to Dashboard</button>
+      <button class="btn-approve" onclick="previewApprove()" style="display:inline-flex;align-items:center;gap:0.4rem;">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Approve
+      </button>
+      <button class="btn-reject" onclick="previewReject()" style="display:inline-flex;align-items:center;gap:0.4rem;">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Reject
+      </button>
+      <button class="btn-preview" onclick="closePreview()" style="display:inline-flex;align-items:center;gap:0.4rem;">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to Dashboard
+      </button>
     </div>
   </div>
 
@@ -550,7 +562,10 @@
   <div class="preview-story-wrap">
 
     <!-- Pending badge -->
-    <div class="pv-pending-banner">⏳ Pending Review</div>
+    <div class="pv-pending-banner">
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Pending Review
+    </div>
 
     <!-- Title & subtitle -->
     <h1 class="pv-title" id="pv-title">Loading…</h1>
