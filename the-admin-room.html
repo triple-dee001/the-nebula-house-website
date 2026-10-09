@@ -483,6 +483,7 @@
 <script>
   let allUsersCache = [];
   let allArticlesCache = [];
+  let pendingCache = [];
 
   document.addEventListener('DOMContentLoaded', async () => {
     // Aggressively clear ALL old Firebase/legacy session keys
@@ -578,6 +579,7 @@
 
     allUsersCache = users;
     allArticlesCache = posts;
+    pendingCache = pending;
 
     // Stats
     document.getElementById('stat-users').textContent = statsData.users?.total || users.length;
@@ -830,27 +832,40 @@
   // ─── Preview Modal ───
   let _previewPostId = null;
 
-  async function openPreview(postId) {
+  function openPreview(postId) {
     _previewPostId = postId;
     const overlay = document.getElementById('preview-overlay');
-    document.getElementById('preview-title').textContent = 'Loading…';
-    document.getElementById('preview-meta').textContent = '';
-    document.getElementById('preview-body').innerHTML = '';
     overlay.classList.add('open');
 
-    try {
-      // Fetch full post data from the admin single-post endpoint
-      const post = await adminGetPost(postId);
+    // Look up from the cached pending list — no extra API call needed for meta
+    const post = pendingCache.find(p => p.id === postId);
 
-      if (!post) throw new Error('Post not found');
+    if (!post) {
+      document.getElementById('preview-title').textContent = 'Article not found';
+      document.getElementById('preview-meta').textContent = '';
+      document.getElementById('preview-body').innerHTML = '<em style="color:var(--admin-muted)">Could not find this article in the pending list.</em>';
+      return;
+    }
 
-      document.getElementById('preview-title').textContent = post.title || 'Untitled';
-      document.getElementById('preview-meta').textContent =
-        `By ${post.author?.name || post.author?.email || 'Unknown'} · Submitted ${post.createdAt ? new Date(post.createdAt).toLocaleDateString('en-GB', { year:'numeric', month:'long', day:'numeric' }) : '—'}`;
-      document.getElementById('preview-body').innerHTML = post.content || post.body || '<em style="color:var(--admin-muted)">No content available.</em>';
-    } catch (err) {
-      document.getElementById('preview-title').textContent = 'Could not load article';
-      document.getElementById('preview-body').innerHTML = `<span style="color:var(--admin-danger)">${escapeHtml(err.message)}</span>`;
+    // Show meta immediately from cache
+    document.getElementById('preview-title').textContent = post.title || 'Untitled';
+    document.getElementById('preview-meta').textContent =
+      `By ${post.author?.name || post.author?.email || 'Unknown'} · Submitted ${post.createdAt ? new Date(post.createdAt).toLocaleDateString('en-GB', { year:'numeric', month:'long', day:'numeric' }) : '—'}`;
+
+    // If body/content is already in the cache, show it right away
+    const cachedBody = post.body || post.content;
+    if (cachedBody) {
+      document.getElementById('preview-body').innerHTML = cachedBody;
+    } else {
+      // Body not in list response — fetch the full post from the admin endpoint
+      document.getElementById('preview-body').innerHTML = '<em style="color:var(--admin-muted)">Loading content…</em>';
+      adminGetPost(postId)
+        .then(full => {
+          document.getElementById('preview-body').innerHTML = full.body || full.content || '<em style="color:var(--admin-muted)">No content available.</em>';
+        })
+        .catch(() => {
+          document.getElementById('preview-body').innerHTML = '<em style="color:var(--admin-muted)">Content could not be loaded. You can still approve or reject based on the excerpt above.</em>';
+        });
     }
   }
 
