@@ -461,8 +461,13 @@
 
     // ─── Publish Flow ───
     document.getElementById('btn-open-publish').addEventListener('click', () => {
-      const text = quill.getText().trim();
-      document.getElementById('publish-excerpt').value = text.substring(0, 200) + (text.length > 200 ? '...' : '');
+      const excerptInput = document.getElementById('publish-excerpt');
+      if (!excerptInput.value.trim()) {
+        const text = quill.getText().trim();
+        excerptInput.value = text.substring(0, 200) + (text.length > 200 ? '...' : '');
+      }
+      const modalTitle = document.querySelector('#publish-modal h2');
+      if (modalTitle) modalTitle.textContent = editId ? 'Save Story Changes' : 'Ready to publish?';
       document.getElementById('publish-modal').classList.add('open');
     });
 
