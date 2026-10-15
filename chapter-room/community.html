@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" data-cr-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Literary Community & Discussions | The Chapter Room</title>
+  <meta name="description" content="Engage in thoughtful discourse, explore discussions of the week, and discover community-recommended books.">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/chapter-room.css">
+</head>
+<body class="cr-page" data-cr-theme="dark">
+
+  <!-- TOP NAVIGATION -->
+  <div id="mount-nav"></div>
+
+  <main class="cr-container" id="main-content" style="padding-top:var(--cr-space-8, 2rem); padding-bottom:var(--cr-space-16, 4rem);">
+
+    <header class="cr-section-header">
+      <span class="cr-section-header__label">LITERARY FORUM</span>
+      <h1 class="cr-section-header__title">Community & Thoughtful Discourse</h1>
+      <p class="cr-section-header__desc">
+        No superficial vanity metrics or algorithmic noise. Every conversation is anchored in a specific chapter, protected from spoilers, and driven by reflection.
+      </p>
+      <div class="cr-section-header__rule"></div>
+    </header>
+
+    <!-- DISCUSSION OF THE WEEK (FEATURED ESSAY PROMPT) -->
+    <section class="cr-section cr-section--surface" style="border:1px solid var(--cr-border-subtle); border-radius:var(--cr-radius-xs, 2px); padding:var(--cr-space-6, 1.5rem); margin-bottom:var(--cr-space-8, 2rem);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem; flex-wrap:wrap; gap:0.5rem;">
+        <span class="cr-chip cr-chip--accent" style="font-weight:700;">DISCUSSION OF THE WEEK &bull; OCT 12–19</span>
+        <span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary);">From <strong>Notes from Underground</strong> &bull; Chapter 2</span>
+      </div>
+
+      <h2 class="cr-h2" style="margin-top:0.25rem; margin-bottom:var(--cr-space-3, 0.75rem);">
+        The Underground Man vs. The Crystal Palace: Is irrationality necessary for true human freedom?
+      </h2>
+
+      <p class="cr-reading-text" style="font-size:var(--cr-text-base); color:var(--cr-text-secondary); max-width:760px; margin-bottom:var(--cr-space-4, 1rem);">
+        Dostoevsky asserts that if human beings were provided with complete material perfection, mathematical peace, and infallible scientific direction, they would deliberately smash the system—purely to prove they are free men and not piano keys. Do modern systems prove him right?
+      </p>
+
+      <div style="display:flex; align-items:center; gap:var(--cr-space-4, 1rem); flex-wrap:wrap;">
+        <a href="chapter.html?book=notes-from-underground&chapter=2" class="btn">
+          <span>Join This Discussion</span>
+          <span class="arrow">&rarr;</span>
+        </a>
+        <span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary);">47 reader notes &bull; 92 reactions</span>
+      </div>
+    </section>
+
+    <!-- COMMUNITY NAVIGATION TABS -->
+    <div class="cr-filter-bar" id="community-tabs" role="tablist" style="margin-bottom:var(--cr-space-6, 1.5rem);">
+      <button type="button" class="cr-chip is-active" data-view="discussing" role="tab" aria-selected="true">
+        Currently Discussing
+      </button>
+      <button type="button" class="cr-chip" data-view="new" role="tab" aria-selected="false">
+        New Discussions
+      </button>
+      <button type="button" class="cr-chip" data-view="thoughtful" role="tab" aria-selected="false">
+        Most Thoughtful
+      </button>
+      <button type="button" class="cr-chip" data-view="recommendations" role="tab" aria-selected="false">
+        Community Recommendations
+      </button>
+    </div>
+
+    <!-- TAB VIEW CONTAINER -->
+    <div id="mount-community-content"></div>
+
+  </main>
+
+  <!-- CHAPTER ROOM FOOTER -->
+  <div id="mount-footer"></div>
+
+  <!-- MOBILE BOTTOM TAB BAR -->
+  <div id="mount-tabbar"></div>
+
+  <!-- SCRIPTS -->
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/chapter-room/tokens.js"></script>
+  <script src="../js/chapter-room/data.js"></script>
+  <script src="../js/chapter-room/components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('mount-nav').innerHTML = CRComponents.renderNav('community', { rootPath: '../', crPath: '' });
+      document.getElementById('mount-tabbar').innerHTML = CRComponents.renderTabBar('community', { crPath: '' });
+      document.getElementById('mount-footer').innerHTML = CRComponents.renderFooter({ rootPath: '../', crPath: '' });
+
+      var currentView = 'discussing';
+
+      function renderView() {
+        var container = document.getElementById('mount-community-content');
+
+        if (currentView === 'recommendations') {
+          var books = CRData.getAllBooks();
+          books.sort(function (a, b) { return (b.recommendRate || 0) - (a.recommendRate || 0); });
+
+          container.innerHTML = '<div style="display:flex; flex-direction:column; gap:var(--cr-space-4, 1rem);">' +
+            books.map(function (b) {
+              return '<div style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); padding:var(--cr-space-4, 1rem); border-radius:var(--cr-radius-xs, 2px); display:grid; grid-template-columns:100px 1fr; gap:var(--cr-space-4, 1rem); align-items:start;">' +
+                CRComponents.renderBookCover({ title: b.title, author: b.author, genre: b.genre, cover: b.cover, fallback: !b.cover }) +
+                '<div>' +
+                  '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.25rem;">' +
+                    '<span class="cr-chip cr-chip--accent" style="font-weight:700;">' + b.recommendRate + '% of readers recommend</span>' +
+                    '<span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary);">' + b.chapterCount + ' chapters</span>' +
+                  '</div>' +
+                  '<h3 class="cr-h3" style="margin:0.25rem 0;"><a href="book.html?id=' + b.id + '">' + b.title + '</a></h3>' +
+                  '<p style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); margin:0 0 0.5rem 0;">by ' + b.author + ' &bull; ' + b.readingTime + '</p>' +
+                  '<p style="font-size:var(--cr-text-sm); color:var(--cr-text-secondary); margin:0 0 0.75rem 0;">' + b.description + '</p>' +
+                  '<a href="book.html?id=' + b.id + '" class="link-btn">Start Reading &rarr;</a>' +
+                '</div>' +
+              '</div>';
+            }).join('') +
+          '</div>';
+          return;
+        }
+
+        // Fetch comments pool from active chapters
+        var ch1 = CRData.getChapterContent('notes-from-underground', 1);
+        var ch2 = CRData.getChapterContent('notes-from-underground', 2);
+        var comments = (ch1 ? ch1.comments : []).concat(ch2 ? ch2.comments : []);
+
+        if (currentView === 'thoughtful') {
+          comments.sort(function (a, b) {
+            var sumA = (a.reactions.madeMeThink || 0) + (a.reactions.excellentPoint || 0);
+            var sumB = (b.reactions.madeMeThink || 0) + (b.reactions.excellentPoint || 0);
+            return sumB - sumA;
+          });
+        }
+
+        container.innerHTML = '<div style="display:flex; flex-direction:column; gap:var(--cr-space-4, 1rem);">' +
+          comments.map(function (c) {
+            return '<div style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); border-radius:var(--cr-radius-xs, 2px); padding:var(--cr-space-4, 1rem);">' +
+              '<div style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); margin-bottom:var(--cr-space-2, 0.5rem); display:flex; justify-content:space-between;">' +
+                '<span>Discussion on <strong>Notes from Underground</strong> &bull; Chapter ' + c.chapterNumber + '</span>' +
+                '<a href="chapter.html?book=notes-from-underground&chapter=' + c.chapterNumber + '" class="cr-link">Go to Chapter &rarr;</a>' +
+              '</div>' +
+              CRComponents.renderComment(c) +
+            '</div>';
+          }).join('') +
+        '</div>';
+      }
+
+      document.querySelectorAll('#community-tabs [data-view]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          document.querySelectorAll('#community-tabs [data-view]').forEach(function (b) {
+            b.classList.remove('is-active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          btn.classList.add('is-active');
+          btn.setAttribute('aria-selected', 'true');
+          currentView = btn.getAttribute('data-view');
+          renderView();
+        });
+      });
+
+      renderView();
+    });
+  </script>
+</body>
+</html>

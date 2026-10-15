@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" data-cr-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications | The Chapter Room</title>
+  <meta name="description" content="Stay updated on chapter unlocking, discussion replies, and literary community reactions.">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/chapter-room.css">
+</head>
+<body class="cr-page" data-cr-theme="dark">
+
+  <!-- TOP NAVIGATION -->
+  <div id="mount-nav"></div>
+
+  <main class="cr-container" id="main-content" style="max-width:var(--cr-container-narrow, 760px); padding-top:var(--cr-space-8, 2rem); padding-bottom:var(--cr-space-16, 4rem);">
+
+    <header class="cr-section-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem;">
+      <div>
+        <span class="cr-section-header__label">UPDATES & ACTIVITY</span>
+        <h1 class="cr-section-header__title">Notifications</h1>
+        <p class="cr-section-header__desc">
+          Chapter unlocking, reader replies to your thoughts, and reactions from the community.
+        </p>
+      </div>
+      <div>
+        <button type="button" class="btn btn--outline btn--sm" id="mark-all-read-btn">
+          <span>Mark All as Read</span>
+        </button>
+      </div>
+    </header>
+
+    <div id="mount-notifications-list" style="display:flex; flex-direction:column; gap:var(--cr-space-3, 0.75rem);"></div>
+
+  </main>
+
+  <!-- CHAPTER ROOM FOOTER -->
+  <div id="mount-footer"></div>
+
+  <!-- MOBILE BOTTOM TAB BAR -->
+  <div id="mount-tabbar"></div>
+
+  <!-- SCRIPTS -->
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/chapter-room/tokens.js"></script>
+  <script src="../js/chapter-room/data.js"></script>
+  <script src="../js/chapter-room/components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('mount-nav').innerHTML = CRComponents.renderNav('community', { rootPath: '../', crPath: '' });
+      document.getElementById('mount-tabbar').innerHTML = CRComponents.renderTabBar('community', { crPath: '' });
+      document.getElementById('mount-footer').innerHTML = CRComponents.renderFooter({ rootPath: '../', crPath: '' });
+
+      var NOTIFICATIONS = [
+        {
+          id: 'n1',
+          type: 'unlock',
+          title: 'Chapter 2 Unlocked',
+          desc: 'You completed Chapter 1 of Notes from Underground. Chapter 2: Underground (Sections V to IX) is now ready to read.',
+          time: '2 hours ago',
+          href: 'chapter.html?book=notes-from-underground&chapter=2',
+          unread: true,
+          icon: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 11V7a5 5 0 0 1 9.9-1"></path><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect></svg>'
+        },
+        {
+          id: 'n2',
+          type: 'reaction',
+          title: 'Reader Reaction on Your Thought',
+          desc: 'Elena Vance reacted "Made me think" to your note on Chapter 1.',
+          time: '4 hours ago',
+          href: 'chapter.html?book=notes-from-underground&chapter=1',
+          unread: true,
+          icon: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>'
+        },
+        {
+          id: 'n3',
+          type: 'reply',
+          title: 'New Reply in Thread',
+          desc: 'Marcus Vance replied to your discussion on the Crystal Palace.',
+          time: 'Yesterday',
+          href: 'thread.html?book=notes-from-underground&chapter=1&id=c101',
+          unread: false,
+          icon: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>'
+        }
+      ];
+
+      function renderNotifications() {
+        var container = document.getElementById('mount-notifications-list');
+        if (NOTIFICATIONS.length === 0) {
+          container.innerHTML = CRComponents.renderEmptyState({
+            title: 'No notifications',
+            desc: 'When other readers engage with your thoughts or new chapters unlock, you will see them here.',
+            actionLabel: 'Explore Discussions',
+            actionHref: 'community.html'
+          });
+          return;
+        }
+
+        container.innerHTML = NOTIFICATIONS.map(function (n) {
+          var unreadDot = n.unread ? '<span style="width:8px; height:8px; border-radius:50%; background:#ffffff; display:inline-block;"></span>' : '';
+          return '<a href="' + n.href + '" style="text-decoration:none; display:flex; align-items:start; gap:var(--cr-space-3, 0.75rem); background:var(--cr-bg-surface); border:1px solid ' + (n.unread ? 'var(--cr-border-strong)' : 'var(--cr-border-subtle)') + '; border-radius:var(--cr-radius-xs, 2px); padding:var(--cr-space-4, 1rem); transition:all 0.2s;">' +
+            '<div style="width:36px; height:36px; border-radius:50%; background:var(--cr-bg-card); display:flex; align-items:center; justify-content:center; color:var(--cr-text-primary); flex-shrink:0;">' +
+              n.icon +
+            '</div>' +
+            '<div style="flex:1;">' +
+              '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.25rem;">' +
+                '<h4 style="margin:0; font-family:var(--cr-font-sans); font-size:var(--cr-text-sm); font-weight:600; color:var(--cr-text-primary);">' + n.title + '</h4>' +
+                '<span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary);">' + n.time + ' ' + unreadDot + '</span>' +
+              '</div>' +
+              '<p style="margin:0; font-size:var(--cr-text-xs); color:var(--cr-text-secondary); line-height:1.5;">' + n.desc + '</p>' +
+            '</div>' +
+          '</a>';
+        }).join('');
+      }
+
+      document.getElementById('mark-all-read-btn').addEventListener('click', function () {
+        NOTIFICATIONS.forEach(function (n) { n.unread = false; });
+        renderNotifications();
+      });
+
+      renderNotifications();
+    });
+  </script>
+</body>
+</html>

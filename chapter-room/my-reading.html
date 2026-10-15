@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en" data-cr-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Reading Shelf | The Chapter Room</title>
+  <meta name="description" content="Manage your reading life: currently reading, next up, wishlist, finished reflections, and guilt-free abandoned books.">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/chapter-room.css">
+</head>
+<body class="cr-page" data-cr-theme="dark">
+
+  <!-- TOP NAVIGATION -->
+  <div id="mount-nav"></div>
+
+  <main class="cr-container" id="main-content" style="padding-top:var(--cr-space-8, 2rem); padding-bottom:var(--cr-space-16, 4rem);">
+
+    <header class="cr-section-header">
+      <span class="cr-section-header__label">PERSONAL LIBRARY</span>
+      <h1 class="cr-section-header__title">My Reading Shelf</h1>
+      <p class="cr-section-header__desc">
+        Your literary workspace. Track reading momentum without arbitrary quotas or streak anxiety.
+      </p>
+      <div class="cr-section-header__rule"></div>
+    </header>
+
+    <!-- SHELF TABS -->
+    <div class="cr-filter-bar" id="shelf-tabs" role="tablist" style="margin-bottom:var(--cr-space-8, 2rem);">
+      <button type="button" class="cr-chip is-active" data-shelf="currentlyReading" role="tab" aria-selected="true">
+        Currently Reading (<span id="count-currentlyReading">1</span>)
+      </button>
+      <button type="button" class="cr-chip" data-shelf="nextUp" role="tab" aria-selected="false">
+        Next Up (<span id="count-nextUp">1</span>)
+      </button>
+      <button type="button" class="cr-chip" data-shelf="wishlist" role="tab" aria-selected="false">
+        Wishlist (<span id="count-wishlist">2</span>)
+      </button>
+      <button type="button" class="cr-chip" data-shelf="finished" role="tab" aria-selected="false">
+        Finished (<span id="count-finished">1</span>)
+      </button>
+      <button type="button" class="cr-chip" data-shelf="abandoned" role="tab" aria-selected="false">
+        Abandoned (<span id="count-abandoned">0</span>)
+      </button>
+    </div>
+
+    <!-- ACTIVE SHELF VIEW -->
+    <div id="mount-shelf-content"></div>
+
+    <!-- READING PLAN SECTION -->
+    <section class="cr-section cr-section--surface" style="margin-top:var(--cr-space-12, 3rem); border-radius:var(--cr-radius-xs, 2px); padding:var(--cr-space-6, 1.5rem); border:1px solid var(--cr-border-subtle);">
+      <div class="cr-section-header" style="margin-bottom:var(--cr-space-4, 1rem);">
+        <span class="cr-section-header__label">INTENTIONAL PACING</span>
+        <h2 class="cr-h2">My Reading Plan</h2>
+        <p class="cr-section-header__desc">
+          Set an unhurried, realistic reading cadence for your current book.
+        </p>
+      </div>
+
+      <!-- Plan Form -->
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:var(--cr-space-4, 1rem); margin-bottom:var(--cr-space-4, 1rem); align-items:end;">
+        <div>
+          <label for="plan-book-select" style="display:block; font-size:var(--cr-text-xs); color:var(--cr-text-secondary); margin-bottom:0.35rem; font-weight:600;">Book to Plan:</label>
+          <select id="plan-book-select" class="cr-select" style="width:100%;"></select>
+        </div>
+        <div>
+          <label for="plan-target-date" style="display:block; font-size:var(--cr-text-xs); color:var(--cr-text-secondary); margin-bottom:0.35rem; font-weight:600;">Target Finish Date:</label>
+          <input type="date" id="plan-target-date" class="cr-search-box__input" style="width:100%; box-sizing:border-box;">
+        </div>
+        <div>
+          <label for="plan-frequency-select" style="display:block; font-size:var(--cr-text-xs); color:var(--cr-text-secondary); margin-bottom:0.35rem; font-weight:600;">Cadence:</label>
+          <select id="plan-frequency-select" class="cr-select" style="width:100%;">
+            <option value="1 ch / 2 days">1 chapter every 2 days (Recommended)</option>
+            <option value="2 ch / week">2 chapters a week</option>
+            <option value="1 ch / day">1 chapter a day</option>
+            <option value="weekend">Weekend intensive</option>
+          </select>
+        </div>
+        <div>
+          <button type="button" class="btn" id="save-plan-btn" style="width:100%;">
+            <span>Save Reading Plan</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Active Plan Summary Card -->
+      <div id="mount-active-plan" style="margin-top:var(--cr-space-4, 1rem); background:var(--cr-bg-card); padding:var(--cr-space-4, 1rem); border:1px solid var(--cr-border-subtle); border-radius:2px;"></div>
+    </section>
+
+  </main>
+
+  <!-- CHAPTER ROOM FOOTER -->
+  <div id="mount-footer"></div>
+
+  <!-- MOBILE BOTTOM TAB BAR -->
+  <div id="mount-tabbar"></div>
+
+  <!-- SCRIPTS -->
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/chapter-room/tokens.js"></script>
+  <script src="../js/chapter-room/data.js"></script>
+  <script src="../js/chapter-room/components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('mount-nav').innerHTML = CRComponents.renderNav('shelf', { rootPath: '../', crPath: '' });
+      document.getElementById('mount-tabbar').innerHTML = CRComponents.renderTabBar('shelf', { crPath: '' });
+      document.getElementById('mount-footer').innerHTML = CRComponents.renderFooter({ rootPath: '../', crPath: '' });
+
+      var currentTab = 'currentlyReading';
+
+      function updateCounts() {
+        var shelf = CRData.getShelf();
+        document.getElementById('count-currentlyReading').textContent = (shelf.currentlyReading || []).length;
+        document.getElementById('count-nextUp').textContent = (shelf.nextUp || []).length;
+        document.getElementById('count-wishlist').textContent = (shelf.wishlist || []).length;
+        document.getElementById('count-finished').textContent = (shelf.finished || []).length;
+        document.getElementById('count-abandoned').textContent = (shelf.abandoned || []).length;
+      }
+
+      function renderCurrentShelf() {
+        updateCounts();
+        var shelf = CRData.getShelf();
+        var bookIds = shelf[currentTab] || [];
+        var container = document.getElementById('mount-shelf-content');
+
+        // ABANDONED SHELF BANNER
+        if (currentTab === 'abandoned') {
+          var abandonedBanner = '<div style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); border-radius:var(--cr-radius-xs, 2px); padding:var(--cr-space-6, 1.5rem); margin-bottom:var(--cr-space-6, 1.5rem); text-align:center;">' +
+            '<span class="cr-chip" style="margin-bottom:0.5rem; display:inline-block;">GUILT-FREE READING PHILOSOPHY</span>' +
+            '<h2 class="cr-h2" style="margin:0.25rem 0;">You are allowed to abandon a book.</h2>' +
+            '<p class="cr-reading-text" style="font-size:var(--cr-text-base); color:var(--cr-text-secondary); max-width:600px; margin:0 auto;">' +
+              'Life is short, and your shelf is for books that serve you now. Return to them whenever you wish, or leave them behind without regret.' +
+            '</p>' +
+          '</div>';
+
+          if (bookIds.length === 0) {
+            container.innerHTML = abandonedBanner + CRComponents.renderEmptyState({
+              title: 'No abandoned books',
+              desc: 'Every book you started is either currently in progress, queued, or completed.',
+              actionLabel: 'Browse Library',
+              actionHref: 'explore.html'
+            });
+            return;
+          }
+          container.innerHTML = abandonedBanner + renderBookList(bookIds, currentTab);
+          return;
+        }
+
+        if (bookIds.length === 0) {
+          container.innerHTML = CRComponents.renderEmptyState({
+            title: 'This shelf is currently empty',
+            desc: 'Browse the curated catalog to discover and queue books.',
+            actionLabel: 'Explore the Library',
+            actionHref: 'explore.html'
+          });
+          return;
+        }
+
+        container.innerHTML = renderBookList(bookIds, currentTab);
+      }
+
+      function renderBookList(bookIds, tab) {
+        return '<div style="display:flex; flex-direction:column; gap:var(--cr-space-4, 1rem);">' +
+          bookIds.map(function (id, index) {
+            var book = CRData.getBookById(id);
+            if (!book) return '';
+            var prog = CRData.getReaderProgress(id);
+
+            var actionsHtml = '';
+            if (tab === 'currentlyReading') {
+              var ch = prog.currentChapter || 1;
+              actionsHtml = '<div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; margin-top:0.75rem;">' +
+                '<a href="chapter.html?book=' + book.id + '&chapter=' + ch + '" class="btn btn--sm"><span>Continue Ch. ' + ch + '</span> <span class="arrow">&rarr;</span></a>' +
+                '<button type="button" class="btn btn--outline btn--sm" onclick="handleAbandon(\'' + book.id + '\')"><span>Abandon Book</span></button>' +
+              '</div>' +
+              '<div style="margin-top:0.75rem;">' +
+                CRComponents.renderProgress({
+                  current: prog.completedChapters.length,
+                  total: book.chapterCount,
+                  label: book.title + ' progress'
+                }) +
+              '</div>';
+            } else if (tab === 'nextUp') {
+              actionsHtml = '<div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; margin-top:0.75rem;">' +
+                '<button type="button" class="btn btn--sm" onclick="handleMoveShelf(\'' + book.id + '\', \'currentlyReading\')"><span>Start Reading</span> <span class="arrow">&rarr;</span></button>' +
+                '<button type="button" class="btn btn--outline btn--sm" onclick="handleMoveShelf(\'' + book.id + '\', \'wishlist\')"><span>Move to Wishlist</span></button>' +
+              '</div>';
+            } else if (tab === 'wishlist') {
+              actionsHtml = '<div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; margin-top:0.75rem;">' +
+                '<button type="button" class="btn btn--sm" onclick="handleMoveShelf(\'' + book.id + '\', \'currentlyReading\')"><span>Start Reading</span> <span class="arrow">&rarr;</span></button>' +
+                '<button type="button" class="btn btn--outline btn--sm" onclick="handleMoveShelf(\'' + book.id + '\', \'nextUp\')"><span>Queue in Next Up</span></button>' +
+                (index > 0 ? '<button type="button" class="cr-btn cr-btn--ghost cr-btn--sm" title="Move Up" onclick="handleReorderWishlist(' + index + ', -1)">&uarr;</button>' : '') +
+                (index < bookIds.length - 1 ? '<button type="button" class="cr-btn cr-btn--ghost cr-btn--sm" title="Move Down" onclick="handleReorderWishlist(' + index + ', 1)">&darr;</button>' : '') +
+                '<button type="button" class="cr-btn cr-btn--ghost cr-btn--sm" style="color:var(--cr-text-secondary);" onclick="handleRemoveFromShelf(\'' + book.id + '\')">Remove</button>' +
+              '</div>';
+            } else if (tab === 'finished') {
+              actionsHtml = '<div style="margin-top:0.75rem; font-size:var(--cr-text-xs); color:var(--cr-text-secondary);">' +
+                '<span>&check; Completed &bull; ' + (prog.reflection ? ('<em>"' + CRComponents.escapeHTML(prog.reflection) + '"</em>') : '100% Finished') + '</span>' +
+                '<div style="margin-top:0.5rem;"><a href="finish.html?book=' + book.id + '" class="cr-link">View Recommendations &rarr;</a></div>' +
+              '</div>';
+            } else if (tab === 'abandoned') {
+              actionsHtml = '<div style="margin-top:0.75rem; display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">' +
+                '<button type="button" class="btn btn--sm" onclick="handleMoveShelf(\'' + book.id + '\', \'currentlyReading\')"><span>Resume Reading</span> <span class="arrow">&rarr;</span></button>' +
+                '<button type="button" class="btn btn--outline btn--sm" onclick="handleMoveShelf(\'' + book.id + '\', \'wishlist\')"><span>Move to Wishlist</span></button>' +
+              '</div>';
+            }
+
+            return '<div style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); border-radius:var(--cr-radius-xs, 2px); padding:var(--cr-space-4, 1rem); display:grid; grid-template-columns:100px 1fr; gap:var(--cr-space-4, 1rem); align-items:start;">' +
+              CRComponents.renderBookCover({ title: book.title, author: book.author, genre: book.genre, cover: book.cover, fallback: !book.cover }) +
+              '<div>' +
+                '<span class="cr-chip cr-chip--genre">' + book.genre + '</span>' +
+                '<h3 class="cr-h3" style="margin:0.25rem 0;"><a href="book.html?id=' + book.id + '">' + book.title + '</a></h3>' +
+                '<p style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); margin:0 0 0.5rem 0;">by ' + book.author + ' &bull; ' + book.readingTime + '</p>' +
+                '<p style="font-size:var(--cr-text-sm); color:var(--cr-text-secondary); margin:0;">' + book.description + '</p>' +
+                actionsHtml +
+              '</div>' +
+            '</div>';
+          }).join('') +
+        '</div>';
+      }
+
+      // Shelf Handlers
+      window.handleMoveShelf = function (bookId, targetShelf) {
+        CRData.moveBookOnShelf(bookId, targetShelf);
+        renderCurrentShelf();
+      };
+
+      window.handleAbandon = function (bookId) {
+        var reason = prompt('Why are you abandoning this book? (Optional):', 'Not connecting with it right now');
+        CRData.abandonBook(bookId, reason);
+        renderCurrentShelf();
+      };
+
+      window.handleRemoveFromShelf = function (bookId) {
+        var shelf = CRData.getShelf();
+        shelf.wishlist = (shelf.wishlist || []).filter(function (id) { return id !== bookId; });
+        localStorage.setItem('cr_reader_shelf', JSON.stringify(shelf));
+        renderCurrentShelf();
+      };
+
+      window.handleReorderWishlist = function (index, dir) {
+        var shelf = CRData.getShelf();
+        var arr = shelf.wishlist || [];
+        var targetIdx = index + dir;
+        if (targetIdx >= 0 && targetIdx < arr.length) {
+          var tmp = arr[index];
+          arr[index] = arr[targetIdx];
+          arr[targetIdx] = tmp;
+          shelf.wishlist = arr;
+          localStorage.setItem('cr_reader_shelf', JSON.stringify(shelf));
+          renderCurrentShelf();
+        }
+      };
+
+      // Tab Click Handlers
+      document.querySelectorAll('#shelf-tabs [data-shelf]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          document.querySelectorAll('#shelf-tabs [data-shelf]').forEach(function (b) {
+            b.classList.remove('is-active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          btn.classList.add('is-active');
+          btn.setAttribute('aria-selected', 'true');
+          currentTab = btn.getAttribute('data-shelf');
+          renderCurrentShelf();
+        });
+      });
+
+      // Reading Plan Setup
+      var allBooks = CRData.getAllBooks();
+      var planSelect = document.getElementById('plan-book-select');
+      allBooks.forEach(function (b) {
+        var opt = document.createElement('option');
+        opt.value = b.id;
+        opt.textContent = b.title;
+        planSelect.appendChild(opt);
+      });
+
+      function renderActivePlan() {
+        var rawPlan = localStorage.getItem('cr_active_plan');
+        var plan = rawPlan ? JSON.parse(rawPlan) : {
+          bookId: 'notes-from-underground',
+          targetDate: '2026-10-31',
+          frequency: '1 ch / 2 days'
+        };
+
+        var book = CRData.getBookById(plan.bookId) || allBooks[0];
+        var prog = CRData.getReaderProgress(book.id);
+
+        document.getElementById('mount-active-plan').innerHTML = '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">' +
+          '<div>' +
+            '<span class="cr-chip" style="margin-bottom:0.35rem; display:inline-block;">ACTIVE READING PLAN</span>' +
+            '<h4 class="cr-h3" style="margin:0;">' + book.title + '</h4>' +
+            '<p style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); margin:0.25rem 0 0 0;">' +
+              'Pace: <strong>' + plan.frequency + '</strong> &bull; Target completion: <strong>' + plan.targetDate + '</strong>' +
+            '</p>' +
+          '</div>' +
+          '<div>' +
+            '<a href="chapter.html?book=' + book.id + '&chapter=' + (prog.currentChapter || 1) + '" class="btn btn--sm"><span>Continue Plan &rarr;</span></a>' +
+          '</div>' +
+        '</div>';
+      }
+
+      document.getElementById('save-plan-btn').addEventListener('click', function () {
+        var bookId = document.getElementById('plan-book-select').value;
+        var targetDate = document.getElementById('plan-target-date').value || '2026-11-15';
+        var freq = document.getElementById('plan-frequency-select').value;
+
+        var plan = { bookId: bookId, targetDate: targetDate, frequency: freq };
+        localStorage.setItem('cr_active_plan', JSON.stringify(plan));
+        renderActivePlan();
+        alert('Your reading plan has been saved.');
+      });
+
+      // Initial Render
+      renderCurrentShelf();
+      renderActivePlan();
+    });
+  </script>
+</body>
+</html>
