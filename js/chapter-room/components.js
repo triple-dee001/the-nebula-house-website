@@ -46,8 +46,9 @@ window.CRComponents = (function () {
       return '<li><a href="' + link.href + '" class="cr-subnav__link ' + activeClass + '">' + link.label + '</a></li>';
     }).join('');
 
-    return '<!-- TIER 1: SITE HEADER -->' +
-      '<nav class="navbar" id="navbar">' +
+    return '<header class="cr-header-stack" id="cr-header-stack">' +
+      '<!-- TIER 1: SITE HEADER -->' +
+      '<nav class="navbar navbar--cr" id="navbar">' +
         '<div class="navbar__inner">' +
           '<div class="navbar__logo">' +
             '<a href="' + rootPath + 'index.html">' +
@@ -68,10 +69,12 @@ window.CRComponents = (function () {
               '</div>' +
             '</div>' +
           '</div>' +
-          '<a href="' + crPath + 'profile.html" class="navbar__account" id="nav-account-icon" title="Reader Account" aria-label="Reader Account">' +
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>' +
-          '</a>' +
-          '<div class="navbar__toggle" id="menuToggle" aria-label="Toggle navigation" role="button" tabindex="0"><span></span><span></span><span></span></div>' +
+          '<div class="navbar__actions-group" style="display:flex; align-items:center; gap:0.75rem;">' +
+            '<a href="' + crPath + 'profile.html" class="navbar__account" id="nav-account-icon" title="Reader Account" aria-label="Reader Account">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>' +
+            '</a>' +
+            '<div class="navbar__toggle" id="menuToggle" aria-label="Toggle navigation" role="button" tabindex="0"><span></span><span></span><span></span></div>' +
+          '</div>' +
         '</div>' +
       '</nav>' +
       '<!-- SITE MOBILE MENU -->' +
@@ -92,7 +95,7 @@ window.CRComponents = (function () {
           '<div class="cr-subnav__actions">' +
             '<form action="' + crPath + 'search.html" method="GET" class="cr-search-box" role="search" style="margin:0;">' +
               '<svg class="cr-search-box__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>' +
-              '<input type="search" name="q" class="cr-search-box__input" placeholder="Search books, authors, discussions..." aria-label="Search library">' +
+              '<input type="search" name="q" class="cr-search-box__input" placeholder="Search library..." aria-label="Search library" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">' +
             '</form>' +
             '<a href="' + crPath + 'notifications.html" class="cr-theme-btn" title="Reading & Discussion Notifications" aria-label="Notifications" style="text-decoration:none;">' +
               '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>' +
@@ -103,7 +106,8 @@ window.CRComponents = (function () {
             '</button>' +
           '</div>' +
         '</div>' +
-      '</div>';
+      '</div>' +
+    '</header>';
   }
 
   /**
@@ -597,6 +601,29 @@ window.CRComponents = (function () {
         '</div>' +
       '</div>' +
     '</footer>';
+  }
+
+  // Delegated event listener for mobile menu toggle on Chapter Room pages
+  if (typeof document !== 'undefined') {
+    document.addEventListener('click', function (e) {
+      var toggle = e.target.closest('#menuToggle, .navbar__toggle');
+      if (toggle) {
+        toggle.classList.toggle('active');
+        var mobileMenu = document.getElementById('mobileMenu') || document.querySelector('.mobile-menu');
+        if (mobileMenu) {
+          mobileMenu.classList.toggle('active');
+          document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+        }
+      }
+      var mobileLink = e.target.closest('.mobile-menu__link');
+      if (mobileLink) {
+        var menu = document.getElementById('mobileMenu') || document.querySelector('.mobile-menu');
+        var tog = document.getElementById('menuToggle') || document.querySelector('.navbar__toggle');
+        if (menu) menu.classList.remove('active');
+        if (tog) tog.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
   }
 
   return {
