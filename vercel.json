@@ -2,9 +2,25 @@
   "cleanUrls": true,
   "redirects": [
     { "source": "/my-thoughts", "destination": "/the-writers-room", "permanent": false },
-    { "source": "/my-thoughts.html", "destination": "/the-writers-room", "permanent": false }
+    { "source": "/my-thoughts.html", "destination": "/the-writers-room", "permanent": false },
+    { "source": "/the-chapter-room", "destination": "/chapter-room", "permanent": false },
+    { "source": "/the-chapter-room.html", "destination": "/chapter-room", "permanent": false }
   ],
   "rewrites": [
+    { "source": "/chapter-room", "destination": "/chapter-room/index.html" },
+    { "source": "/chapter-room/", "destination": "/chapter-room/index.html" },
+    { "source": "/explore", "destination": "/chapter-room/explore.html" },
+    { "source": "/book-of-the-month", "destination": "/chapter-room/book-of-the-month.html" },
+    { "source": "/my-reading", "destination": "/chapter-room/my-reading.html" },
+    { "source": "/community", "destination": "/chapter-room/community.html" },
+    { "source": "/profile", "destination": "/chapter-room/profile.html" },
+    { "source": "/genre", "destination": "/chapter-room/genre.html" },
+    { "source": "/book", "destination": "/chapter-room/book.html" },
+    { "source": "/chapter", "destination": "/chapter-room/chapter.html" },
+    { "source": "/notifications", "destination": "/chapter-room/notifications.html" },
+    { "source": "/search", "destination": "/chapter-room/search.html" },
+    { "source": "/finish", "destination": "/chapter-room/finish.html" },
+    { "source": "/thread", "destination": "/chapter-room/thread.html" },
     {
       "source": "/story/:authorSlug/:slug",
       "destination": "https://the-nebula-house-backend.onrender.com/api/posts/share/:slug"

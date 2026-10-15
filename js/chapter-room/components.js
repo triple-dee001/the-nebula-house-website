@@ -29,8 +29,8 @@ window.CRComponents = (function () {
   function renderNav(activePath, opts) {
     if (!activePath) activePath = 'home';
     if (!opts) opts = {};
-    var rootPath = opts.rootPath !== undefined ? opts.rootPath : '../';
-    var crPath = opts.crPath !== undefined ? opts.crPath : '';
+    var rootPath = (opts.rootPath && opts.rootPath !== '../') ? opts.rootPath : '/';
+    var crPath = (opts.crPath && opts.crPath !== '') ? opts.crPath : '/chapter-room/';
 
     var subLinks = [
       { id: 'home', label: 'Chapter Room', href: crPath + 'index.html' },
@@ -117,7 +117,7 @@ window.CRComponents = (function () {
   function renderTabBar(activePath, opts) {
     if (!activePath) activePath = 'home';
     if (!opts) opts = {};
-    var crPath = opts.crPath !== undefined ? opts.crPath : '';
+    var crPath = (opts.crPath && opts.crPath !== '') ? opts.crPath : '/chapter-room/';
     var homeHref = opts.homeHref || (crPath + 'index.html');
 
     var tabs = [
@@ -177,7 +177,7 @@ window.CRComponents = (function () {
 
     if (!isFallback && coverUrl) {
       return '<div class="cr-cover-wrap">' +
-        '<img src="' + escapeHTML(coverUrl) + '" alt="' + title + ' by ' + author + '" class="cr-cover-img" loading="lazy" onerror="this.parentElement.innerHTML = CRComponents.renderBookCover({ title: \'' + title.replace(/'/g, "\\'") + '\', author: \'' + author.replace(/'/g, "\\'") + '\', genre: \'' + genre.replace(/'/g, "\\'") + '\', fallback: true });">' +
+        '<img src="' + escapeHTML(coverUrl) + '" alt="' + title + ' by ' + author + '" class="cr-cover-img" loading="lazy" onerror="this.parentElement.outerHTML = CRComponents.renderBookCover({ title: \'' + title.replace(/'/g, "\\'") + '\', author: \'' + author.replace(/'/g, "\\'") + '\', genre: \'' + genre.replace(/'/g, "\\'") + '\', fallback: true });">' +
       '</div>';
     }
 
@@ -207,7 +207,7 @@ window.CRComponents = (function () {
     var difficultyNote = escapeHTML(opts.difficultyNote || 'Take your time with this one');
     var isWishlisted = !!opts.isWishlisted;
     var horizontal = !!opts.horizontal;
-    var bookPath = escapeHTML(opts.bookPath || ('book.html?id=' + id));
+    var bookPath = escapeHTML(opts.bookPath || ('/chapter-room/book.html?id=' + id));
     var isFallback = !!opts.fallback || !opts.cover;
 
     var coverMarkup = renderBookCover({
@@ -555,8 +555,8 @@ window.CRComponents = (function () {
    */
   function renderFooter(opts) {
     if (!opts) opts = {};
-    var rootPath = opts.rootPath !== undefined ? opts.rootPath : '../';
-    var crPath = opts.crPath !== undefined ? opts.crPath : '';
+    var rootPath = (opts.rootPath && opts.rootPath !== '../') ? opts.rootPath : '/';
+    var crPath = (opts.crPath && opts.crPath !== '') ? opts.crPath : '/chapter-room/';
     var year = new Date().getFullYear();
 
     return '<footer class="footer" role="contentinfo">' +

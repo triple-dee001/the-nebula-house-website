@@ -16,7 +16,8 @@ files.forEach(f => {
     const link = match[1];
     if (link.startsWith('http') || link.startsWith('mailto:') || link.startsWith('javascript:') || link.startsWith('data:') || link.includes("'") || link.includes('+') || link.includes('${')) continue;
     checked++;
-    const resolved = path.resolve(dir, link);
+    const webRoot = path.join(__dirname, '../../');
+    const resolved = link.startsWith('/') ? path.join(webRoot, link.replace(/^\//, '')) : path.resolve(dir, link);
     if (!fs.existsSync(resolved)) {
       // Don't flag root links if handled by server rewrite or standard anchor
       console.warn(`[WARN] In ${f}: link target not on local disk: ${link} (resolved: ${resolved})`);

@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base href="/chapter-room/">
   <title>The Chapter Room | The Nebula House</title>
   <meta name="description" content="A literary institution inside The Nebula House. Discover enduring books, read sequentially, and engage in thoughtful discussion.">
-  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+  <link rel="icon" type="image/png" href="/assets/images/favicon.png">
   <!-- Load site styles first, then Chapter Room design system -->
-  <link rel="stylesheet" href="../css/styles.css">
-  <link rel="stylesheet" href="../css/chapter-room.css">
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/chapter-room.css">
 </head>
 <body class="cr-page" data-cr-theme="dark">
 
@@ -26,11 +27,11 @@
           A place to discover books, read together and make reading part of your life.
         </p>
         <div class="cr-hero__actions">
-          <a href="book-of-the-month.html" class="btn">
+          <a href="/chapter-room/book-of-the-month.html" class="btn">
             <span><span class="btn__label-full">Explore This Month's Book</span><span class="btn__label-short">Explore Book</span></span>
             <span class="arrow">&rarr;</span>
           </a>
-          <a href="explore.html" class="link-btn">Find Your Next Book <span class="arrow">&rarr;</span></a>
+          <a href="/chapter-room/explore.html" class="link-btn">Find Your Next Book <span class="arrow">&rarr;</span></a>
         </div>
       </div>
     </header>
@@ -75,7 +76,7 @@
             <button type="button" class="cr-chip" data-genre-filter="Non-Fiction">Non-Fiction</button>
           </div>
           <div id="active-genre-portal">
-            <a href="genre.html?genre=philosophy" id="genre-portal-link" class="cr-link" style="font-size:var(--cr-text-xs); text-transform:uppercase; letter-spacing:0.05em; font-weight:600;">Explore Genre Landing Page &rarr;</a>
+            <a href="/chapter-room/genre.html?genre=philosophy" id="genre-portal-link" class="cr-link" style="font-size:var(--cr-text-xs); text-transform:uppercase; letter-spacing:0.05em; font-weight:600;">Explore Genre Landing Page &rarr;</a>
           </div>
         </div>
 
@@ -83,7 +84,7 @@
         <div class="cr-book-grid" id="mount-books-grid" style="margin-top:var(--cr-space-6, 1.5rem);"></div>
 
         <div style="text-align:center; margin-top:var(--cr-space-8, 2rem);">
-          <a href="explore.html" class="link-btn">Browse Full Library & Collections <span class="arrow">&rarr;</span></a>
+          <a href="/chapter-room/explore.html" class="link-btn">Browse Full Library & Collections <span class="arrow">&rarr;</span></a>
         </div>
       </div>
     </section>
@@ -103,7 +104,7 @@
         <div id="mount-discussions" style="display:flex; flex-direction:column; gap:var(--cr-space-4, 1rem);"></div>
 
         <div style="text-align:center; margin-top:var(--cr-space-8, 2rem);">
-          <a href="community.html" class="link-btn">Join Literary Community Discussions <span class="arrow">&rarr;</span></a>
+          <a href="/chapter-room/community.html" class="link-btn">Join Literary Community Discussions <span class="arrow">&rarr;</span></a>
         </div>
       </div>
     </section>
@@ -143,18 +144,18 @@
   <div id="mount-tabbar"></div>
 
   <!-- SCRIPTS -->
-  <script src="../js/api.js"></script>
-  <script src="../js/auth.js"></script>
-  <script src="../js/chapter-room-config.js"></script>
-  <script src="../js/chapter-room/tokens.js"></script>
-  <script src="../js/chapter-room/data.js"></script>
-  <script src="../js/chapter-room/components.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/chapter-room-config.js"></script>
+  <script src="/js/chapter-room/tokens.js"></script>
+  <script src="/js/chapter-room/data.js"></script>
+  <script src="/js/chapter-room/components.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       // 1. Mount Top Nav & Mobile Tab Bar
-      document.getElementById('mount-nav').innerHTML = CRComponents.renderNav('home', { rootPath: '../', crPath: '' });
-      document.getElementById('mount-tabbar').innerHTML = CRComponents.renderTabBar('home', { crPath: '' });
-      document.getElementById('mount-footer').innerHTML = CRComponents.renderFooter({ rootPath: '../', crPath: '' });
+      document.getElementById('mount-nav').innerHTML = CRComponents.renderNav('home');
+      document.getElementById('mount-tabbar').innerHTML = CRComponents.renderTabBar('home');
+      document.getElementById('mount-footer').innerHTML = CRComponents.renderFooter();
 
       // Mount Discovery Prompts
       var discoveryEl = document.getElementById('mount-discovery-prompts');
@@ -163,7 +164,7 @@
         discoveryEl.querySelectorAll('[data-theme-filter]').forEach(function (pill) {
           pill.addEventListener('click', function () {
             var theme = pill.getAttribute('data-theme-filter');
-            window.location.href = 'explore.html?theme=' + encodeURIComponent(theme);
+            window.location.href = '/chapter-room/explore.html?theme=' + encodeURIComponent(theme);
           });
         });
       }
@@ -198,7 +199,7 @@
                 '<span class="cr-chip">' + botm.difficulty + '</span>' +
                 '<span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary);">' + botm.readingTime + ' &bull; ' + botm.chapterCount + ' chapters</span>' +
               '</div>' +
-              '<h3 class="cr-h2" style="margin-top:0; margin-bottom:var(--cr-space-2, 0.5rem);"><a href="book.html?id=' + botm.id + '">' + botm.title + '</a></h3>' +
+              '<h3 class="cr-h2" style="margin-top:0; margin-bottom:var(--cr-space-2, 0.5rem);"><a href="/chapter-room/book.html?id=' + botm.id + '">' + botm.title + '</a></h3>' +
               '<p style="font-family:var(--cr-font-display); font-style:italic; font-size:var(--cr-text-base); color:var(--cr-text-secondary); margin-bottom:var(--cr-space-3, 0.75rem);">' +
                 'by ' + botm.author + ' (' + botm.year + ')' +
               '</p>' +
@@ -207,11 +208,11 @@
                 '<strong>Why we\'re reading it:</strong> ' + botm.whyWeAreReading +
               '</div>' +
               '<div style="display:flex; align-items:center; gap:var(--cr-space-4, 1rem); margin-top:var(--cr-space-6, 1.5rem); flex-wrap:wrap;">' +
-                '<a href="chapter.html?book=' + botm.id + '&chapter=' + currentCh + '" class="btn">' +
+                '<a href="/chapter-room/chapter.html?book=' + botm.id + '&chapter=' + currentCh + '" class="btn">' +
                   '<span><span class="btn__label-full">Start Reading Chapter ' + currentCh + '</span><span class="btn__label-short">Read Ch. ' + currentCh + '</span></span>' +
                   '<span class="arrow">&rarr;</span>' +
                 '</a>' +
-                '<a href="book-of-the-month.html" class="link-btn">Book of the Month Details <span class="arrow">&rarr;</span></a>' +
+                '<a href="/chapter-room/book-of-the-month.html" class="link-btn">Book of the Month Details <span class="arrow">&rarr;</span></a>' +
                 '<span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); margin-left:auto;">' +
                   botm.recommendRate + '% of readers recommend this' +
                 '</span>' +
@@ -241,7 +242,7 @@
             dailyEstimate: book.dailyEstimate,
             difficulty: book.difficulty,
             difficultyNote: book.difficultyNote,
-            bookPath: 'book.html?id=' + book.id,
+            bookPath: '/chapter-room/book.html?id=' + book.id,
             fallback: !book.cover
           });
         }).join('');
@@ -249,7 +250,7 @@
         var portalLink = document.getElementById('genre-portal-link');
         if (portalLink) {
           var targetGenre = genre === 'all' ? 'philosophy' : genre.toLowerCase();
-          portalLink.href = 'genre.html?genre=' + encodeURIComponent(targetGenre);
+          portalLink.href = '/chapter-room/genre.html?genre=' + encodeURIComponent(targetGenre);
           portalLink.textContent = (genre === 'all' ? 'Explore Philosophy' : 'Explore ' + genre) + ' Landing Page \u2192';
         }
       }
@@ -277,7 +278,7 @@
         return '<div style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); border-radius:var(--cr-radius-xs, 2px); padding:var(--cr-space-4, 1rem);">' +
           '<div style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); margin-bottom:var(--cr-space-2, 0.5rem); display:flex; justify-content:space-between;">' +
             '<span>From <strong>Notes from Underground</strong> &bull; Chapter ' + c.chapterNumber + '</span>' +
-            '<a href="chapter.html?book=notes-from-underground&chapter=' + c.chapterNumber + '" class="cr-link">Go to Chapter &rarr;</a>' +
+            '<a href="/chapter-room/chapter.html?book=notes-from-underground&chapter=' + c.chapterNumber + '" class="cr-link">Go to Chapter &rarr;</a>' +
           '</div>' +
           CRComponents.renderComment(c) +
         '</div>';
