@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" data-cr-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explore the Library | The Chapter Room</title>
+  <meta name="description" content="Discover curated enduring books across philosophy, literature, classics, and memoirs in The Chapter Room.">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/chapter-room.css">
+</head>
+<body class="cr-page" data-cr-theme="dark">
+
+  <!-- TOP NAVIGATION -->
+  <div id="mount-nav"></div>
+
+  <main class="cr-container" id="main-content" style="padding-top:var(--cr-space-8, 2rem); padding-bottom:var(--cr-space-16, 4rem);">
+
+    <header class="cr-section-header">
+      <span class="cr-section-header__label">DISCOVERY & ARCHIVE</span>
+      <h1 class="cr-section-header__title">Explore the Library</h1>
+      <p class="cr-section-header__desc">
+        Enduring works curated for reflection, conversation, and depth. Every title includes sequential chapter guides and spoiler-protected discussion rooms.
+      </p>
+      <div class="cr-section-header__rule"></div>
+    </header>
+
+    <!-- EXPLORE CONTROLS (SEARCH, GENRE, DIFFICULTY, SORT) -->
+    <div class="cr-explore-controls" style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); border-radius:var(--cr-radius-xs, 2px); padding:var(--cr-space-4, 1rem); margin-bottom:var(--cr-space-6, 1.5rem);">
+      
+      <!-- Top Row: Search & Count -->
+      <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:var(--cr-space-4, 1rem); margin-bottom:var(--cr-space-4, 1rem);">
+        <div class="cr-search-box" style="flex:1; max-width:400px;">
+          <svg class="cr-search-box__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="search" id="explore-search" class="cr-search-box__input" placeholder="Search by title, author, keyword..." style="width:100%;" aria-label="Search Library">
+        </div>
+        <div id="results-count" style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); font-family:var(--cr-font-sans);">
+          Showing all books
+        </div>
+      </div>
+
+      <!-- Filters Row -->
+      <div style="display:flex; flex-wrap:wrap; align-items:center; gap:var(--cr-space-4, 1rem);">
+        <!-- Genre Filter -->
+        <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+          <span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); text-transform:uppercase; letter-spacing:0.05em; font-weight:600;">Genre:</span>
+          <div class="cr-filter-bar" id="genre-pills" style="margin:0;">
+            <button type="button" class="cr-chip is-active" data-genre="all">All</button>
+            <button type="button" class="cr-chip" data-genre="philosophy">Philosophy</button>
+            <button type="button" class="cr-chip" data-genre="fiction">Fiction</button>
+            <button type="button" class="cr-chip" data-genre="classics">Classics</button>
+            <button type="button" class="cr-chip" data-genre="memoir">Memoir</button>
+          </div>
+        </div>
+
+        <!-- Difficulty Filter -->
+        <div style="display:flex; align-items:center; gap:0.5rem; margin-left:auto; flex-wrap:wrap;">
+          <span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); text-transform:uppercase; letter-spacing:0.05em; font-weight:600;">Difficulty:</span>
+          <select id="difficulty-select" class="cr-select" aria-label="Filter by Difficulty">
+            <option value="all">All Levels</option>
+            <option value="Getting Started">Getting Started</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Challenging">Challenging</option>
+          </select>
+
+          <span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); text-transform:uppercase; letter-spacing:0.05em; font-weight:600; margin-left:0.5rem;">Sort:</span>
+          <select id="sort-select" class="cr-select" aria-label="Sort Books">
+            <option value="recommend">Most Recommended</option>
+            <option value="shortest">Shortest Read Time</option>
+            <option value="title">Alphabetical (A–Z)</option>
+          </select>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- BOOK GRID -->
+    <div class="cr-book-grid" id="mount-books"></div>
+
+    <!-- EMPTY FILTER RESULTS STATE -->
+    <div id="mount-empty-filter" style="display:none; margin-top:var(--cr-space-8, 2rem);"></div>
+
+  </main>
+
+  <!-- CHAPTER ROOM FOOTER -->
+  <div id="mount-footer"></div>
+
+  <!-- MOBILE BOTTOM TAB BAR -->
+  <div id="mount-tabbar"></div>
+
+  <!-- SCRIPTS -->
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/chapter-room/tokens.js"></script>
+  <script src="../js/chapter-room/data.js"></script>
+  <script src="../js/chapter-room/components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // 1. Mount Navigation, Tabbar, Footer
+      document.getElementById('mount-nav').innerHTML = CRComponents.renderNav('explore', { rootPath: '../', crPath: '' });
+      document.getElementById('mount-tabbar').innerHTML = CRComponents.renderTabBar('explore', { crPath: '' });
+      document.getElementById('mount-footer').innerHTML = CRComponents.renderFooter({ rootPath: '../', crPath: '' });
+
+      if (typeof getCurrentUser === 'function') {
+        var user = getCurrentUser();
+        if (typeof updateNavbarAuth === 'function') updateNavbarAuth(user);
+      }
+
+      // Check URL parameters for genre (e.g., explore.html?genre=philosophy)
+      var urlParams = new URLSearchParams(window.location.search);
+      var initialGenre = (urlParams.get('genre') || 'all').toLowerCase();
+
+      var allBooks = CRData.getAllBooks();
+      var currentGenre = initialGenre;
+      var currentDifficulty = 'all';
+      var currentSort = 'recommend';
+      var currentSearch = '';
+
+      // Set initial active genre button
+      document.querySelectorAll('#genre-pills [data-genre]').forEach(function (btn) {
+        if (btn.getAttribute('data-genre') === initialGenre) {
+          btn.classList.add('is-active');
+        } else {
+          btn.classList.remove('is-active');
+        }
+      });
+
+      function filterAndRender() {
+        var filtered = allBooks.filter(function (book) {
+          // Genre check
+          if (currentGenre !== 'all') {
+            var matchGenre = book.genres.some(function (g) {
+              return g.toLowerCase() === currentGenre;
+            });
+            if (!matchGenre) return false;
+          }
+
+          // Difficulty check
+          if (currentDifficulty !== 'all') {
+            if (book.difficulty !== currentDifficulty) return false;
+          }
+
+          // Search query check
+          if (currentSearch) {
+            var q = currentSearch.toLowerCase();
+            var inTitle = book.title.toLowerCase().indexOf(q) !== -1;
+            var inAuthor = book.author.toLowerCase().indexOf(q) !== -1;
+            var inDesc = (book.description || '').toLowerCase().indexOf(q) !== -1;
+            if (!inTitle && !inAuthor && !inDesc) return false;
+          }
+
+          return true;
+        });
+
+        // Sorting
+        if (currentSort === 'recommend') {
+          filtered.sort(function (a, b) { return (b.recommendRate || 0) - (a.recommendRate || 0); });
+        } else if (currentSort === 'shortest') {
+          filtered.sort(function (a, b) { return parseFloat(a.readingTime) - parseFloat(b.readingTime); });
+        } else if (currentSort === 'title') {
+          filtered.sort(function (a, b) { return a.title.localeCompare(b.title); });
+        }
+
+        // Count display
+        var countEl = document.getElementById('results-count');
+        if (countEl) {
+          countEl.textContent = 'Showing ' + filtered.length + ' ' + (filtered.length === 1 ? 'book' : 'books');
+        }
+
+        var gridEl = document.getElementById('mount-books');
+        var emptyEl = document.getElementById('mount-empty-filter');
+
+        if (filtered.length === 0) {
+          gridEl.innerHTML = '';
+          emptyEl.style.display = 'block';
+          emptyEl.innerHTML = CRComponents.renderEmptyState({
+            title: 'No books match your filters',
+            desc: 'Try broadening your search or resetting the genre and difficulty filters.',
+            actionLabel: 'Reset All Filters',
+            actionHref: 'explore.html'
+          });
+        } else {
+          emptyEl.style.display = 'none';
+          gridEl.innerHTML = filtered.map(function (book) {
+            return CRComponents.renderBookCard({
+              id: book.id,
+              title: book.title,
+              author: book.author,
+              genre: book.genre,
+              cover: book.cover,
+              desc: book.description,
+              readingTime: book.readingTime,
+              difficulty: book.difficulty,
+              difficultyNote: book.difficultyNote,
+              bookPath: 'book.html?id=' + book.id,
+              fallback: !book.cover
+            });
+          }).join('');
+        }
+      }
+
+      // Event Listeners
+      document.querySelectorAll('#genre-pills [data-genre]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          document.querySelectorAll('#genre-pills [data-genre]').forEach(function (b) { b.classList.remove('is-active'); });
+          btn.classList.add('is-active');
+          currentGenre = btn.getAttribute('data-genre');
+          filterAndRender();
+        });
+      });
+
+      var diffSelect = document.getElementById('difficulty-select');
+      if (diffSelect) {
+        diffSelect.addEventListener('change', function (e) {
+          currentDifficulty = e.target.value;
+          filterAndRender();
+        });
+      }
+
+      var sortSelect = document.getElementById('sort-select');
+      if (sortSelect) {
+        sortSelect.addEventListener('change', function (e) {
+          currentSort = e.target.value;
+          filterAndRender();
+        });
+      }
+
+      var searchInput = document.getElementById('explore-search');
+      if (searchInput) {
+        searchInput.addEventListener('input', function (e) {
+          currentSearch = e.target.value.trim();
+          filterAndRender();
+        });
+      }
+
+      // Initial execution
+      filterAndRender();
+    });
+  </script>
+</body>
+</html>

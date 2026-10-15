@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" data-cr-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Chapter Room | The Nebula House</title>
+  <meta name="description" content="A literary institution inside The Nebula House. Discover enduring books, read sequentially, and engage in thoughtful discussion.">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+  <!-- Load site styles first, then Chapter Room design system -->
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/chapter-room.css">
+</head>
+<body class="cr-page" data-cr-theme="dark">
+
+  <!-- TOP NAVIGATION (TIER 1 SITE HEADER + TIER 2 SLIM SUBNAV) -->
+  <div id="mount-nav"></div>
+
+  <main id="main-content">
+
+    <!-- 1. EDITORIAL HERO -->
+    <header class="cr-hero" role="region" aria-label="Welcome to The Chapter Room">
+      <div class="cr-hero__inner">
+        <span class="cr-eyebrow">THE CHAPTER ROOM</span>
+        <h1 class="cr-hero__title">Read. Think. Discuss.</h1>
+        <p class="cr-hero__desc">
+          A place to discover enduring books, read together without guilt or vanity metrics, and make deep reading a lasting part of your life.
+        </p>
+        <div class="cr-hero__actions">
+          <a href="book-of-the-month.html" class="btn">
+            <span><span class="btn__label-full">Explore This Month's Book</span><span class="btn__label-short">Explore Book</span></span>
+            <span class="arrow">&rarr;</span>
+          </a>
+          <a href="explore.html" class="link-btn">Find Your Next Book <span class="arrow">&rarr;</span></a>
+        </div>
+      </div>
+    </header>
+
+    <!-- 2. WHAT ARE WE READING: BOOK OF THE MONTH -->
+    <section class="cr-section" id="botm-section" aria-labelledby="botm-heading">
+      <div class="cr-container">
+        <div class="cr-section-header">
+          <span class="cr-section-header__label">01 / WHAT ARE WE READING?</span>
+          <h2 class="cr-section-header__title" id="botm-heading">Book of the Month &bull; October 2026</h2>
+          <div class="cr-section-header__rule"></div>
+        </div>
+
+        <div id="mount-botm-card"></div>
+      </div>
+    </section>
+
+    <!-- 3. WHAT CAN I READ NEXT: DISCOVERY & RECOMMENDATIONS -->
+    <section class="cr-section cr-section--surface" id="explore-section" aria-labelledby="explore-heading">
+      <div class="cr-container">
+        <div class="cr-section-header">
+          <span class="cr-section-header__label">02 / WHAT CAN I READ NEXT?</span>
+          <h2 class="cr-section-header__title" id="explore-heading">Curated Enduring Works</h2>
+          <p class="cr-section-header__desc">
+            Carefully curated books chosen for depth and staying power. Difficulty labels are encouraging, and every work supports sequential chapter unlocking.
+          </p>
+          <div class="cr-section-header__rule"></div>
+        </div>
+
+        <!-- Filter Pills -->
+        <div class="cr-filter-bar" role="toolbar" aria-label="Genre Filter">
+          <button type="button" class="cr-chip is-active" data-genre-filter="all">All Books</button>
+          <button type="button" class="cr-chip" data-genre-filter="Philosophy">Philosophy</button>
+          <button type="button" class="cr-chip" data-genre-filter="Fiction">Fiction</button>
+          <button type="button" class="cr-chip" data-genre-filter="Classics">Classics</button>
+          <button type="button" class="cr-chip" data-genre-filter="Memoir">Memoir</button>
+        </div>
+
+        <!-- Book Grid -->
+        <div class="cr-book-grid" id="mount-books-grid" style="margin-top:var(--cr-space-6, 1.5rem);"></div>
+
+        <div style="text-align:center; margin-top:var(--cr-space-8, 2rem);">
+          <a href="explore.html" class="link-btn">Browse Full Library & Collections <span class="arrow">&rarr;</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. WHAT ARE READERS TALKING ABOUT: RECENT DISCUSSIONS -->
+    <section class="cr-section" id="community-section" aria-labelledby="discussions-heading">
+      <div class="cr-container">
+        <div class="cr-section-header">
+          <span class="cr-section-header__label">03 / WHAT ARE OTHER READERS TALKING ABOUT?</span>
+          <h2 class="cr-section-header__title" id="discussions-heading">Recent Reader Thoughts</h2>
+          <p class="cr-section-header__desc">
+            Every thought belongs to a specific chapter. Future spoilers remain hidden until revealed. No superficial likes—only thoughtful discourse.
+          </p>
+          <div class="cr-section-header__rule"></div>
+        </div>
+
+        <div id="mount-discussions" style="display:flex; flex-direction:column; gap:var(--cr-space-4, 1rem);"></div>
+
+        <div style="text-align:center; margin-top:var(--cr-space-8, 2rem);">
+          <a href="community.html" class="link-btn">Join Literary Community Discussions <span class="arrow">&rarr;</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. HOW CHAPTER ROOM WORKS (CORE PHILOSOPHY BAR) -->
+    <section class="cr-section cr-section--subtle" aria-labelledby="philosophy-heading">
+      <div class="cr-container">
+        <div class="cr-philosophy-grid">
+          <div class="cr-philosophy-col">
+            <h3 class="cr-philosophy-title" id="philosophy-heading">Sequential Unlocking</h3>
+            <p class="cr-philosophy-text">
+              Read without fear of spoilers. Future chapters, summaries, and comments stay locked until you mark previous chapters complete.
+            </p>
+          </div>
+          <div class="cr-philosophy-col">
+            <h3 class="cr-philosophy-title">Guilt-Free Reading</h3>
+            <p class="cr-philosophy-text">
+              No daily streak pressure or gamified badges. You are always allowed to abandon a book that isn't serving you right now.
+            </p>
+          </div>
+          <div class="cr-philosophy-col">
+            <h3 class="cr-philosophy-title">Thoughtful Conversation</h3>
+            <p class="cr-philosophy-text">
+              No vanity like buttons or star ratings. Readers engage with ideas through nuanced reactions: <em>Interesting</em>, <em>Made me think</em>, <em>Excellent point</em>, <em>I disagree</em>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- CHAPTER ROOM FOOTER -->
+  <div id="mount-footer"></div>
+
+  <!-- MOBILE BOTTOM TAB BAR -->
+  <div id="mount-tabbar"></div>
+
+  <!-- SCRIPTS -->
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/chapter-room/tokens.js"></script>
+  <script src="../js/chapter-room/data.js"></script>
+  <script src="../js/chapter-room/components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // 1. Mount Top Nav & Mobile Tab Bar
+      document.getElementById('mount-nav').innerHTML = CRComponents.renderNav('home', { rootPath: '../', crPath: '' });
+      document.getElementById('mount-tabbar').innerHTML = CRComponents.renderTabBar('home', { crPath: '' });
+      document.getElementById('mount-footer').innerHTML = CRComponents.renderFooter({ rootPath: '../', crPath: '' });
+
+      // Check user session for navbar account icon
+      if (typeof getCurrentUser === 'function') {
+        var user = getCurrentUser();
+        if (typeof updateNavbarAuth === 'function') {
+          updateNavbarAuth(user);
+        }
+      }
+
+      // 2. Render Book of the Month Feature Card
+      var botm = CRData.getBookOfTheMonth();
+      if (botm) {
+        var botmProgress = CRData.getReaderProgress(botm.id);
+        var currentCh = botmProgress.currentChapter || 1;
+        var botmHtml = '<div class="cr-botm-card">' +
+          '<div class="cr-botm-card__grid">' +
+            '<div class="cr-botm-card__cover">' +
+              CRComponents.renderBookCover({
+                title: botm.title,
+                author: botm.author,
+                genre: botm.genre,
+                cover: botm.cover,
+                fallback: !botm.cover
+              }) +
+            '</div>' +
+            '<div class="cr-botm-card__content">' +
+              '<div style="display:flex; align-items:center; gap:var(--cr-space-2, 0.5rem); margin-bottom:var(--cr-space-2, 0.5rem); flex-wrap:wrap;">' +
+                '<span class="cr-chip cr-chip--genre">' + botm.genre + '</span>' +
+                '<span class="cr-chip">' + botm.difficulty + '</span>' +
+                '<span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary);">' + botm.readingTime + ' &bull; ' + botm.chapterCount + ' chapters</span>' +
+              '</div>' +
+              '<h3 class="cr-h2" style="margin-top:0; margin-bottom:var(--cr-space-2, 0.5rem);"><a href="book.html?id=' + botm.id + '">' + botm.title + '</a></h3>' +
+              '<p style="font-family:var(--cr-font-display); font-style:italic; font-size:var(--cr-text-base); color:var(--cr-text-secondary); margin-bottom:var(--cr-space-3, 0.75rem);">' +
+                'by ' + botm.author + ' (' + botm.year + ')' +
+              '</p>' +
+              '<p class="cr-botm-card__desc">' + botm.description + '</p>' +
+              '<div class="cr-botm-card__note">' +
+                '<strong>Why we\'re reading it:</strong> ' + botm.whyWeAreReading +
+              '</div>' +
+              '<div style="display:flex; align-items:center; gap:var(--cr-space-4, 1rem); margin-top:var(--cr-space-6, 1.5rem); flex-wrap:wrap;">' +
+                '<a href="chapter.html?book=' + botm.id + '&chapter=' + currentCh + '" class="btn">' +
+                  '<span><span class="btn__label-full">Start Reading Chapter ' + currentCh + '</span><span class="btn__label-short">Read Ch. ' + currentCh + '</span></span>' +
+                  '<span class="arrow">&rarr;</span>' +
+                '</a>' +
+                '<a href="book.html?id=' + botm.id + '" class="link-btn">Overview & Chapters <span class="arrow">&rarr;</span></a>' +
+                '<span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); margin-left:auto;">' +
+                  botm.recommendRate + '% of readers recommend this' +
+                '</span>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+        document.getElementById('mount-botm-card').innerHTML = botmHtml;
+      }
+
+      // 3. Render Books Grid with Live Genre Filter
+      function renderBooks(genre) {
+        var books = CRData.getBooksByGenre(genre);
+        var container = document.getElementById('mount-books-grid');
+        if (!container) return;
+        container.innerHTML = books.map(function (book) {
+          return CRComponents.renderBookCard({
+            id: book.id,
+            title: book.title,
+            author: book.author,
+            genre: book.genre,
+            cover: book.cover,
+            desc: book.description,
+            readingTime: book.readingTime,
+            difficulty: book.difficulty,
+            difficultyNote: book.difficultyNote,
+            bookPath: 'book.html?id=' + book.id,
+            fallback: !book.cover
+          });
+        }).join('');
+      }
+
+      renderBooks('all');
+
+      // Genre filter pill clicks
+      document.querySelectorAll('[data-genre-filter]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          document.querySelectorAll('[data-genre-filter]').forEach(function (b) { b.classList.remove('is-active'); });
+          btn.classList.add('is-active');
+          renderBooks(btn.getAttribute('data-genre-filter'));
+        });
+      });
+
+      // 4. Render Live Discussions
+      var chapter1 = CRData.getChapterContent('notes-from-underground', 1);
+      var chapter2 = CRData.getChapterContent('notes-from-underground', 2);
+      var sampleComments = [];
+      if (chapter1 && chapter1.comments) sampleComments.push(chapter1.comments[0]);
+      if (chapter2 && chapter2.comments) sampleComments.push(chapter2.comments[0]);
+
+      var discussionsHtml = sampleComments.map(function (c) {
+        if (!c) return '';
+        return '<div style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); border-radius:var(--cr-radius-xs, 2px); padding:var(--cr-space-4, 1rem);">' +
+          '<div style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); margin-bottom:var(--cr-space-2, 0.5rem); display:flex; justify-content:space-between;">' +
+            '<span>From <strong>Notes from Underground</strong> &bull; Chapter ' + c.chapterNumber + '</span>' +
+            '<a href="chapter.html?book=notes-from-underground&chapter=' + c.chapterNumber + '" class="cr-link">Go to Chapter &rarr;</a>' +
+          '</div>' +
+          CRComponents.renderComment(c) +
+        '</div>';
+      }).join('');
+
+      document.getElementById('mount-discussions').innerHTML = discussionsHtml;
+    });
+  </script>
+</body>
+</html>

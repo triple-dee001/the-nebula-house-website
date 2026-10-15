@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" data-cr-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Genre Collection | The Chapter Room</title>
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/chapter-room.css">
+</head>
+<body class="cr-page" data-cr-theme="dark">
+
+  <!-- TOP NAVIGATION -->
+  <div id="mount-nav"></div>
+
+  <main class="cr-container" id="main-content" style="padding-top:var(--cr-space-8, 2rem); padding-bottom:var(--cr-space-16, 4rem);">
+
+    <header class="cr-section-header" id="genre-header">
+      <span class="cr-section-header__label">GENRE COLLECTION</span>
+      <h1 class="cr-section-header__title" id="genre-title">Curated Genre</h1>
+      <p class="cr-section-header__desc" id="genre-desc">
+        Enduring works selected for literary merit, philosophical weight, and discussion value.
+      </p>
+      <div class="cr-section-header__rule"></div>
+    </header>
+
+    <!-- FEATURED BOOK IN GENRE -->
+    <div id="mount-featured" style="margin-bottom:var(--cr-space-8, 2rem);"></div>
+
+    <!-- ALL BOOKS IN GENRE -->
+    <div class="cr-section-header" style="margin-top:var(--cr-space-8, 2rem);">
+      <span class="cr-section-header__label">ALL TITLES IN THIS GENRE</span>
+      <h2 class="cr-h3">The Collection</h2>
+    </div>
+
+    <div class="cr-book-grid" id="mount-genre-books"></div>
+
+    <div style="text-align:center; margin-top:var(--cr-space-8, 2rem);">
+      <a href="explore.html" class="link-btn">&larr; Back to All Genres in Explore</a>
+    </div>
+
+  </main>
+
+  <!-- CHAPTER ROOM FOOTER -->
+  <div id="mount-footer"></div>
+
+  <!-- MOBILE BOTTOM TAB BAR -->
+  <div id="mount-tabbar"></div>
+
+  <!-- SCRIPTS -->
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/chapter-room/tokens.js"></script>
+  <script src="../js/chapter-room/data.js"></script>
+  <script src="../js/chapter-room/components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('mount-nav').innerHTML = CRComponents.renderNav('explore', { rootPath: '../', crPath: '' });
+      document.getElementById('mount-tabbar').innerHTML = CRComponents.renderTabBar('explore', { crPath: '' });
+      document.getElementById('mount-footer').innerHTML = CRComponents.renderFooter({ rootPath: '../', crPath: '' });
+
+      var GENRE_DATA = {
+        'philosophy': {
+          title: 'Philosophy',
+          desc: 'Works examining truth, free will, suffering, ethics, and consciousness. Books that refuse superficial answers and force us to confront existence directly.'
+        },
+        'fiction': {
+          title: 'Literary Fiction',
+          desc: 'Profound narratives capturing the psychological depth, moral struggle, and tragic beauty of human relationships.'
+        },
+        'classics': {
+          title: 'Enduring Classics',
+          desc: 'Works that have survived centuries of cultural upheaval because their insights into human nature remain irrevocably true.'
+        },
+        'memoir': {
+          title: 'Memoir & Lived Experience',
+          desc: 'First-person accounts of endurance, grief, survival, and transcendence written by those who walked through the fire.'
+        }
+      };
+
+      var params = new URLSearchParams(window.location.search);
+      var genreKey = (params.get('genre') || 'philosophy').toLowerCase();
+      var meta = GENRE_DATA[genreKey] || {
+        title: genreKey.charAt(0).toUpperCase() + genreKey.slice(1),
+        desc: 'Curated books exploring deep questions and enduring literary themes.'
+      };
+
+      document.title = meta.title + ' | The Chapter Room';
+      document.getElementById('genre-title').textContent = meta.title;
+      document.getElementById('genre-desc').textContent = meta.desc;
+
+      var books = CRData.getBooksByGenre(genreKey);
+      if (books.length > 0) {
+        var featured = books[0];
+        document.getElementById('mount-featured').innerHTML = '<div style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); padding:var(--cr-space-6, 1.5rem); border-radius:var(--cr-radius-xs, 2px);">' +
+          '<span class="cr-chip cr-chip--genre" style="margin-bottom:0.5rem; display:inline-block;">Featured in ' + meta.title + '</span>' +
+          CRComponents.renderBookCard({
+            id: featured.id,
+            title: featured.title,
+            author: featured.author,
+            genre: featured.genre,
+            cover: featured.cover,
+            desc: featured.description,
+            readingTime: featured.readingTime,
+            difficulty: featured.difficulty,
+            difficultyNote: featured.difficultyNote,
+            horizontal: true,
+            fallback: !featured.cover,
+            bookPath: 'book.html?id=' + featured.id
+          }) +
+        '</div>';
+      }
+
+      document.getElementById('mount-genre-books').innerHTML = books.map(function (b) {
+        return CRComponents.renderBookCard({
+          id: b.id,
+          title: b.title,
+          author: b.author,
+          genre: b.genre,
+          cover: b.cover,
+          desc: b.description,
+          readingTime: b.readingTime,
+          difficulty: b.difficulty,
+          difficultyNote: b.difficultyNote,
+          fallback: !b.cover,
+          bookPath: 'book.html?id=' + b.id
+        });
+      }).join('');
+    });
+  </script>
+</body>
+</html>

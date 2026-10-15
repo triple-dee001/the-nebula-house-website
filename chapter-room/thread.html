@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" data-cr-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discussion Thread | The Chapter Room</title>
+  <meta name="description" content="Engage in deep, thoughtful literary conversation on specific book chapters in The Chapter Room.">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/chapter-room.css">
+</head>
+<body class="cr-page" data-cr-theme="dark">
+
+  <!-- TOP NAVIGATION -->
+  <div id="mount-nav"></div>
+
+  <main class="cr-container" id="main-content" style="max-width:var(--cr-reading-measure, 680px); padding-top:var(--cr-space-8, 2rem); padding-bottom:var(--cr-space-16, 4rem);">
+
+    <!-- Breadcrumb -->
+    <nav style="display:flex; align-items:center; gap:0.5rem; font-size:var(--cr-text-xs); color:var(--cr-text-secondary); margin-bottom:var(--cr-space-4, 1rem); flex-wrap:wrap;">
+      <a href="index.html" class="cr-link">Chapter Room</a>
+      <span>&rsaquo;</span>
+      <a href="#" id="thread-book-link" class="cr-link">Notes from Underground</a>
+      <span>&rsaquo;</span>
+      <a href="#" id="thread-chapter-link" class="cr-link">Chapter 1</a>
+      <span>&rsaquo;</span>
+      <span>Thread</span>
+    </nav>
+
+    <header class="cr-section-header" style="margin-bottom:var(--cr-space-6, 1.5rem);">
+      <span class="cr-section-header__label">LITERARY DISCOURSE</span>
+      <h1 class="cr-h2" id="thread-title">Discussion Thread</h1>
+      <p style="font-size:var(--cr-text-sm); color:var(--cr-text-secondary); margin:0;">
+        Every comment belongs to a single chapter. Spoilers require deliberate revelation.
+      </p>
+      <div class="cr-section-header__rule"></div>
+    </header>
+
+    <!-- ORIGINAL PARENT THOUGHT -->
+    <div id="mount-parent-thought" style="margin-bottom:var(--cr-space-6, 1.5rem);"></div>
+
+    <!-- REPLY COMPOSER -->
+    <div style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); border-radius:var(--cr-radius-xs, 2px); padding:var(--cr-space-4, 1rem); margin-bottom:var(--cr-space-8, 2rem);">
+      <h3 class="cr-h3" style="margin-top:0; margin-bottom:var(--cr-space-2, 0.5rem); font-size:var(--cr-text-base);">Reply to this thought</h3>
+      <textarea id="reply-text" class="cr-chapter-aside__textarea" placeholder="Contribute your perspective with depth and care..." style="background:var(--cr-bg-card); padding:0.5rem; border-radius:2px; border:1px solid var(--cr-border-subtle); box-sizing:border-box;" aria-label="Reply to comment"></textarea>
+      <div style="display:flex; justify-content:flex-end; margin-top:var(--cr-space-3, 0.75rem);">
+        <button type="button" class="btn btn--sm" id="post-reply-btn">
+          <span>Post Reply</span>
+          <span class="arrow">&rarr;</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- REPLIES LIST -->
+    <div>
+      <div class="cr-section-header" style="margin-bottom:var(--cr-space-4, 1rem);">
+        <span class="cr-section-header__label">REPLIES IN THIS THREAD</span>
+        <h3 class="cr-h3" id="replies-count-heading">Replies</h3>
+      </div>
+      <div id="mount-replies" style="display:flex; flex-direction:column; gap:var(--cr-space-3, 0.75rem);"></div>
+    </div>
+
+  </main>
+
+  <!-- CHAPTER ROOM FOOTER -->
+  <div id="mount-footer"></div>
+
+  <!-- MOBILE BOTTOM TAB BAR -->
+  <div id="mount-tabbar"></div>
+
+  <!-- SCRIPTS -->
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/chapter-room/tokens.js"></script>
+  <script src="../js/chapter-room/data.js"></script>
+  <script src="../js/chapter-room/components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('mount-nav').innerHTML = CRComponents.renderNav('community', { rootPath: '../', crPath: '' });
+      document.getElementById('mount-tabbar').innerHTML = CRComponents.renderTabBar('community', { crPath: '' });
+      document.getElementById('mount-footer').innerHTML = CRComponents.renderFooter({ rootPath: '../', crPath: '' });
+
+      var params = new URLSearchParams(window.location.search);
+      var commentId = params.get('id') || 'c101';
+      var bookId = params.get('book') || 'notes-from-underground';
+      var chapterNum = parseInt(params.get('chapter'), 10) || 1;
+
+      var book = CRData.getBookById(bookId);
+      if (!book) book = CRData.getAllBooks()[0];
+
+      document.getElementById('thread-book-link').textContent = book.title;
+      document.getElementById('thread-book-link').href = 'book.html?id=' + book.id;
+      document.getElementById('thread-chapter-link').textContent = 'Chapter ' + chapterNum;
+      document.getElementById('thread-chapter-link').href = 'chapter.html?book=' + book.id + '&chapter=' + chapterNum;
+
+      var content = CRData.getChapterContent(book.id, chapterNum);
+      var comments = (content && content.comments) || [];
+      var parentComment = null;
+
+      for (var i = 0; i < comments.length; i++) {
+        if (comments[i].id === commentId) {
+          parentComment = comments[i];
+          break;
+        }
+      }
+
+      if (!parentComment && comments.length > 0) {
+        parentComment = comments[0];
+      }
+
+      if (parentComment) {
+        document.getElementById('mount-parent-thought').innerHTML = CRComponents.renderComment(parentComment);
+
+        var replies = parentComment.replies || [];
+        document.getElementById('replies-count-heading').textContent = replies.length + ' ' + (replies.length === 1 ? 'Reply' : 'Replies');
+
+        var repliesHtml = replies.length === 0
+          ? '<p style="color:var(--cr-text-secondary); font-size:var(--cr-text-sm); font-style:italic;">No replies yet. Be the first to start the thread.</p>'
+          : replies.map(function (r) {
+              return CRComponents.renderComment({
+                id: r.id,
+                author: r.author,
+                time: r.time,
+                text: r.text,
+                isSpoiler: r.isSpoiler,
+                reactions: r.reactions,
+                isNested: true
+              });
+            }).join('');
+
+        document.getElementById('mount-replies').innerHTML = repliesHtml;
+
+        document.getElementById('post-reply-btn').addEventListener('click', function () {
+          var input = document.getElementById('reply-text');
+          var text = (input.value || '').trim();
+          if (!text) return;
+
+          try {
+            CRData.addReply(book.id, chapterNum, parentComment.id, text);
+            input.value = '';
+            window.location.reload();
+          } catch (err) {
+            alert(err.message);
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1632,3 +1632,238 @@ body[data-cr-theme="cream"] .cr-skeleton::after {
   flex-shrink: 0;
 }
 
+/* ==========================================================================
+   CHAPTER PAGE 3-COLUMN LAYOUT & MOBILE ADAPTATIONS
+   ========================================================================== */
+.cr-chapter-layout {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr) 340px;
+  gap: var(--cr-space-8, 2rem);
+  max-width: var(--cr-container, 1200px);
+  margin: 0 auto;
+  padding: var(--cr-space-6, 1.5rem) var(--cr-space-4, 1rem) var(--cr-space-16, 4rem);
+  align-items: start;
+}
+
+/* 1. Left Sticky Chapter Navigator */
+.cr-chapter-nav {
+  position: sticky;
+  top: calc(var(--cr-subnav-height, 48px) + var(--nav-height, 80px) + 1.5rem);
+  background: var(--cr-bg-surface);
+  border: 1px solid var(--cr-border-subtle);
+  border-radius: var(--cr-radius-xs, 2px);
+  padding: var(--cr-space-4, 1rem);
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+}
+
+.cr-chapter-nav__title {
+  font-family: var(--cr-font-sans);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cr-text-secondary);
+  font-weight: 700;
+  margin: 0 0 var(--cr-space-3, 0.75rem) 0;
+  border-bottom: 1px solid var(--cr-border-subtle);
+  padding-bottom: var(--cr-space-2, 0.5rem);
+}
+
+.cr-chapter-nav__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cr-chapter-nav__item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: var(--cr-radius-xs, 2px);
+  font-family: var(--cr-font-sans);
+  font-size: var(--cr-text-xs);
+  color: var(--cr-text-secondary);
+  text-decoration: none;
+  transition: all var(--cr-transition-fast);
+}
+
+.cr-chapter-nav__item:hover {
+  background: var(--cr-bg-subtle);
+  color: var(--cr-text-primary);
+}
+
+.cr-chapter-nav__item.is-active {
+  background: var(--cr-bg-card);
+  color: var(--cr-text-primary);
+  font-weight: 600;
+  border-left: 2px solid var(--cr-text-primary);
+}
+
+.cr-chapter-nav__item.is-locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 2. Center Reading Column */
+.cr-reading-column {
+  max-width: var(--cr-reading-measure, 680px);
+  width: 100%;
+  margin: 0 auto;
+}
+
+.cr-reading-column .cr-reading-text {
+  font-family: var(--cr-font-display);
+  font-weight: 500;
+  font-size: clamp(1.25rem, 1.15rem + 0.5vw, 1.375rem); /* 20px+ mobile */
+  line-height: var(--cr-leading-reading, 1.72);
+  color: var(--cr-text-primary);
+  margin-bottom: var(--cr-space-6, 1.5rem);
+}
+
+.cr-reading-column .cr-reading-text p {
+  margin-bottom: 1.5rem;
+}
+
+/* Separable Reading Panel (Prose reader slot) */
+.cr-reading-panel {
+  background: var(--cr-bg-surface);
+  border: 1px solid var(--cr-border-subtle);
+  border-radius: var(--cr-radius-xs, 2px);
+  padding: var(--cr-space-6, 1.5rem);
+  margin-bottom: var(--cr-space-8, 2rem);
+}
+
+body[data-cr-theme="cream"] .cr-reading-panel {
+  background: #ede7db;
+  border-color: rgba(26, 26, 26, 0.15);
+}
+
+.cr-reading-panel__label {
+  font-family: var(--cr-font-sans);
+  font-size: 0.6875rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--cr-text-secondary);
+  margin-bottom: var(--cr-space-4, 1rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 3. Right Quiet Discussion Aside */
+.cr-chapter-aside {
+  position: sticky;
+  top: calc(var(--cr-subnav-height, 48px) + var(--nav-height, 80px) + 1.5rem);
+  background: var(--cr-bg-surface);
+  border: 1px solid var(--cr-border-subtle);
+  border-radius: var(--cr-radius-xs, 2px);
+  padding: var(--cr-space-4, 1rem);
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.cr-chapter-aside__title {
+  font-family: var(--cr-font-display);
+  font-size: var(--cr-text-lg);
+  font-weight: 600;
+  margin: 0 0 var(--cr-space-2, 0.5rem) 0;
+  color: var(--cr-text-primary);
+}
+
+.cr-chapter-aside__composer {
+  background: var(--cr-bg-card);
+  border: 1px solid var(--cr-border-subtle);
+  border-radius: var(--cr-radius-xs, 2px);
+  padding: var(--cr-space-3, 0.75rem);
+  margin-bottom: var(--cr-space-4, 1rem);
+}
+
+.cr-chapter-aside__textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--cr-text-primary);
+  font-family: var(--cr-font-sans);
+  font-size: var(--cr-text-sm);
+  resize: vertical;
+  min-height: 70px;
+  outline: none;
+}
+
+/* 4. Responsive Breakpoints & Mobile Action Bar */
+@media (max-width: 1080px) {
+  .cr-chapter-layout {
+    grid-template-columns: 200px 1fr;
+  }
+  .cr-chapter-aside {
+    display: none; /* Accessible via bottom drawer/modal on smaller laptops/tablets */
+  }
+}
+
+@media (max-width: 768px) {
+  .cr-chapter-layout {
+    display: block;
+    padding-bottom: 90px;
+  }
+  .cr-chapter-nav {
+    display: none; /* Accessible via mobile chapter picker */
+  }
+}
+
+/* Mobile Sticky Bottom Action Bar */
+.cr-mobile-action-bar {
+  display: none;
+  position: fixed;
+  bottom: 56px; /* Above tab bar */
+  left: 0;
+  right: 0;
+  background: var(--cr-bg-surface);
+  border-top: 1px solid var(--cr-border-subtle);
+  padding: 0.6rem 1rem;
+  z-index: 990;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .cr-mobile-action-bar {
+    display: flex;
+  }
+}
+
+/* Bottom Sheet Modal for Mobile Discussion & Chapter Navigator */
+.cr-bottom-sheet {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1100;
+  justify-content: flex-end;
+  flex-direction: column;
+}
+
+.cr-bottom-sheet.is-open {
+  display: flex;
+}
+
+.cr-bottom-sheet__content {
+  background: var(--cr-bg-page);
+  border-top: 1px solid var(--cr-border-default);
+  border-radius: var(--cr-radius-xs, 2px) var(--cr-radius-xs, 2px) 0 0;
+  padding: var(--cr-space-4, 1rem);
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 -8px 24px rgba(0,0,0,0.8);
+}
+
+

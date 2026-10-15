@@ -4,7 +4,7 @@
 // ─── NAVBAR UPDATE ────────────────────────────
 function getPathPrefix() {
   const path = window.location.pathname;
-  if (path.includes('/post/') || path.includes('/past-reads/')) return '../';
+  if (path.includes('/post/') || path.includes('/past-reads/') || path.includes('/chapter-room/')) return '../';
   if (path.includes('/the-nebula-academy/term-')) return '../../';
   return '';
 }

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" data-cr-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book of the Month | The Chapter Room</title>
+  <meta name="description" content="Join our community read: Notes from Underground by Fyodor Dostoevsky. Sequential chapter unlocking, reading schedule, and discussions.">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/chapter-room.css">
+</head>
+<body class="cr-page" data-cr-theme="dark">
+
+  <!-- TOP NAVIGATION -->
+  <div id="mount-nav"></div>
+
+  <main id="main-content" style="padding-bottom:var(--cr-space-16, 4rem);">
+
+    <!-- BOTM HERO BANNER -->
+    <section class="cr-section cr-section--surface" style="border-bottom:1px solid var(--cr-border-subtle); padding:var(--cr-space-8, 2rem) 0;">
+      <div class="cr-container">
+        
+        <div style="display:grid; grid-template-columns:minmax(240px, 320px) 1fr; gap:var(--cr-space-8, 2rem); align-items:start;">
+          <!-- Left Cover Column -->
+          <div>
+            <div id="mount-botm-cover" style="box-shadow:0 12px 30px rgba(0,0,0,0.5);"></div>
+            <div style="margin-top:var(--cr-space-4, 1rem); text-align:center;">
+              <span class="cr-chip" id="recommend-pill">92% of readers recommend this</span>
+            </div>
+          </div>
+
+          <!-- Right Book Metadata & Actions -->
+          <div>
+            <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:var(--cr-space-2, 0.5rem); flex-wrap:wrap;">
+              <span class="cr-chip cr-chip--accent" style="font-weight:700;">OCTOBER 2026 COMMUNITY READ</span>
+              <span class="cr-chip cr-chip--genre" id="botm-genre">Philosophy</span>
+              <span class="cr-chip" id="botm-diff">Challenging</span>
+            </div>
+
+            <h1 class="cr-h1" id="botm-title" style="margin-top:0.25rem; margin-bottom:0.25rem;">Notes from Underground</h1>
+            <p style="font-family:var(--cr-font-display); font-style:italic; font-size:var(--cr-text-lg); color:var(--cr-text-secondary); margin-bottom:var(--cr-space-4, 1rem);">
+              by <span id="botm-author">Fyodor Dostoevsky</span> &bull; 1864
+            </p>
+
+            <p class="cr-reading-text" id="botm-desc" style="margin-bottom:var(--cr-space-4, 1rem); max-width:700px;">
+              A dark, introspective novella exploring the mind of a bitter, isolated man in conflict with society and himself. Through sharp irony and psychological depth, it questions rationality, free will, and human consciousness.
+            </p>
+
+            <!-- Quick Specs -->
+            <div style="display:flex; gap:var(--cr-space-6, 1.5rem); margin-bottom:var(--cr-space-6, 1.5rem); font-family:var(--cr-font-sans); font-size:var(--cr-text-sm); color:var(--cr-text-secondary); border-top:1px solid var(--cr-border-subtle); border-bottom:1px solid var(--cr-border-subtle); padding:var(--cr-space-3, 0.75rem) 0;">
+              <div>Reading Time: <strong style="color:var(--cr-text-primary);" id="botm-time">3.5 hrs</strong></div>
+              <div>Chapters: <strong style="color:var(--cr-text-primary);" id="botm-chapters">6 chapters</strong></div>
+              <div>Pace: <strong style="color:var(--cr-text-primary);">2 weeks (3 ch/week)</strong></div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="display:flex; align-items:center; gap:var(--cr-space-4, 1rem); flex-wrap:wrap;">
+              <a href="chapter.html?book=notes-from-underground&chapter=1" id="start-reading-btn" class="btn">
+                <span><span class="btn__label-full">Start Reading Chapter 1</span><span class="btn__label-short">Read Ch. 1</span></span>
+                <span class="arrow">&rarr;</span>
+              </a>
+              <button type="button" class="btn btn--outline" id="shelf-toggle-btn">
+                <span>Add to My Shelf</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- EDITORIAL ESSAY: WHY THIS BOOK, WHY NOW -->
+    <section class="cr-section">
+      <div class="cr-container" style="max-width:var(--cr-reading-measure, 680px);">
+        <div class="cr-section-header">
+          <span class="cr-section-header__label">EDITORIAL ESSAY</span>
+          <h2 class="cr-section-header__title">Why We’re Reading It</h2>
+          <div class="cr-section-header__rule"></div>
+        </div>
+
+        <div class="cr-reading-text cr-reading-measure" id="editorial-essay">
+          <p>
+            In an age dominated by algorithmic optimization, social metrics, and the relentless pressure toward productive self-improvement, Dostoevsky’s underground man reminds us of something deeply uncomfortable: human consciousness is stubbornly irrational, fiercely protective of free choice, and impossible to reduce to mathematical equations.
+          </p>
+          <p>
+            Written in 1864 after the death of his first wife and brother, <em>Notes from Underground</em> is Dostoevsky’s explosive polemic against the utopian socialist dreams of nineteenth-century Europe—represented by the legendary "Crystal Palace". The underground man does not oppose utopia because he loves suffering; he opposes it because a perfected, calculated society leaves no room for human volition. If 2 + 2 always equals 4, what is left for the human soul to decide?
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- READING SCHEDULE & TIMELINE -->
+    <section class="cr-section cr-section--surface">
+      <div class="cr-container">
+        <div class="cr-section-header">
+          <span class="cr-section-header__label">PACE GUIDE</span>
+          <h2 class="cr-section-header__title">October Reading Schedule</h2>
+          <p class="cr-section-header__desc">Read at your own pace without pressure. Here is how our community explores this work together.</p>
+          <div class="cr-section-header__rule"></div>
+        </div>
+
+        <div class="cr-grid-2" style="margin-bottom:var(--cr-space-6, 1.5rem);">
+          <div style="background:var(--cr-bg-card); border:1px solid var(--cr-border-subtle); padding:var(--cr-space-4, 1rem); border-radius:var(--cr-radius-xs, 2px);">
+            <span class="cr-chip" style="margin-bottom:0.5rem; display:inline-block;">Week 1 &bull; Oct 1–15</span>
+            <h3 class="cr-h3" style="margin-top:0;">Part I: The Underground (Ch. 1–3)</h3>
+            <p style="font-size:var(--cr-text-sm); color:var(--cr-text-secondary); margin:0;">
+              The philosophical manifesto. Focus on spite, hyper-consciousness, and the critique of 2+2=4.
+            </p>
+          </div>
+          <div style="background:var(--cr-bg-card); border:1px solid var(--cr-border-subtle); padding:var(--cr-space-4, 1rem); border-radius:var(--cr-radius-xs, 2px);">
+            <span class="cr-chip" style="margin-bottom:0.5rem; display:inline-block;">Week 2 &bull; Oct 16–31</span>
+            <h3 class="cr-h3" style="margin-top:0;">Part II: A Propos of the Wet Snow (Ch. 4–6)</h3>
+            <p style="font-size:var(--cr-text-sm); color:var(--cr-text-secondary); margin:0;">
+              The psychological drama. Watch what happens when theory crashes into the dinner party and Liza.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEQUENTIAL CHAPTER BREAKDOWN -->
+    <section class="cr-section">
+      <div class="cr-container">
+        <div class="cr-section-header">
+          <span class="cr-section-header__label">SEQUENTIAL CHAPTER BREAKDOWN</span>
+          <h2 class="cr-section-header__title">Chapters & Unlocking</h2>
+          <p class="cr-section-header__desc">
+            Complete each chapter to unlock subsequent discussion notes and key ideas. Strict spoiler protection applies.
+          </p>
+          <div class="cr-section-header__rule"></div>
+        </div>
+
+        <div id="mount-chapters-list" style="display:flex; flex-direction:column; gap:var(--cr-space-3, 0.75rem);"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- CHAPTER ROOM FOOTER -->
+  <div id="mount-footer"></div>
+
+  <!-- MOBILE BOTTOM TAB BAR -->
+  <div id="mount-tabbar"></div>
+
+  <!-- SCRIPTS -->
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/chapter-room/tokens.js"></script>
+  <script src="../js/chapter-room/data.js"></script>
+  <script src="../js/chapter-room/components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('mount-nav').innerHTML = CRComponents.renderNav('botm', { rootPath: '../', crPath: '' });
+      document.getElementById('mount-tabbar').innerHTML = CRComponents.renderTabBar('botm', { crPath: '' });
+      document.getElementById('mount-footer').innerHTML = CRComponents.renderFooter({ rootPath: '../', crPath: '' });
+
+      var botm = CRData.getBookOfTheMonth();
+      if (!botm) return;
+
+      var prog = CRData.getReaderProgress(botm.id);
+      var currentCh = prog.currentChapter || 1;
+
+      // Update Start button
+      var startBtn = document.getElementById('start-reading-btn');
+      if (startBtn) {
+        startBtn.href = 'chapter.html?book=' + botm.id + '&chapter=' + currentCh;
+        startBtn.querySelector('.btn__label-full').textContent = (prog.completedChapters.length > 0 ? 'Continue Chapter ' : 'Start Reading Chapter ') + currentCh;
+        startBtn.querySelector('.btn__label-short').textContent = 'Ch. ' + currentCh;
+      }
+
+      // Render Cover
+      document.getElementById('mount-botm-cover').innerHTML = CRComponents.renderBookCover({
+        title: botm.title,
+        author: botm.author,
+        genre: botm.genre,
+        cover: botm.cover,
+        fallback: !botm.cover
+      });
+
+      // Render Chapters
+      var chaptersHtml = [];
+      for (var ch = 1; ch <= botm.chapterCount; ch++) {
+        var content = CRData.getChapterContent(botm.id, ch);
+        var state = 'locked';
+        if (content && !content.locked) {
+          state = content.completed ? 'completed' : 'available';
+        }
+
+        chaptersHtml.push(CRComponents.renderChapterRow({
+          number: ch,
+          title: content ? content.title : ('Chapter ' + ch),
+          readingTime: content ? content.readingTime : '20 min read',
+          commentCount: content ? (content.comments || []).length : 0,
+          state: state,
+          unlockRequirement: 'Complete Chapter ' + (ch - 1) + ' to unlock',
+          href: 'chapter.html?book=' + botm.id + '&chapter=' + ch
+        }));
+      }
+
+      document.getElementById('mount-chapters-list').innerHTML = chaptersHtml.join('');
+
+      // Shelf button interactivity
+      var shelfBtn = document.getElementById('shelf-toggle-btn');
+      if (shelfBtn) {
+        shelfBtn.addEventListener('click', function () {
+          CRData.moveBookOnShelf(botm.id, 'currentlyReading');
+          shelfBtn.innerHTML = '<span>&check; On Your Shelf</span>';
+          shelfBtn.classList.remove('btn--outline');
+          shelfBtn.classList.add('btn--filled');
+        });
+      }
+    });
+  </script>
+</body>
+</html>

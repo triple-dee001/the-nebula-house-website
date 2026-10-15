@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" data-cr-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Completed | The Chapter Room</title>
+  <meta name="description" content="Reflect on your reading and discover what to read next in The Chapter Room.">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/chapter-room.css">
+</head>
+<body class="cr-page" data-cr-theme="dark">
+
+  <!-- TOP NAVIGATION -->
+  <div id="mount-nav"></div>
+
+  <main class="cr-container" id="main-content" style="max-width:var(--cr-container-narrow, 760px); padding-top:var(--cr-space-8, 2rem); padding-bottom:var(--cr-space-16, 4rem);">
+
+    <!-- CELEBRATORY LITERARY HEADER -->
+    <header style="text-align:center; margin-bottom:var(--cr-space-8, 2rem);">
+      <div style="width:52px; height:52px; margin:0 auto var(--cr-space-3, 0.75rem); border-radius:50%; background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); display:flex; align-items:center; justify-content:center;">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      <span class="cr-chip cr-chip--accent" style="margin-bottom:0.5rem; display:inline-block;">BOOK COMPLETED</span>
+      <h1 class="cr-h1" id="finish-title" style="margin-top:0.25rem; margin-bottom:0.25rem;">You Finished Notes from Underground</h1>
+      <p style="font-family:var(--cr-font-display); font-style:italic; font-size:var(--cr-text-lg); color:var(--cr-text-secondary); margin:0;" id="finish-author">
+        by Fyodor Dostoevsky
+      </p>
+    </header>
+
+    <!-- REFLECTION FORM (NO STAR RATINGS) -->
+    <section class="cr-component-box" style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); border-radius:var(--cr-radius-xs, 2px); padding:var(--cr-space-6, 1.5rem); margin-bottom:var(--cr-space-12, 3rem);">
+      <div class="cr-section-header" style="margin-bottom:var(--cr-space-4, 1rem);">
+        <span class="cr-section-header__label">LITERARY REFLECTION</span>
+        <h2 class="cr-h3" style="margin:0;">What Stayed With You?</h2>
+        <p class="cr-section-header__desc">
+          No superficial stars or algorithm ratings. Take a moment to capture what this work left behind in you.
+        </p>
+      </div>
+
+      <form id="reflection-form">
+        <!-- Question 1: Would you recommend it? -->
+        <div style="margin-bottom:var(--cr-space-6, 1.5rem);">
+          <label style="display:block; font-size:var(--cr-text-sm); font-weight:600; color:var(--cr-text-primary); margin-bottom:0.5rem;">
+            Would you recommend this book to another thoughtful reader?
+          </label>
+          <div style="display:flex; gap:var(--cr-space-3, 0.75rem); flex-wrap:wrap;">
+            <label class="cr-chip" style="cursor:pointer; display:inline-flex; align-items:center; gap:0.4rem;">
+              <input type="radio" name="recommend" value="yes" checked style="accent-color:var(--cr-text-primary);">
+              <span>Yes, absolutely</span>
+            </label>
+            <label class="cr-chip" style="cursor:pointer; display:inline-flex; align-items:center; gap:0.4rem;">
+              <input type="radio" name="recommend" value="caveats" style="accent-color:var(--cr-text-primary);">
+              <span>With caveats (requires patience)</span>
+            </label>
+            <label class="cr-chip" style="cursor:pointer; display:inline-flex; align-items:center; gap:0.4rem;">
+              <input type="radio" name="recommend" value="no" style="accent-color:var(--cr-text-primary);">
+              <span>Not for me</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Question 2: What stayed with you? -->
+        <div style="margin-bottom:var(--cr-space-6, 1.5rem);">
+          <label for="reflection-input" style="display:block; font-size:var(--cr-text-sm); font-weight:600; color:var(--cr-text-primary); margin-bottom:0.5rem;">
+            What idea, scene, or sentence will remain with you?
+          </label>
+          <textarea id="reflection-input" class="cr-chapter-aside__textarea" placeholder="The narrator's rebellion against the crystal palace..." style="background:var(--cr-bg-card); padding:var(--cr-space-3, 0.75rem); border:1px solid var(--cr-border-subtle); border-radius:2px; box-sizing:border-box; width:100%; min-height:100px;" required></textarea>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+          <a href="my-reading.html" class="link-btn">&larr; Go to My Shelf</a>
+          <button type="submit" class="btn" id="save-reflection-btn">
+            <span>Save Reflection & Move to Finished</span>
+            <span class="arrow">&rarr;</span>
+          </button>
+        </div>
+      </form>
+
+      <div id="reflection-success" style="display:none; text-align:center; padding:var(--cr-space-4, 1rem); background:var(--cr-bg-card); border:1px solid var(--cr-border-subtle); border-radius:2px; margin-top:var(--cr-space-4, 1rem);">
+        <p style="font-family:var(--cr-font-display); font-size:var(--cr-text-lg); color:var(--cr-text-primary); margin:0 0 0.5rem 0;">
+          Your reflection has been recorded on your reading shelf.
+        </p>
+        <span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary);">Added to your Finished Shelf &bull; 100% Complete</span>
+      </div>
+    </section>
+
+    <!-- WHAT WILL YOU READ NEXT? THREE HAND-PICKED RECOMMENDATIONS -->
+    <section>
+      <div class="cr-section-header">
+        <span class="cr-section-header__label">THE PRODUCT LOOP</span>
+        <h2 class="cr-h2">What Will You Read Next?</h2>
+        <p class="cr-section-header__desc">
+          Three works connected by philosophical DNA, depth of thought, and literary power.
+        </p>
+        <div class="cr-section-header__rule"></div>
+      </div>
+
+      <div id="mount-recommendations" style="display:flex; flex-direction:column; gap:var(--cr-space-4, 1rem);"></div>
+    </section>
+
+  </main>
+
+  <!-- CHAPTER ROOM FOOTER -->
+  <div id="mount-footer"></div>
+
+  <!-- MOBILE BOTTOM TAB BAR -->
+  <div id="mount-tabbar"></div>
+
+  <!-- SCRIPTS -->
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/chapter-room/tokens.js"></script>
+  <script src="../js/chapter-room/data.js"></script>
+  <script src="../js/chapter-room/components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('mount-nav').innerHTML = CRComponents.renderNav('shelf', { rootPath: '../', crPath: '' });
+      document.getElementById('mount-tabbar').innerHTML = CRComponents.renderTabBar('shelf', { crPath: '' });
+      document.getElementById('mount-footer').innerHTML = CRComponents.renderFooter({ rootPath: '../', crPath: '' });
+
+      var params = new URLSearchParams(window.location.search);
+      var bookId = params.get('book') || 'notes-from-underground';
+      var book = CRData.getBookById(bookId);
+      if (!book) book = CRData.getAllBooks()[0];
+
+      document.getElementById('finish-title').textContent = 'You Finished ' + book.title;
+      document.getElementById('finish-author').textContent = 'by ' + book.author;
+
+      // Render 3 Recommendations
+      var allBooks = CRData.getAllBooks();
+      var recs = allBooks.filter(function (b) { return b.id !== book.id; }).slice(0, 3);
+
+      var recsHtml = recs.map(function (recBook) {
+        return CRComponents.renderBookCard({
+          id: recBook.id,
+          title: recBook.title,
+          author: recBook.author,
+          genre: recBook.genre,
+          cover: recBook.cover,
+          desc: recBook.description,
+          readingTime: recBook.readingTime,
+          difficulty: recBook.difficulty,
+          difficultyNote: recBook.difficultyNote,
+          horizontal: true,
+          fallback: !recBook.cover,
+          bookPath: 'book.html?id=' + recBook.id
+        });
+      }).join('');
+
+      document.getElementById('mount-recommendations').innerHTML = recsHtml;
+
+      // Handle Form Submit
+      var form = document.getElementById('reflection-form');
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var recVal = form.querySelector('input[name="recommend"]:checked').value;
+        var reflectionText = document.getElementById('reflection-input').value.trim();
+
+        CRData.finishBook(book.id, recVal === 'yes' || recVal === 'caveats', reflectionText);
+
+        form.style.display = 'none';
+        document.getElementById('reflection-success').style.display = 'block';
+      });
+    });
+  </script>
+</body>
+</html>

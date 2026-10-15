@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" data-cr-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Overview | The Chapter Room</title>
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/chapter-room.css">
+</head>
+<body class="cr-page" data-cr-theme="dark">
+
+  <!-- TOP NAVIGATION -->
+  <div id="mount-nav"></div>
+
+  <main id="main-content" style="padding-bottom:var(--cr-space-16, 4rem);">
+
+    <!-- BOOK HEADER -->
+    <header class="cr-section cr-section--surface" style="border-bottom:1px solid var(--cr-border-subtle); padding:var(--cr-space-8, 2rem) 0;">
+      <div class="cr-container">
+        
+        <div style="display:grid; grid-template-columns:minmax(220px, 280px) 1fr; gap:var(--cr-space-8, 2rem); align-items:start;">
+          
+          <!-- 2:3 Book Cover Presentation -->
+          <div>
+            <div id="mount-book-cover" style="box-shadow:0 8px 24px rgba(0,0,0,0.6);"></div>
+            <div style="margin-top:var(--cr-space-3, 0.75rem); text-align:center;">
+              <span class="cr-chip" id="book-recommend-badge">92% of readers recommend this</span>
+            </div>
+          </div>
+
+          <!-- Metadata & Actions -->
+          <div>
+            <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:var(--cr-space-2, 0.5rem); flex-wrap:wrap;">
+              <span class="cr-chip cr-chip--genre" id="book-genre">Genre</span>
+              <span class="cr-chip" id="book-diff">Difficulty</span>
+              <span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); italic;" id="book-diff-note">Encouraging note</span>
+            </div>
+
+            <h1 class="cr-h1" id="book-title" style="margin-top:0.25rem; margin-bottom:0.25rem;">Book Title</h1>
+            <p style="font-family:var(--cr-font-display); font-style:italic; font-size:var(--cr-text-lg); color:var(--cr-text-secondary); margin-bottom:var(--cr-space-4, 1rem);">
+              by <span id="book-author">Author</span> &bull; <span id="book-year">Year</span>
+            </p>
+
+            <p class="cr-reading-text" id="book-desc" style="margin-bottom:var(--cr-space-4, 1rem); max-width:700px;">
+              Book description.
+            </p>
+
+            <!-- Specs Bar -->
+            <div style="display:flex; gap:var(--cr-space-6, 1.5rem); margin-bottom:var(--cr-space-6, 1.5rem); font-family:var(--cr-font-sans); font-size:var(--cr-text-sm); color:var(--cr-text-secondary); border-top:1px solid var(--cr-border-subtle); border-bottom:1px solid var(--cr-border-subtle); padding:var(--cr-space-3, 0.75rem) 0;">
+              <div>Reading Time: <strong style="color:var(--cr-text-primary);" id="book-time">3.5 hrs</strong></div>
+              <div>Chapters: <strong style="color:var(--cr-text-primary);" id="book-chapters">6</strong></div>
+              <div>Pace: <strong style="color:var(--cr-text-primary);">Sequential Unlocking</strong></div>
+            </div>
+
+            <!-- Action CTAs -->
+            <div style="display:flex; align-items:center; gap:var(--cr-space-4, 1rem); flex-wrap:wrap;">
+              <a href="#" id="book-read-cta" class="btn">
+                <span><span class="btn__label-full">Start Reading Chapter 1</span><span class="btn__label-short">Read Ch. 1</span></span>
+                <span class="arrow">&rarr;</span>
+              </a>
+              <button type="button" class="btn btn--outline" id="book-shelf-action">
+                <span>Save to Shelf</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </header>
+
+    <!-- EDITORIAL CONTEXT & KEY THEMES -->
+    <section class="cr-section">
+      <div class="cr-container" style="max-width:var(--cr-reading-measure, 680px);">
+        
+        <div class="cr-section-header">
+          <span class="cr-section-header__label">WHY READ THIS BOOK?</span>
+          <h2 class="cr-section-header__title">Editorial Note</h2>
+          <div class="cr-section-header__rule"></div>
+        </div>
+
+        <p class="cr-reading-text cr-reading-measure" id="book-why" style="margin-bottom:var(--cr-space-6, 1.5rem);">
+          Editorial commentary.
+        </p>
+
+        <h3 class="cr-h3" style="margin-bottom:var(--cr-space-3, 0.75rem);">Core Themes Explored</h3>
+        <ul id="book-themes" style="list-style:disc; padding-left:1.5rem; color:var(--cr-text-secondary); font-family:var(--cr-font-sans); line-height:1.7; font-size:var(--cr-text-base);"></ul>
+
+      </div>
+    </section>
+
+    <!-- CHAPTER BREAKDOWN WITH SEQUENTIAL UNLOCKING -->
+    <section class="cr-section cr-section--surface">
+      <div class="cr-container">
+        
+        <div class="cr-section-header">
+          <span class="cr-section-header__label">SEQUENTIAL CHAPTER GUIDE</span>
+          <h2 class="cr-section-header__title">Chapters & Unlocking</h2>
+          <p class="cr-section-header__desc">
+            Complete each chapter sequentially to unlock subsequent discussions and detailed summaries. Strict spoiler protection applies.
+          </p>
+          <div class="cr-section-header__rule"></div>
+        </div>
+
+        <div id="mount-chapters" style="display:flex; flex-direction:column; gap:var(--cr-space-3, 0.75rem);"></div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- CHAPTER ROOM FOOTER -->
+  <div id="mount-footer"></div>
+
+  <!-- MOBILE BOTTOM TAB BAR -->
+  <div id="mount-tabbar"></div>
+
+  <!-- SCRIPTS -->
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/chapter-room/tokens.js"></script>
+  <script src="../js/chapter-room/data.js"></script>
+  <script src="../js/chapter-room/components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('mount-nav').innerHTML = CRComponents.renderNav('explore', { rootPath: '../', crPath: '' });
+      document.getElementById('mount-tabbar').innerHTML = CRComponents.renderTabBar('explore', { crPath: '' });
+      document.getElementById('mount-footer').innerHTML = CRComponents.renderFooter({ rootPath: '../', crPath: '' });
+
+      var params = new URLSearchParams(window.location.search);
+      var bookId = params.get('id') || 'notes-from-underground';
+      var book = CRData.getBookById(bookId);
+
+      if (!book) {
+        book = CRData.getAllBooks()[0];
+      }
+
+      document.title = book.title + ' | The Chapter Room';
+
+      // Populate Meta
+      document.getElementById('book-title').textContent = book.title;
+      document.getElementById('book-author').textContent = book.author;
+      document.getElementById('book-year').textContent = book.year;
+      document.getElementById('book-genre').textContent = book.genre;
+      document.getElementById('book-diff').textContent = book.difficulty;
+      document.getElementById('book-diff-note').textContent = book.difficultyNote;
+      document.getElementById('book-desc').textContent = book.description;
+      document.getElementById('book-time').textContent = book.readingTime;
+      document.getElementById('book-chapters').textContent = book.chapterCount + ' chapters';
+      document.getElementById('book-recommend-badge').textContent = (book.recommendRate || 90) + '% of readers recommend this';
+      document.getElementById('book-why').textContent = book.whyWeAreReading || book.description;
+
+      // Populate Themes
+      var themesEl = document.getElementById('book-themes');
+      if (themesEl && book.keyThemes) {
+        themesEl.innerHTML = book.keyThemes.map(function (theme) {
+          return '<li>' + theme + '</li>';
+        }).join('');
+      }
+
+      // Render Cover
+      document.getElementById('mount-book-cover').innerHTML = CRComponents.renderBookCover({
+        title: book.title,
+        author: book.author,
+        genre: book.genre,
+        cover: book.cover,
+        fallback: !book.cover
+      });
+
+      // Sequential Progress & Chapters
+      var prog = CRData.getReaderProgress(book.id);
+      var currentCh = prog.currentChapter || 1;
+
+      var readCta = document.getElementById('book-read-cta');
+      if (readCta) {
+        readCta.href = 'chapter.html?book=' + book.id + '&chapter=' + currentCh;
+        var fullLabel = (prog.completedChapters.length > 0 ? 'Continue Chapter ' : 'Start Reading Chapter ') + currentCh;
+        readCta.querySelector('.btn__label-full').textContent = fullLabel;
+        readCta.querySelector('.btn__label-short').textContent = 'Ch. ' + currentCh;
+      }
+
+      // Render Chapters
+      var chaptersHtml = [];
+      for (var ch = 1; ch <= book.chapterCount; ch++) {
+        var content = CRData.getChapterContent(book.id, ch);
+        var state = 'locked';
+        if (content && !content.locked) {
+          state = content.completed ? 'completed' : 'available';
+        }
+
+        chaptersHtml.push(CRComponents.renderChapterRow({
+          number: ch,
+          title: content ? content.title : ('Chapter ' + ch),
+          readingTime: content ? content.readingTime : '20 min read',
+          commentCount: content ? (content.comments || []).length : 0,
+          state: state,
+          unlockRequirement: 'Complete Chapter ' + (ch - 1) + ' to unlock',
+          href: 'chapter.html?book=' + book.id + '&chapter=' + ch
+        }));
+      }
+
+      document.getElementById('mount-chapters').innerHTML = chaptersHtml.join('');
+
+      // Shelf Action
+      var shelfBtn = document.getElementById('book-shelf-action');
+      if (shelfBtn) {
+        shelfBtn.addEventListener('click', function () {
+          CRData.moveBookOnShelf(book.id, 'currentlyReading');
+          shelfBtn.innerHTML = '<span>&check; On Your Shelf</span>';
+          shelfBtn.classList.remove('btn--outline');
+          shelfBtn.classList.add('btn--filled');
+        });
+      }
+    });
+  </script>
+</body>
+</html>
