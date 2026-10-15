@@ -371,13 +371,22 @@ async function loadStory(id) {
 
 function formatContent(content) {
   if (!content) return '';
-  if (content.includes('<p>') || content.includes('<div>') || content.includes('<br>')) {
-    return content; // already has html tags
+
+  // If plain text (no HTML tags), split on double newline into paragraphs
+  if (!content.includes('<p>') && !content.includes('<div>') && !content.includes('<br>') && !content.includes('<h')) {
+    return content
+      .split(/\n\s*\n/)
+      .filter(para => para.trim().length > 0)
+      .map(para => `<p>${para.trim().replace(/\n/g, '<br>')}</p>`)
+      .join('');
   }
+
+  // If rich HTML (e.g. from Quill editor), clean phantom blank paragraphs:
+  // Quill generates <p><br></p> when writers press Enter twice to create paragraph separation in the editor.
+  // We strip empty paragraphs containing only <br>, &nbsp;, or whitespace so CSS paragraph margins control the spacing cleanly.
   return content
-    .split(/\n\s*\n/)
-    .map(para => `<p>${para.trim().replace(/\n/g, '<br>')}</p>`)
-    .join('');
+    .replace(/<p>\s*(<br\s*\/?>|&nbsp;|\u00a0|\s)*\s*<\/p>/gi, '')
+    .replace(/<div>\s*(<br\s*\/?>|&nbsp;|\u00a0|\s)*\s*<\/div>/gi, '');
 }
 
 function showError(msg) {
