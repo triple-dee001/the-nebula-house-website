@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en" data-cr-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter Room — Living Styleguide & Design System | The Nebula House</title>
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+  <!-- Load site styles first, then chapter room design system -->
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/chapter-room.css">
+  <style>
+    /* Styleguide presentation helper styles */
+    .sg-container {
+      max-width: var(--cr-container, 1200px);
+      margin: 0 auto;
+      padding: var(--cr-space-8, 2rem) var(--cr-space-4, 1rem) var(--cr-space-16, 4rem);
+    }
+    .sg-toolbar {
+      background: var(--cr-bg-surface);
+      border: 1px solid var(--cr-border-subtle);
+      border-radius: var(--cr-radius-xs, 2px);
+      padding: var(--cr-space-3, 0.75rem) var(--cr-space-4, 1rem);
+      margin-bottom: var(--cr-space-8, 2rem);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--cr-space-3, 0.75rem);
+    }
+    .sg-toolbar__group {
+      display: flex;
+      align-items: center;
+      gap: var(--cr-space-2, 0.5rem);
+    }
+    .sg-color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--cr-space-4, 1rem);
+      margin-bottom: var(--cr-space-6, 1.5rem);
+    }
+    .sg-swatch {
+      background: var(--cr-bg-surface-elevated);
+      border: 1px solid var(--cr-border-subtle);
+      border-radius: var(--cr-radius-xs, 2px);
+      overflow: hidden;
+    }
+    .sg-swatch__preview {
+      height: 64px;
+      width: 100%;
+      border-bottom: 1px solid var(--cr-border-subtle);
+    }
+    .sg-swatch__info {
+      padding: var(--cr-space-3, 0.75rem);
+    }
+    .sg-swatch__name {
+      font-weight: 600;
+      font-size: var(--cr-text-xs);
+      color: var(--cr-text-primary);
+      margin-bottom: 0.2rem;
+    }
+    .sg-swatch__val {
+      font-size: 0.75rem;
+      color: var(--cr-text-secondary);
+      font-family: monospace;
+    }
+    .sg-component-box {
+      background: var(--cr-bg-surface);
+      border: 1px solid var(--cr-border-subtle);
+      border-radius: var(--cr-radius-xs, 2px);
+      padding: var(--cr-space-6, 1.5rem);
+      margin-bottom: var(--cr-space-6, 1.5rem);
+    }
+    .sg-label-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--cr-text-secondary);
+      font-weight: 600;
+      margin-bottom: var(--cr-space-2, 0.5rem);
+    }
+    .sg-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--cr-space-6, 1.5rem);
+    }
+    .sg-tabbar-frame {
+      max-width: 420px;
+      border: 1px solid var(--cr-border-default);
+      background: var(--cr-bg-page);
+      border-radius: var(--cr-radius-xs, 2px);
+      overflow: hidden;
+      margin-top: var(--cr-space-4, 1rem);
+    }
+    .sg-tabbar-frame .cr-tabbar {
+      position: static;
+      display: flex;
+    }
+  </style>
+</head>
+<body class="cr-page" data-cr-theme="dark">
+
+  <!-- TOP NAVIGATION COMPONENT MOUNT (TIER 1 SITE HEADER + TIER 2 SLIM SUBNAV) -->
+  <div id="mount-nav"></div>
+
+  <main class="sg-container" id="main-content">
+    
+    <!-- STYLEGUIDE CONTROLLER TOOLBAR -->
+    <header class="cr-section-header" style="margin-top:var(--cr-space-4, 1rem); margin-bottom:var(--cr-space-6, 1.5rem);">
+      <span class="cr-section-header__label">Pass 1 &bull; Shell & Reconciled Components</span>
+      <h1 class="cr-section-header__title">Chapter Room Living Styleguide</h1>
+      <p class="cr-section-header__desc">
+        A literary institution inside The Nebula House: dark default theme with cream reading theme, two site typefaces (Cormorant Garamond & Inter), 44px+ touch targets, typographic fallback covers, and WCAG AA accessibility.
+      </p>
+    </header>
+
+    <div class="sg-toolbar" role="region" aria-label="Styleguide Live Preview Controls">
+      <div class="sg-toolbar__group">
+        <span style="font-size:var(--cr-text-xs); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:var(--cr-text-secondary);">Theme Preview:</span>
+        <button class="btn btn--sm" data-cr-theme-toggle type="button">
+          <span>Toggle Cream Paper / Dark Theme</span>
+        </button>
+      </div>
+
+      <div class="sg-toolbar__group">
+        <span style="font-size:var(--cr-text-xs); font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:var(--cr-text-secondary);">Reading Scale:</span>
+        <button class="btn btn--sm" type="button" onclick="ChapterRoom.applyFontScale(-0.08)" aria-label="Decrease font size"><span>A-</span></button>
+        <button class="btn btn--sm" type="button" onclick="ChapterRoom.applyFontScale(0.08)" aria-label="Increase font size"><span>A+</span></button>
+      </div>
+
+      <div class="sg-toolbar__group">
+        <span class="cr-chip">WCAG AA Contrast Validated</span>
+      </div>
+    </div>
+
+    <!-- 1. COLOR TOKENS -->
+    <section aria-labelledby="tokens-heading" style="margin-bottom:var(--cr-space-12, 3rem);">
+      <div class="cr-section-header">
+        <span class="cr-section-header__label">01 / Palette Tokens</span>
+        <h2 class="cr-section-header__title" id="tokens-heading">Site-Reconciled Colors & Semantic Tokens</h2>
+        <p class="cr-section-header__desc">
+          Only site values are used. Dark theme (#000000, #0D0D0D, #1A1A1A) is default. Cream (#F0EBE0, #E8E2D6, #E5DFD3 with #1A1A1A ink) is the opt-in reading theme. Brass accent was removed.
+        </p>
+      </div>
+
+      <div class="sg-color-grid">
+        <div class="sg-swatch">
+          <div class="sg-swatch__preview" style="background:var(--cr-bg-page);"></div>
+          <div class="sg-swatch__info">
+            <div class="sg-swatch__name">Page Background</div>
+            <div class="sg-swatch__val">var(--cr-bg-page) &bull; #000 / #f0ebe0</div>
+          </div>
+        </div>
+
+        <div class="sg-swatch">
+          <div class="sg-swatch__preview" style="background:var(--cr-bg-surface);"></div>
+          <div class="sg-swatch__info">
+            <div class="sg-swatch__name">Surface Neutral</div>
+            <div class="sg-swatch__val">var(--cr-bg-surface) &bull; #0d0d0d / #e8e2d6</div>
+          </div>
+        </div>
+
+        <div class="sg-swatch">
+          <div class="sg-swatch__preview" style="background:var(--cr-bg-card);"></div>
+          <div class="sg-swatch__info">
+            <div class="sg-swatch__name">Card Surface</div>
+            <div class="sg-swatch__val">var(--cr-bg-card) &bull; #1a1a1a / #e5dfd3</div>
+          </div>
+        </div>
+
+        <div class="sg-swatch">
+          <div class="sg-swatch__preview" style="background:var(--cr-text-primary);"></div>
+          <div class="sg-swatch__info">
+            <div class="sg-swatch__name">Primary Text / Ink</div>
+            <div class="sg-swatch__val">var(--cr-text-primary) &bull; 21:1 / 14.6:1</div>
+          </div>
+        </div>
+
+        <div class="sg-swatch">
+          <div class="sg-swatch__preview" style="background:var(--cr-text-secondary);"></div>
+          <div class="sg-swatch__info">
+            <div class="sg-swatch__name">Secondary Subtext</div>
+            <div class="sg-swatch__val">var(--cr-text-secondary) &bull; 7.84:1 / 8.45:1</div>
+          </div>
+        </div>
+
+        <div class="sg-swatch">
+          <div class="sg-swatch__preview" style="background:var(--cr-border-subtle);"></div>
+          <div class="sg-swatch__info">
+            <div class="sg-swatch__name">Subtle Divider</div>
+            <div class="sg-swatch__val">var(--cr-border-subtle)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. EDITORIAL TYPOGRAPHY SCALE -->
+    <section aria-labelledby="type-heading" style="margin-bottom:var(--cr-space-12, 3rem);">
+      <div class="cr-section-header">
+        <span class="cr-section-header__label">02 / Typography</span>
+        <h2 class="cr-section-header__title" id="type-heading">Editorial Type Scale & Reading Measure</h2>
+        <p class="cr-section-header__desc">
+          Two typefaces only: Cormorant Garamond for display and reading prose (20px minimum on mobile, line-height 1.7+); Inter for all UI, metadata, chips and buttons (16px+ minimum).
+        </p>
+      </div>
+
+      <div class="sg-component-box">
+        <div style="margin-bottom:var(--cr-space-4, 1rem); border-bottom:1px solid var(--cr-border-subtle); padding-bottom:var(--cr-space-3, 0.75rem);">
+          <span class="sg-label-badge">Display Heading 1 (Cormorant Garamond, var(--cr-text-3xl))</span>
+          <h1 class="cr-h1" style="margin:0;">Notes from Underground</h1>
+        </div>
+
+        <div style="margin-bottom:var(--cr-space-4, 1rem); border-bottom:1px solid var(--cr-border-subtle); padding-bottom:var(--cr-space-3, 0.75rem);">
+          <span class="sg-label-badge">Section Heading 2 (Cormorant Garamond, var(--cr-text-2xl))</span>
+          <h2 class="cr-h2" style="margin:0;">Part I: Underground &bull; Section II</h2>
+        </div>
+
+        <div style="margin-bottom:var(--cr-space-4, 1rem); border-bottom:1px solid var(--cr-border-subtle); padding-bottom:var(--cr-space-3, 0.75rem);">
+          <span class="sg-label-badge">Subsection Heading 3 (Cormorant Garamond, var(--cr-text-xl))</span>
+          <h3 class="cr-h3" style="margin:0;">The Collision of Determinism & Free Will</h3>
+        </div>
+
+        <div>
+          <span class="sg-label-badge">Reading Measure (60–75 Characters, Cormorant Garamond >=20px Mobile / 1.72 Line-Height)</span>
+          <p class="cr-reading-text cr-reading-measure" style="margin:0;">
+            "I am a sick man... I am a spiteful man. I am an unattractive man. I believe my liver is diseased. However, I know nothing at all about my disease, and do not know for certain what ails me. I don’t consult a doctor for it, and never have, though I have a respect for medicine and doctors."
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. BUTTONS & RESPONSIVE STATES -->
+    <section aria-labelledby="buttons-heading" style="margin-bottom:var(--cr-space-12, 3rem);">
+      <div class="cr-section-header">
+        <span class="cr-section-header__label">03 / Actions & Touch Targets</span>
+        <h2 class="cr-section-header__title" id="buttons-heading">Buttons, Focus Rings & Responsive Mobile Labels</h2>
+        <p class="cr-section-header__desc">
+          Strictly site button styles (.btn) with 44px+ touch targets, :focus-visible outline (2px solid, 3px offset), touch :active transform, and shorter labels on small viewports so long CTAs never wrap awkwardly.
+        </p>
+      </div>
+
+      <div class="sg-component-box">
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:var(--cr-space-4, 1rem); margin-bottom:var(--cr-space-6, 1.5rem);">
+          <!-- Standard Primary Button -->
+          <a href="#" class="btn">
+            <span><span class="btn__label-full">Explore This Month's Book</span><span class="btn__label-short">Explore Book</span></span>
+            <span class="arrow">&rarr;</span>
+          </a>
+          <!-- Compact Button -->
+          <a href="#" class="btn btn--sm">
+            <span><span class="btn__label-full">Start Chapter 1</span><span class="btn__label-short">Start Ch. 1</span></span>
+            <span class="arrow">&rarr;</span>
+          </a>
+          <!-- Text Link -->
+          <a href="#" class="link-btn">Read Chapter Overview <span class="arrow">&rarr;</span></a>
+        </div>
+
+        <hr class="cr-rule" style="margin:var(--cr-space-4, 1rem) 0;">
+
+        <div>
+          <span class="sg-label-badge" style="margin-bottom:var(--cr-space-2, 0.5rem);">Metadata & Difficulty Chips (Site Neutrals & Weights)</span>
+          <div style="display:flex; flex-wrap:wrap; align-items:center; gap:var(--cr-space-2, 0.5rem);">
+            <span class="cr-chip cr-chip--genre">Philosophy</span>
+            <span class="cr-chip cr-chip--genre">Memoir</span>
+            <span class="cr-chip cr-chip--genre">Classics</span>
+            <span class="cr-chip">Getting Started</span>
+            <span class="cr-chip">Intermediate</span>
+            <span class="cr-chip" style="font-weight:600; border-color:var(--cr-border-strong);">Challenging</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. BOOK PRESENTATIONS & COVERS -->
+    <section aria-labelledby="cards-heading" style="margin-bottom:var(--cr-space-12, 3rem);">
+      <div class="cr-section-header">
+        <span class="cr-section-header__label">04 / Book Presentations</span>
+        <h2 class="cr-section-header__title" id="cards-heading">Photographic Cover vs Typographic Fallback</h2>
+        <p class="cr-section-header__desc">
+          Every book maintains a consistent 2:3 aspect ratio. Books without photographic imagery automatically render a refined typographic cover using only site typography and colors.
+        </p>
+      </div>
+
+      <div class="sg-grid-2">
+        <div>
+          <span class="sg-label-badge">Photographic Cover (2:3 Ratio)</span>
+          <div id="mount-book-card-photo"></div>
+        </div>
+        <div>
+          <span class="sg-label-badge">Typographic Fallback Cover (No Image Required)</span>
+          <div id="mount-book-card-fallback"></div>
+        </div>
+      </div>
+
+      <div style="margin-top:var(--cr-space-6, 1.5rem);">
+        <span class="sg-label-badge">Horizontal Book Card Layout</span>
+        <div id="mount-book-card-horizontal"></div>
+      </div>
+    </section>
+
+    <!-- 5. CHAPTER SEQUENTIAL UNLOCK ROWS -->
+    <section aria-labelledby="chapters-heading" style="margin-bottom:var(--cr-space-12, 3rem);">
+      <div class="cr-section-header">
+        <span class="cr-section-header__label">05 / Non-Negotiable Sequential Unlocking</span>
+        <h2 class="cr-section-header__title" id="chapters-heading">Chapter Rows (Completed, Available, Locked)</h2>
+        <p class="cr-section-header__desc">
+          Strict spoiler protection: future chapters display lock indicators ("Complete Chapter 2 to unlock") and cannot leak discussion or summaries. States are expressed via typography, icons, and borders (no brass accent).
+        </p>
+      </div>
+
+      <div class="sg-component-box" style="padding:var(--cr-space-4, 1rem);">
+        <div id="mount-chapter-rows"></div>
+      </div>
+    </section>
+
+    <!-- 6. READING MOMENTUM & PROGRESS -->
+    <section aria-labelledby="progress-heading" style="margin-bottom:var(--cr-space-12, 3rem);">
+      <div class="cr-section-header">
+        <span class="cr-section-header__label">06 / Reading Momentum</span>
+        <h2 class="cr-section-header__title" id="progress-heading">Reading Progress Indicators</h2>
+      </div>
+
+      <div class="sg-component-box">
+        <div id="mount-progress-1" style="margin-bottom:var(--cr-space-6, 1.5rem);"></div>
+        <div id="mount-progress-2"></div>
+      </div>
+    </section>
+
+    <!-- 7. CONVERSATIONAL REACTIONS & SPOILER THREAD -->
+    <section aria-labelledby="discussions-heading" style="margin-bottom:var(--cr-space-12, 3rem);">
+      <div class="cr-section-header">
+        <span class="cr-section-header__label">07 / Literary Discourse & Thoughtful Reactions</span>
+        <h2 class="cr-section-header__title" id="discussions-heading">Line-Icon Reactions & Threaded Thoughts</h2>
+        <p class="cr-section-header__desc">
+          No vanity like counts or emojis. Reactions stimulate literary engagement: <em>Interesting, Made me think, Excellent point, I disagree</em> via clean SVG line icons. Spoilers require deliberate user interaction.
+        </p>
+      </div>
+
+      <div class="sg-component-box">
+        <span class="sg-label-badge" style="margin-bottom:var(--cr-space-4, 1rem);">Standard Reader Thought</span>
+        <div id="mount-comment-standard" style="margin-bottom:var(--cr-space-8, 2rem);"></div>
+
+        <span class="sg-label-badge" style="margin-bottom:var(--cr-space-4, 1rem);">Spoiler-Hidden Thought (Click 'Reveal Thought' to test)</span>
+        <div id="mount-comment-spoiler"></div>
+      </div>
+    </section>
+
+    <!-- 8. QUIET SKELETON LOADERS -->
+    <section aria-labelledby="skeletons-heading" style="margin-bottom:var(--cr-space-12, 3rem);">
+      <div class="cr-section-header">
+        <span class="cr-section-header__label">08 / Loading States</span>
+        <h2 class="cr-section-header__title" id="skeletons-heading">Quiet Shimmer Skeletons</h2>
+        <p class="cr-section-header__desc">
+          Restrained, quiet loading state (subtle surface shimmer, no bright sweep) for book cards, chapter rows, and comment threads.
+        </p>
+      </div>
+
+      <div class="sg-grid-2" style="margin-bottom:var(--cr-space-6, 1.5rem);">
+        <div>
+          <span class="sg-label-badge">Book Card Skeleton</span>
+          <div id="mount-skeleton-card"></div>
+        </div>
+        <div>
+          <span class="sg-label-badge">Comment Thread Skeleton</span>
+          <div id="mount-skeleton-comment"></div>
+        </div>
+      </div>
+
+      <div>
+        <span class="sg-label-badge">Chapter Row Skeleton</span>
+        <div id="mount-skeleton-chapter"></div>
+      </div>
+    </section>
+
+    <!-- 9. MOBILE TAB BAR PREVIEW -->
+    <section aria-labelledby="tabbar-heading" style="margin-bottom:var(--cr-space-12, 3rem);">
+      <div class="cr-section-header">
+        <span class="cr-section-header__label">09 / Mobile Experience</span>
+        <h2 class="cr-section-header__title" id="tabbar-heading">Mobile Bottom Navigation Bar</h2>
+        <p class="cr-section-header__desc">
+          Fixed bottom bar on mobile (<768px) with 44px+ touch targets for Home, Explore, My Reading, and Community.
+        </p>
+      </div>
+
+      <div class="sg-tabbar-frame" id="mount-tabbar-preview"></div>
+    </section>
+
+    <!-- 10. EMPTY STATE -->
+    <section aria-labelledby="empty-heading" style="margin-bottom:var(--cr-space-12, 3rem);">
+      <div class="cr-section-header">
+        <span class="cr-section-header__label">10 / Edge States</span>
+        <h2 class="cr-section-header__title" id="empty-heading">Empty State Experience</h2>
+      </div>
+
+      <div id="mount-empty-state"></div>
+    </section>
+
+  </main>
+
+  <!-- CHAPTER ROOM FOOTER MOUNT -->
+  <div id="mount-footer"></div>
+
+  <!-- FIXED MOBILE TAB BAR (ACTIVE ON ACTUAL MOBILE VIEWPORTS) -->
+  <div id="mount-tabbar-fixed"></div>
+
+  <!-- SCRIPTS -->
+  <script src="../js/chapter-room/tokens.js"></script>
+  <script src="../js/chapter-room/components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // 1. Mount Top Navigation (Tier 1 site header + Tier 2 slim subnav)
+      document.getElementById('mount-nav').innerHTML = CRComponents.renderNav('home', {
+        rootPath: '../',
+        crPath: ''
+      });
+
+      // 2. Mount Photographic Book Card
+      document.getElementById('mount-book-card-photo').innerHTML = CRComponents.renderBookCard({
+        id: 'notes-from-underground',
+        title: 'Notes from Underground',
+        author: 'Fyodor Dostoevsky',
+        cover: '../assets/images/notes-from-underground.jpg',
+        genre: 'Philosophy',
+        desc: 'A dark, introspective novella exploring the mind of a bitter, isolated man in conflict with society and himself.',
+        readingTime: '3.5 hrs',
+        difficulty: 'Challenging',
+        difficultyNote: 'Take your time with this one',
+        isWishlisted: true,
+        bookPath: '#'
+      });
+
+      // 3. Mount Typographic Fallback Book Card
+      document.getElementById('mount-book-card-fallback').innerHTML = CRComponents.renderBookCard({
+        id: 'mans-search-for-meaning',
+        title: 'Man’s Search for Meaning',
+        author: 'Viktor E. Frankl',
+        cover: '', // empty to trigger typographic cover
+        genre: 'Non-Fiction',
+        desc: 'Memoir of surviving concentration camps and the psychotherapeutic method of finding transcendent purpose.',
+        readingTime: '4.0 hrs',
+        difficulty: 'Intermediate',
+        difficultyNote: 'Accessible and deeply moving',
+        isWishlisted: false,
+        fallback: true,
+        bookPath: '#'
+      });
+
+      // 4. Mount Horizontal Book Card
+      document.getElementById('mount-book-card-horizontal').innerHTML = CRComponents.renderBookCard({
+        id: 'meditations',
+        title: 'Meditations',
+        author: 'Marcus Aurelius',
+        cover: '../assets/images/notes-from-underground.jpg',
+        genre: 'Philosophy',
+        desc: 'Private journal reflections of the Roman Emperor on Stoic philosophy, self-discipline, mortality, and ethical duty.',
+        readingTime: '5.2 hrs',
+        difficulty: 'Intermediate',
+        difficultyNote: 'Best read one reflection per day',
+        isWishlisted: true,
+        horizontal: true,
+        bookPath: '#'
+      });
+
+      // 5. Mount Chapter Rows
+      document.getElementById('mount-chapter-rows').innerHTML = [
+        CRComponents.renderChapterRow({
+          number: 1,
+          title: 'Part I: Underground — Sections I to IV',
+          readingTime: '18 min read',
+          commentCount: 29,
+          state: 'completed',
+          href: '#'
+        }),
+        CRComponents.renderChapterRow({
+          number: 2,
+          title: 'Part I: Underground — Sections V to IX',
+          readingTime: '24 min read',
+          commentCount: 14,
+          state: 'available',
+          href: '#'
+        }),
+        CRComponents.renderChapterRow({
+          number: 3,
+          title: 'Part I: Underground — Sections X to XI',
+          readingTime: '15 min read',
+          state: 'locked',
+          unlockRequirement: 'Complete Chapter 2 to unlock'
+        }),
+        CRComponents.renderChapterRow({
+          number: 4,
+          title: 'Part II: A Propos of the Wet Snow',
+          readingTime: '32 min read',
+          state: 'locked',
+          unlockRequirement: 'Complete Chapter 3 to unlock'
+        })
+      ].join('');
+
+      // 6. Mount Progress Indicators
+      document.getElementById('mount-progress-1').innerHTML = CRComponents.renderProgress({
+        current: 1,
+        total: 4,
+        label: 'Notes from Underground Progress'
+      });
+
+      document.getElementById('mount-progress-2').innerHTML = CRComponents.renderProgress({
+        current: 8,
+        total: 8,
+        label: 'Completed Book Progress'
+      });
+
+      // 7. Mount Comment Items
+      document.getElementById('mount-comment-standard').innerHTML = CRComponents.renderComment({
+        id: 'c101',
+        author: 'Marcus Vance',
+        time: '3 hours ago',
+        text: 'Notice how the underground man explicitly refuses to be seen by a doctor out of spite. His illness is not purely bodily; it is an existential assertion against the medicalized rationality of 19th-century positivism.',
+        isSpoiler: false,
+        reactions: {
+          interesting: 14,
+          madeMeThink: 9,
+          excellentPoint: 7,
+          iDisagree: 1,
+          userReactions: ['madeMeThink']
+        }
+      });
+
+      document.getElementById('mount-comment-spoiler').innerHTML = CRComponents.renderComment({
+        id: 'c102',
+        author: 'Sophia Chen',
+        time: 'Yesterday',
+        text: 'The climax with Liza reveals his ultimate cowardice: when presented with genuine human compassion, he retreats immediately back into his intellectual spite because intimacy demands vulnerability he cannot endure.',
+        isSpoiler: true,
+        spoilerSummary: 'Discusses narrator’s climatic confrontation with Liza in Part II',
+        reactions: {
+          interesting: 22,
+          madeMeThink: 16,
+          excellentPoint: 11,
+          iDisagree: 0
+        }
+      });
+
+      // 8. Mount Skeletons
+      document.getElementById('mount-skeleton-card').innerHTML = CRComponents.renderSkeleton('card');
+      document.getElementById('mount-skeleton-comment').innerHTML = CRComponents.renderSkeleton('comment');
+      document.getElementById('mount-skeleton-chapter').innerHTML = CRComponents.renderSkeleton('chapter');
+
+      // 9. Mount Tab Bar Preview & Fixed Viewport Bar
+      document.getElementById('mount-tabbar-preview').innerHTML = CRComponents.renderTabBar('home', { crPath: '' });
+      document.getElementById('mount-tabbar-fixed').innerHTML = CRComponents.renderTabBar('home', { crPath: '' });
+
+      // 10. Mount Empty State
+      document.getElementById('mount-empty-state').innerHTML = CRComponents.renderEmptyState({
+        title: 'Your Reading Shelf is Empty',
+        desc: 'Choose an enduring work from Explore or join this month’s community discussion.',
+        actionLabel: 'Browse All Books',
+        actionHref: '#'
+      });
+
+      // 11. Mount Footer
+      document.getElementById('mount-footer').innerHTML = CRComponents.renderFooter({
+        rootPath: '../',
+        crPath: ''
+      });
+    });
+  </script>
+</body>
+</html>
