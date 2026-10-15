@@ -637,7 +637,34 @@ window.CRData = (function () {
     toggleReaction: toggleReaction,
     getShelf: getShelf,
     moveBookOnShelf: moveBookOnShelf,
-    abandonBook: abandonBook,
-    finishBook: finishBook
+    // Backend API Sync Integration (Pass 4)
+    syncWithBackend: async function () {
+      try {
+        var base = (window.API_BASE || '') + '/api/chapter-room';
+        var res = await fetch(base + '/books');
+        if (res.ok) {
+          var data = await res.json();
+          return { online: true, books: data.books };
+        }
+      } catch (err) {
+        // Graceful offline fallback
+      }
+      return { online: false, books: getAllBooks() };
+    },
+
+    fetchChapterApi: async function (bookId, chapterNumber) {
+      try {
+        var base = (window.API_BASE || '') + '/api/chapter-room';
+        var token = localStorage.getItem('token');
+        var headers = {};
+        if (token) headers['Authorization'] = 'Bearer ' + token;
+        var res = await fetch(base + '/books/' + encodeURIComponent(bookId) + '/chapters/' + chapterNumber, { headers: headers });
+        var data = await res.json();
+        return { status: res.status, data: data };
+      } catch (err) {
+        return { status: 500, error: err.message };
+      }
+    }
   };
 })();
+

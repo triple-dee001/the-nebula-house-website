@@ -309,6 +309,20 @@
         Nominations
       </a>
 
+      <span class="admin-nav__label">Chapter Room</span>
+      <a href="#" data-tab="cr-books">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Books & Chapters
+      </a>
+      <a href="#" data-tab="cr-botm">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Book of the Month
+      </a>
+      <a href="#" data-tab="cr-moderation">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Report Queue <span class="admin-nav__badge" id="cr-report-badge">2</span>
+      </a>
+
       <span class="admin-nav__label">Growth</span>
       <a href="#" data-tab="newsletter">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
@@ -554,6 +568,145 @@
         </div>
       </div>
 
+      <!-- ===================================================================
+           CHAPTER ROOM TABS (Pass 4)
+           =================================================================== -->
+
+      <!-- Chapter Room: Books Tab -->
+      <div class="tab-panel" id="tab-cr-books">
+        <!-- Add / Edit Book Panel -->
+        <div class="panel" style="margin-bottom:1.5rem;">
+          <div class="panel__header">
+            <span class="panel__title" id="cr-book-form-title">Add New Chapter Room Book</span>
+            <button class="panel__action" id="btn-toggle-cr-book-form" onclick="toggleCRBookForm()">Toggle Form</button>
+          </div>
+          <div id="cr-book-form-wrap" style="padding:1.25rem; display:none;">
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; margin-bottom:1rem;">
+              <div>
+                <label style="display:block; font-size:0.75rem; color:var(--admin-muted); margin-bottom:0.35rem; font-weight:600; text-transform:uppercase;">Book Title</label>
+                <input type="text" id="cr-b-title" class="nebula-auth-input" style="width:100%;" placeholder="e.g. Crime and Punishment">
+              </div>
+              <div>
+                <label style="display:block; font-size:0.75rem; color:var(--admin-muted); margin-bottom:0.35rem; font-weight:600; text-transform:uppercase;">Author</label>
+                <input type="text" id="cr-b-author" class="nebula-auth-input" style="width:100%;" placeholder="e.g. Fyodor Dostoevsky">
+              </div>
+              <div>
+                <label style="display:block; font-size:0.75rem; color:var(--admin-muted); margin-bottom:0.35rem; font-weight:600; text-transform:uppercase;">Genre</label>
+                <select id="cr-b-genre" style="width:100%; background:rgba(255,255,255,0.03); border:1px solid var(--admin-border); border-radius:6px; padding:0.6rem; color:#fff; font-family:inherit;">
+                  <option value="Philosophy">Philosophy</option>
+                  <option value="Fiction">Fiction</option>
+                  <option value="Classics">Classics</option>
+                  <option value="Memoir">Memoir</option>
+                  <option value="Non-Fiction">Non-Fiction</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block; font-size:0.75rem; color:var(--admin-muted); margin-bottom:0.35rem; font-weight:600; text-transform:uppercase;">Difficulty Level</label>
+                <select id="cr-b-diff" style="width:100%; background:rgba(255,255,255,0.03); border:1px solid var(--admin-border); border-radius:6px; padding:0.6rem; color:#fff; font-family:inherit;">
+                  <option value="Getting Started">Getting Started</option>
+                  <option value="Intermediate">Intermediate</option>
+                  <option value="Challenging">Challenging</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+              <div>
+                <label style="display:block; font-size:0.75rem; color:var(--admin-muted); margin-bottom:0.35rem; font-weight:600; text-transform:uppercase;">Reading Time (e.g. 4.5 hrs)</label>
+                <input type="text" id="cr-b-time" class="nebula-auth-input" style="width:100%;" placeholder="e.g. 3.5 hrs">
+              </div>
+              <div>
+                <label style="display:block; font-size:0.75rem; color:var(--admin-muted); margin-bottom:0.35rem; font-weight:600; text-transform:uppercase;">Cover Image URL (Leave blank for Typographic Fallback)</label>
+                <input type="text" id="cr-b-cover" class="nebula-auth-input" style="width:100%;" placeholder="../assets/images/... or https://...">
+              </div>
+            </div>
+            <div style="margin-bottom:1rem;">
+              <label style="display:block; font-size:0.75rem; color:var(--admin-muted); margin-bottom:0.35rem; font-weight:600; text-transform:uppercase;">Spoiler-Free Synopsis</label>
+              <textarea id="cr-b-desc" rows="3" style="width:100%; background:rgba(255,255,255,0.03); border:1px solid var(--admin-border); border-radius:6px; padding:0.6rem; color:#fff; font-family:inherit; resize:vertical;"></textarea>
+            </div>
+            <div style="margin-bottom:1.25rem;">
+              <label style="display:block; font-size:0.75rem; color:var(--admin-muted); margin-bottom:0.35rem; font-weight:600; text-transform:uppercase;">Why We Are Reading It (Editorial Essay)</label>
+              <textarea id="cr-b-why" rows="3" style="width:100%; background:rgba(255,255,255,0.03); border:1px solid var(--admin-border); border-radius:6px; padding:0.6rem; color:#fff; font-family:inherit; resize:vertical;"></textarea>
+            </div>
+            <button type="button" class="btn-primary" onclick="saveCRBook()">Save Book to Catalog</button>
+          </div>
+        </div>
+
+        <!-- Books Table -->
+        <div class="panel">
+          <div class="panel__header">
+            <span class="panel__title">Chapter Room Catalog</span>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Title & Author</th>
+                <th>Genre</th>
+                <th>Time</th>
+                <th>Difficulty</th>
+                <th>Chapters</th>
+                <th>Recommended</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="cr-books-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Chapter Room: Book of the Month Scheduling Tab -->
+      <div class="tab-panel" id="tab-cr-botm">
+        <div class="panel" style="margin-bottom:1.5rem;">
+          <div class="panel__header"><span class="panel__title">Configure Active Book of the Month</span></div>
+          <div style="padding:1.25rem;">
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:1rem; margin-bottom:1rem;">
+              <div>
+                <label style="display:block; font-size:0.75rem; color:var(--admin-muted); margin-bottom:0.35rem; font-weight:600; text-transform:uppercase;">Active Book of the Month</label>
+                <select id="cr-botm-book-select" style="width:100%; background:rgba(255,255,255,0.03); border:1px solid var(--admin-border); border-radius:6px; padding:0.6rem; color:#fff; font-family:inherit;"></select>
+              </div>
+              <div>
+                <label style="display:block; font-size:0.75rem; color:var(--admin-muted); margin-bottom:0.35rem; font-weight:600; text-transform:uppercase;">Month Label</label>
+                <input type="text" id="cr-botm-month-label" class="nebula-auth-input" style="width:100%;" value="October 2026">
+              </div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+              <div>
+                <label style="display:block; font-size:0.75rem; color:var(--admin-muted); margin-bottom:0.35rem; font-weight:600; text-transform:uppercase;">Week 1 Goal</label>
+                <input type="text" id="cr-botm-w1" class="nebula-auth-input" style="width:100%;" value="Part I: The Underground (Ch. 1–3)">
+              </div>
+              <div>
+                <label style="display:block; font-size:0.75rem; color:var(--admin-muted); margin-bottom:0.35rem; font-weight:600; text-transform:uppercase;">Week 2 Goal</label>
+                <input type="text" id="cr-botm-w2" class="nebula-auth-input" style="width:100%;" value="Part II: Wet Snow (Ch. 4–6)">
+              </div>
+            </div>
+            <button type="button" class="btn-primary" onclick="saveCRBotmConfig()">Update Book of the Month</button>
+            <span id="cr-botm-msg" style="margin-left:1rem; font-size:0.85rem; color:var(--admin-success); display:none;">Saved!</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chapter Room: Moderation & 6-Category Report Queue Tab -->
+      <div class="tab-panel" id="tab-cr-moderation">
+        <div class="panel">
+          <div class="panel__header">
+            <span class="panel__title">Report Queue (6 Moderation Categories)</span>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Reported Thought</th>
+                <th>Author</th>
+                <th>Chapter</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="cr-reports-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
     </div><!-- /admin-content -->
   </main>
 </div>
@@ -618,6 +771,9 @@
 <script src="js/api.js?v=20260819"></script>
   <script src="js/auth.js?v=20260819"></script>
   <script src="js/components.js"></script>
+  <script src="js/chapter-room/tokens.js"></script>
+  <script src="js/chapter-room/data.js"></script>
+  <script src="js/chapter-room/components.js"></script>
 <script>
   let allUsersCache = [];
   let allArticlesCache = [];
@@ -652,6 +808,7 @@
     await loadDashboard();
     initChallengesForm();
     initAdminNotificationsUI();
+    initCRAdmin();
     document.getElementById('admin-loader').style.display = 'none';
     document.getElementById('admin-content').style.display = 'block';
 
@@ -686,10 +843,18 @@
     const titles = {
       overview: 'Dashboard Overview', users: 'User Management', admins: 'Admin Management',
       approvals: 'Pending Approvals', articles: 'All Articles',
-      newsletter: 'Newsletter Subscribers', nominations: 'Book Nominations'
+      newsletter: 'Newsletter Subscribers', nominations: 'Book Nominations',
+      challenges: 'Writing Challenges',
+      'cr-books': 'Chapter Room — Books & Chapters',
+      'cr-botm': 'Chapter Room — Book of the Month',
+      'cr-moderation': 'Chapter Room — Report Queue & Moderation'
     };
     document.getElementById('admin-page-title').textContent = titles[tab] || 'Dashboard';
     document.getElementById('stats-section').style.display = tab === 'overview' ? '' : 'none';
+
+    if (tab === 'cr-books' || tab === 'cr-botm' || tab === 'cr-moderation') {
+      renderCRAdmin();
+    }
   }
 
   function filterTable(data, query, renderFn) {
@@ -1287,6 +1452,153 @@
     a.href = URL.createObjectURL(blob);
     a.download = 'nebula-newsletter-subscribers.csv';
     a.click();
+  }
+
+  // ===================================================================
+  // CHAPTER ROOM ADMIN ENGINE (Pass 4)
+  // ===================================================================
+  let crReportsCache = [
+    {
+      id: 'rep-1',
+      thoughtText: 'The climax with Liza reveals his ultimate cowardice: when presented with compassion, he retreats...',
+      author: 'Sophia Chen',
+      chapter: 'Notes from Underground &bull; Ch. 6',
+      category: 'Spoilers without tag',
+      status: 'PENDING',
+      reportedAt: '1 hour ago'
+    },
+    {
+      id: 'rep-2',
+      thoughtText: 'This whole book is completely pointless nonsense and anyone reading it is wasting their life.',
+      author: 'Anonymous Guest',
+      chapter: 'Notes from Underground &bull; Ch. 1',
+      category: 'Low-effort trolling',
+      status: 'PENDING',
+      reportedAt: '3 hours ago'
+    }
+  ];
+
+  function initCRAdmin() {
+    const select = document.getElementById('cr-botm-book-select');
+    if (select && window.CRData) {
+      select.innerHTML = CRData.getAllBooks().map(b => `<option value="${b.id}">${b.title} by ${b.author}</option>`).join('');
+    }
+  }
+
+  function toggleCRBookForm() {
+    const wrap = document.getElementById('cr-book-form-wrap');
+    if (wrap) wrap.style.display = wrap.style.display === 'none' ? 'block' : 'none';
+  }
+
+  function renderCRAdmin() {
+    if (!window.CRData) return;
+    renderCRBooksTable();
+    renderCRReportsTable();
+  }
+
+  function renderCRBooksTable() {
+    const tbody = document.getElementById('cr-books-table-body');
+    if (!tbody || !window.CRData) return;
+    const books = CRData.getAllBooks();
+
+    tbody.innerHTML = books.map(b => `
+      <tr>
+        <td>
+          <strong>${escapeHtml(b.title)}</strong><br>
+          <span style="font-size:0.75rem; color:var(--admin-muted);">by ${escapeHtml(b.author)}</span>
+        </td>
+        <td><span class="badge" style="background:rgba(255,255,255,0.05); color:#fff;">${b.genre}</span></td>
+        <td>${b.readingTime}</td>
+        <td>${b.difficulty}</td>
+        <td>${b.chapterCount} ch</td>
+        <td>${b.recommendRate || 90}%</td>
+        <td>
+          ${b.isBotm ? '<span class="badge" style="background:#fff; color:#000; font-weight:700;">BOTM</span>' : '<span class="badge badge--user">Catalog</span>'}
+        </td>
+        <td>
+          <button class="panel__action" onclick="alert('Editing chapter breakdown for ' + '${b.id}')">Manage Chapters</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function saveCRBook() {
+    const title = document.getElementById('cr-b-title').value.trim();
+    const author = document.getElementById('cr-b-author').value.trim();
+    if (!title || !author) { alert('Title and Author are required'); return; }
+
+    alert('Book "' + title + '" has been saved to the Chapter Room catalog.');
+    document.getElementById('cr-b-title').value = '';
+    document.getElementById('cr-b-author').value = '';
+    toggleCRBookForm();
+    renderCRBooksTable();
+  }
+
+  function saveCRBotmConfig() {
+    const msg = document.getElementById('cr-botm-msg');
+    if (msg) {
+      msg.style.display = 'inline';
+      setTimeout(() => { msg.style.display = 'none'; }, 3000);
+    }
+  }
+
+  function renderCRReportsTable() {
+    const tbody = document.getElementById('cr-reports-table-body');
+    const badge = document.getElementById('cr-report-badge');
+    if (!tbody) return;
+
+    const pending = crReportsCache.filter(r => r.status === 'PENDING');
+    if (badge) badge.textContent = pending.length;
+
+    if (crReportsCache.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--admin-muted);">No reports in moderation queue.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = crReportsCache.map(r => `
+      <tr>
+        <td style="max-width:280px; font-size:0.82rem;">"${escapeHtml(r.thoughtText)}"</td>
+        <td><strong>${escapeHtml(r.author)}</strong></td>
+        <td style="font-size:0.8rem; color:var(--admin-muted);">${r.chapter}</td>
+        <td><span class="badge" style="background:rgba(255,107,107,0.15); color:var(--admin-danger);">${r.category}</span></td>
+        <td><span class="badge badge--${r.status === 'PENDING' ? 'pending' : 'published'}">${r.status}</span></td>
+        <td>
+          <div style="display:flex; gap:0.35rem; flex-wrap:wrap;">
+            <button class="btn-reject" onclick="handleCRMod('${r.id}', 'hide')">Hide</button>
+            <button class="btn-delete" onclick="handleCRMod('${r.id}', 'delete')">Delete</button>
+            <button class="panel__action" onclick="handleCRMod('${r.id}', 'warn')">Warn</button>
+            <button class="panel__action" onclick="handleCRMod('${r.id}', 'suspend')">Suspend</button>
+            <button class="btn-reject" onclick="handleCRMod('${r.id}', 'ban')">Ban</button>
+            <button class="panel__action" onclick="handleCRMod('${r.id}', 'dismiss')">Dismiss</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function handleCRMod(reportId, action) {
+    const rep = crReportsCache.find(r => r.id === reportId);
+    if (!rep) return;
+
+    if (action === 'dismiss') {
+      rep.status = 'DISMISSED';
+    } else if (action === 'hide') {
+      rep.status = 'HIDDEN';
+      alert('Thought hidden from chapter view.');
+    } else if (action === 'delete') {
+      rep.status = 'DELETED';
+      alert('Thought permanently deleted.');
+    } else if (action === 'warn') {
+      rep.status = 'WARNED';
+      alert('Formal warning sent to ' + rep.author);
+    } else if (action === 'suspend') {
+      rep.status = 'SUSPENDED';
+      alert(rep.author + ' suspended for 7 days.');
+    } else if (action === 'ban') {
+      rep.status = 'BANNED';
+      alert(rep.author + ' permanently banned from Chapter Room.');
+    }
+    renderCRReportsTable();
   }
 </script>
 </body>
