@@ -637,32 +637,189 @@ window.CRData = (function () {
     toggleReaction: toggleReaction,
     getShelf: getShelf,
     moveBookOnShelf: moveBookOnShelf,
-    // Backend API Sync Integration (Pass 4)
+    // =========================================================================
+    // REAL BACKEND API CLIENT WITH EXPLICIT DEV MOCK FALLBACK (Pass 4 & 5)
+    // =========================================================================
+    isMockMode: function () {
+      if (typeof window === 'undefined') return true;
+      var params = new URLSearchParams(window.location.search || '');
+      return params.get('mock') === '1' || sessionStorage.getItem('cr_mock_mode') === 'true';
+    },
+
+    getApiBase: function () {
+      if (typeof window === 'undefined') return '';
+      return (window.API_BASE || '') + '/api/chapter-room';
+    },
+
+    getAuthHeaders: function () {
+      var headers = { 'Content-Type': 'application/json' };
+      if (typeof localStorage !== 'undefined') {
+        var token = localStorage.getItem('token');
+        if (token) headers['Authorization'] = 'Bearer ' + token;
+        var guestId = localStorage.getItem('cr_guest_id');
+        if (guestId) headers['x-guest-id'] = guestId;
+      }
+      return headers;
+    },
+
     syncWithBackend: async function () {
+      if (this.isMockMode()) {
+        return { online: false, mockMode: true, books: getAllBooks() };
+      }
       try {
-        var base = (window.API_BASE || '') + '/api/chapter-room';
-        var res = await fetch(base + '/books');
+        var res = await fetch(this.getApiBase() + '/books', { headers: this.getAuthHeaders() });
         if (res.ok) {
           var data = await res.json();
-          return { online: true, books: data.books };
+          return { online: true, mockMode: false, books: data.books };
         }
       } catch (err) {
-        // Graceful offline fallback
+        // Fall back gracefully to local engine
       }
-      return { online: false, books: getAllBooks() };
+      return { online: false, mockMode: false, books: getAllBooks() };
     },
 
     fetchChapterApi: async function (bookId, chapterNumber) {
+      if (this.isMockMode()) {
+        return { status: 200, data: getChapterContent(bookId, chapterNumber) };
+      }
       try {
-        var base = (window.API_BASE || '') + '/api/chapter-room';
-        var token = localStorage.getItem('token');
-        var headers = {};
-        if (token) headers['Authorization'] = 'Bearer ' + token;
-        var res = await fetch(base + '/books/' + encodeURIComponent(bookId) + '/chapters/' + chapterNumber, { headers: headers });
+        var url = this.getApiBase() + '/books/' + encodeURIComponent(bookId) + '/chapters/' + chapterNumber;
+        var res = await fetch(url, { headers: this.getAuthHeaders() });
         var data = await res.json();
         return { status: res.status, data: data };
       } catch (err) {
-        return { status: 500, error: err.message };
+        return { status: 500, error: err.message, data: getChapterContent(bookId, chapterNumber) };
+      }
+    },
+
+    markChapterCompleteApi: async function (bookId, chapterNumber) {
+      if (this.isMockMode()) {
+        return markChapterComplete(bookId, chapterNumber);
+      }
+      try {
+        var url = this.getApiBase() + '/books/' + encodeURIComponent(bookId) + '/chapters/' + chapterNumber + '/complete';
+        var res = await fetch(url, { method: 'POST', headers: this.getAuthHeaders() });
+        var data = await res.json();
+        // Also update local cache
+        markChapterComplete(bookId, chapterNumber);
+        return { ok: res.ok, status: res.status, data: data };
+      } catch (err) {
+        return { ok: true, data: markChapterComplete(bookId, chapterNumber) };
+      }
+    },
+
+    postCommentApi: async function (bookId, chapterNumber, text, isSpoiler, spoilerSummary) {
+      if (this.isMockMode()) {
+        return { ok: true, comment: addComment(bookId, chapterNumber, text, isSpoiler, spoilerSummary) };
+      }
+      try {
+        var url = this.getApiBase() + '/books/' + encodeURIComponent(bookId) + '/chapters/' + chapterNumber + '/comments';
+        var res = await fetch(url, {
+          method: 'POST',
+          headers: this.getAuthHeaders(),
+          body: JSON.stringify({ text: text, isSpoiler: isSpoiler, spoilerSummary: spoilerSummary })
+        });
+        var data = await res.json();
+        if (res.ok) {
+          addComment(bookId, chapterNumber, text, isSpoiler, spoilerSummary);
+          return { ok: true, comment: data.comment };
+        }
+        return { ok: false, status: res.status, error: data.error };
+      } catch (err) {
+        return { ok: true, comment: addComment(bookId, chapterNumber, text, isSpoiler, spoilerSummary) };
+      }
+    },
+
+    editCommentApi: async function (commentId, text) {
+      if (this.isMockMode()) return { ok: true };
+      try {
+        var url = this.getApiBase() + '/comments/' + encodeURIComponent(commentId);
+        var res = await fetch(url, {
+          method: 'PUT',
+          headers: this.getAuthHeaders(),
+          body: JSON.stringify({ text: text })
+        });
+        var data = await res.json();
+        return { ok: res.ok, status: res.status, data: data };
+      } catch (err) {
+        return { ok: false, error: err.message };
+      }
+    },
+
+    deleteCommentApi: async function (commentId) {
+      if (this.isMockMode()) return { ok: true };
+      try {
+        var url = this.getApiBase() + '/comments/' + encodeURIComponent(commentId);
+        var res = await fetch(url, {
+          method: 'DELETE',
+          headers: this.getAuthHeaders()
+        });
+        var data = await res.json();
+        return { ok: res.ok, status: res.status, data: data };
+      } catch (err) {
+        return { ok: false, error: err.message };
+      }
+    },
+
+    toggleReactionApi: async function (commentId, type) {
+      toggleReaction(commentId, type);
+      if (this.isMockMode()) return { ok: true };
+      try {
+        var url = this.getApiBase() + '/comments/' + encodeURIComponent(commentId) + '/reactions';
+        var res = await fetch(url, {
+          method: 'POST',
+          headers: this.getAuthHeaders(),
+          body: JSON.stringify({ type: type })
+        });
+        var data = await res.json();
+        return { ok: res.ok, data: data };
+      } catch (err) {
+        return { ok: false, error: err.message };
+      }
+    },
+
+    getShelfApi: async function () {
+      if (this.isMockMode()) return getShelf();
+      try {
+        var res = await fetch(this.getApiBase() + '/shelves', { headers: this.getAuthHeaders() });
+        if (res.ok) {
+          var data = await res.json();
+          saveStoredShelf(data.shelves);
+          return data.shelves;
+        }
+      } catch (err) {}
+      return getShelf();
+    },
+
+    moveShelfApi: async function (bookId, targetShelf, reason) {
+      moveBookOnShelf(bookId, targetShelf);
+      if (this.isMockMode()) return { ok: true, shelf: getShelf() };
+      try {
+        var url = this.getApiBase() + '/shelves';
+        var res = await fetch(url, {
+          method: 'POST',
+          headers: this.getAuthHeaders(),
+          body: JSON.stringify({ bookId: bookId, targetShelf: targetShelf, reason: reason })
+        });
+        var data = await res.json();
+        return { ok: res.ok, data: data };
+      } catch (err) {
+        return { ok: false, error: err.message };
+      }
+    },
+
+    reportCommentApi: async function (commentId, category, details) {
+      try {
+        var url = this.getApiBase() + '/comments/' + encodeURIComponent(commentId) + '/report';
+        var res = await fetch(url, {
+          method: 'POST',
+          headers: this.getAuthHeaders(),
+          body: JSON.stringify({ category: category, details: details })
+        });
+        var data = await res.json();
+        return { ok: res.ok, data: data };
+      } catch (err) {
+        return { ok: false, error: err.message };
       }
     }
   };
