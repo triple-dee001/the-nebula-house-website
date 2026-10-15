@@ -1,7 +1,8 @@
 /**
  * CHAPTER ROOM — REUSABLE UI COMPONENTS
  * Pure, typed component generator functions for The Chapter Room.
- * Reconciled with The Nebula House design system (Pass 1).
+ * Reconciled with The Nebula House design system.
+ * Aligned with The Chapter Room Product, UX & Functional Requirements Document.
  */
 
 window.CRComponents = (function () {
@@ -23,7 +24,7 @@ window.CRComponents = (function () {
   /**
    * 1. Top Navigation Component
    * Tier 1: Real Site Header (Logo, Home, About, My Rooms dropdown, Account)
-   * Tier 2: Slim Chapter Room Sub-navigation (Explore | Book of the Month | My Reading | Community, plus search & theme toggle)
+   * Tier 2: Chapter Room Sub-navigation (Home | Explore | Book of the Month | My Reading | Community | Profile)
    */
   function renderNav(activePath, opts) {
     if (!activePath) activePath = 'home';
@@ -32,10 +33,12 @@ window.CRComponents = (function () {
     var crPath = opts.crPath !== undefined ? opts.crPath : '';
 
     var subLinks = [
+      { id: 'home', label: 'Chapter Room', href: crPath + 'index.html' },
       { id: 'explore', label: 'Explore', href: crPath + 'explore.html' },
       { id: 'botm', label: 'Book of the Month', href: crPath + 'book-of-the-month.html' },
       { id: 'shelf', label: 'My Reading', href: crPath + 'my-reading.html' },
-      { id: 'community', label: 'Community', href: crPath + 'community.html' }
+      { id: 'community', label: 'Community', href: crPath + 'community.html' },
+      { id: 'profile', label: 'Reader Profile', href: crPath + 'profile.html' }
     ];
 
     var subLinkItems = subLinks.map(function(link) {
@@ -57,7 +60,7 @@ window.CRComponents = (function () {
             '<div class="navbar__dropdown">' +
               '<span class="navbar__link navbar__dropdown-trigger">My Rooms <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></span>' +
               '<div class="navbar__dropdown-menu">' +
-                '<a href="' + rootPath + 'the-chapter-room.html" class="navbar__dropdown-item">The Chapter Room</a>' +
+                '<a href="' + crPath + 'index.html" class="navbar__dropdown-item">The Chapter Room</a>' +
                 '<a href="' + rootPath + 'the-writers-room.html" class="navbar__dropdown-item">The Writer\'s Room</a>' +
                 '<a href="' + rootPath + 'the-publishing-room.html" class="navbar__dropdown-item">The Publishing Room</a>' +
                 '<a href="' + rootPath + 'the-opinion-yard.html" class="navbar__dropdown-item">The Opinion Yard</a>' +
@@ -65,7 +68,7 @@ window.CRComponents = (function () {
               '</div>' +
             '</div>' +
           '</div>' +
-          '<a href="#" class="navbar__account" id="nav-account-icon" title="Account" aria-label="Account">' +
+          '<a href="' + crPath + 'profile.html" class="navbar__account" id="nav-account-icon" title="Reader Account" aria-label="Reader Account">' +
             '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>' +
           '</a>' +
           '<div class="navbar__toggle" id="menuToggle" aria-label="Toggle navigation" role="button" tabindex="0"><span></span><span></span><span></span></div>' +
@@ -76,7 +79,7 @@ window.CRComponents = (function () {
         '<a href="' + rootPath + 'index.html" class="mobile-menu__link">Home</a>' +
         '<a href="' + rootPath + 'about.html" class="mobile-menu__link">About</a>' +
         '<div class="mobile-menu__divider"></div>' +
-        '<a href="' + rootPath + 'the-chapter-room.html" class="mobile-menu__link">The Chapter Room</a>' +
+        '<a href="' + crPath + 'index.html" class="mobile-menu__link">The Chapter Room</a>' +
         '<a href="' + rootPath + 'the-writers-room.html" class="mobile-menu__link">The Writer\'s Room</a>' +
         '<a href="' + rootPath + 'the-publishing-room.html" class="mobile-menu__link">The Publishing Room</a>' +
         '<a href="' + rootPath + 'the-opinion-yard.html" class="mobile-menu__link">The Opinion Yard</a>' +
@@ -87,10 +90,13 @@ window.CRComponents = (function () {
         '<div class="cr-subnav__inner">' +
           '<ul class="cr-subnav__links">' + subLinkItems + '</ul>' +
           '<div class="cr-subnav__actions">' +
-            '<div class="cr-search-box" role="search">' +
+            '<form action="' + crPath + 'search.html" method="GET" class="cr-search-box" role="search" style="margin:0;">' +
               '<svg class="cr-search-box__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>' +
-              '<input type="search" class="cr-search-box__input" placeholder="Search books, authors..." aria-label="Search library">' +
-            '</div>' +
+              '<input type="search" name="q" class="cr-search-box__input" placeholder="Search books, authors, discussions..." aria-label="Search library">' +
+            '</form>' +
+            '<a href="' + crPath + 'notifications.html" class="cr-theme-btn" title="Reading & Discussion Notifications" aria-label="Notifications" style="text-decoration:none;">' +
+              '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>' +
+            '</a>' +
             '<button class="cr-theme-btn" data-cr-theme-toggle type="button" aria-label="Toggle Reading Theme (Cream Paper or Night Ink)" title="Toggle Reading Theme">' +
               '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>' +
               '<span>Theme</span>' +
@@ -101,7 +107,7 @@ window.CRComponents = (function () {
   }
 
   /**
-   * 2. Mobile Bottom Tab Bar Component (Home / Explore / My Reading / Community)
+   * 2. Mobile Bottom Tab Bar Component (Home / Explore / This Month / My Reading / Community)
    * 44px+ touch targets
    */
   function renderTabBar(activePath, opts) {
@@ -127,7 +133,7 @@ window.CRComponents = (function () {
         id: 'botm',
         label: 'This Month',
         href: crPath + 'book-of-the-month.html',
-        icon: '<svg class="cr-tabbar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>'
+        icon: '<svg class="cr-tabbar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>'
       },
       {
         id: 'shelf',
@@ -139,11 +145,11 @@ window.CRComponents = (function () {
         id: 'community',
         label: 'Community',
         href: crPath + 'community.html',
-        icon: '<svg class="cr-tabbar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>'
+        icon: '<svg class="cr-tabbar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>'
       }
     ];
 
-    var tabsHtml = tabs.map(function(tab) {
+    var tabItems = tabs.map(function(tab) {
       var activeClass = activePath === tab.id ? 'is-active' : '';
       return '<a href="' + tab.href + '" class="cr-tabbar__item ' + activeClass + '" aria-label="' + tab.label + '">' +
         tab.icon +
@@ -151,47 +157,48 @@ window.CRComponents = (function () {
       '</a>';
     }).join('');
 
-    return '<nav class="cr-tabbar" role="navigation" aria-label="Mobile Navigation">' + tabsHtml + '</nav>';
+    return '<nav class="cr-tabbar" role="navigation" aria-label="Mobile Bottom Navigation">' + tabItems + '</nav>';
   }
 
   /**
-   * 3. Book Cover Presentation (Photographic or Typographic Fallback)
+   * 3. Typographic Fallback & Image Book Cover Component (2:3 Aspect Ratio)
    */
   function renderBookCover(opts) {
     if (!opts) opts = {};
-    var title = opts.title || 'Untitled';
-    var author = opts.author || 'Unknown Author';
-    var genre = opts.genre || 'Literature';
-    var cover = opts.cover || '';
-    var isFallback = !!opts.fallback || !cover;
+    var title = escapeHTML(opts.title || 'Untitled');
+    var author = escapeHTML(opts.author || 'Author');
+    var genre = escapeHTML(opts.genre || 'Literature');
+    var coverUrl = opts.cover;
+    var isFallback = !!opts.fallback || !coverUrl;
 
-    if (isFallback) {
-      return '<div class="cr-book-cover cr-book-cover--fallback" role="img" aria-label="Cover of ' + escapeHTML(title) + ' by ' + escapeHTML(author) + '">' +
-        '<div class="cr-book-cover__fallback-top">' + escapeHTML(genre) + '</div>' +
-        '<div>' +
-          '<h4 class="cr-book-cover__fallback-title">' + escapeHTML(title) + '</h4>' +
-          '<p class="cr-book-cover__fallback-author">by ' + escapeHTML(author) + '</p>' +
-        '</div>' +
-        '<div class="cr-book-cover__fallback-bottom">The Chapter Room &bull; Edition</div>' +
+    if (!isFallback && coverUrl) {
+      return '<div class="cr-cover-wrap">' +
+        '<img src="' + escapeHTML(coverUrl) + '" alt="' + title + ' by ' + author + '" class="cr-cover-img" loading="lazy" onerror="this.parentElement.innerHTML = CRComponents.renderBookCover({ title: \'' + title.replace(/'/g, "\\'") + '\', author: \'' + author.replace(/'/g, "\\'") + '\', genre: \'' + genre.replace(/'/g, "\\'") + '\', fallback: true });">' +
       '</div>';
     }
 
-    return '<div class="cr-book-cover">' +
-      '<img src="' + escapeHTML(cover) + '" alt="Cover of ' + escapeHTML(title) + ' by ' + escapeHTML(author) + '" loading="lazy">' +
+    return '<div class="cr-cover-fallback" role="img" aria-label="Book cover for ' + title + ' by ' + author + '">' +
+      '<div class="cr-cover-fallback__inner">' +
+        '<span class="cr-cover-fallback__genre">' + genre + '</span>' +
+        '<h3 class="cr-cover-fallback__title">' + title + '</h3>' +
+        '<p class="cr-cover-fallback__author">' + author + '</p>' +
+        '<div class="cr-cover-fallback__publisher">The Chapter Room &bull; Archive</div>' +
+      '</div>' +
     '</div>';
   }
 
   /**
-   * 4. Book Card Component (Standard & Horizontal variants)
+   * 4. Editorial Book Card Component
    */
   function renderBookCard(opts) {
     if (!opts) opts = {};
-    var id = escapeHTML(opts.id || 'book-1');
+    var id = escapeHTML(opts.id || 'notes-from-underground');
     var title = escapeHTML(opts.title || 'Notes from Underground');
     var author = escapeHTML(opts.author || 'Fyodor Dostoevsky');
     var genre = escapeHTML(opts.genre || 'Philosophy');
-    var desc = escapeHTML(opts.desc || 'A dark, introspective novella questioning rationality, free will, and human consciousness.');
+    var desc = escapeHTML(opts.desc || opts.description || '');
     var readingTime = escapeHTML(opts.readingTime || '3.5 hrs');
+    var dailyEstimate = escapeHTML(opts.dailyEstimate || '');
     var difficulty = escapeHTML(opts.difficulty || 'Challenging');
     var difficultyNote = escapeHTML(opts.difficultyNote || 'Take your time with this one');
     var isWishlisted = !!opts.isWishlisted;
@@ -207,10 +214,12 @@ window.CRComponents = (function () {
       fallback: isFallback
     });
 
+    var dailyBadge = dailyEstimate ? '<span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary);">&bull; ' + dailyEstimate + '</span>' : '';
+
     return '<article class="cr-book-card ' + (horizontal ? 'cr-book-card--horizontal' : '') + '" data-book-id="' + id + '">' +
       '<div class="cr-book-card__cover-wrap">' +
         '<span class="cr-chip cr-chip--genre cr-book-card__badge">' + genre + '</span>' +
-        '<button class="cr-book-card__wishlist ' + (isWishlisted ? 'is-active' : '') + '" type="button" aria-label="' + (isWishlisted ? 'Remove from shelf' : 'Save to shelf') + '" title="' + (isWishlisted ? 'On your shelf' : 'Save to shelf') + '">' +
+        '<button class="cr-book-card__wishlist ' + (isWishlisted ? 'is-active' : '') + '" type="button" aria-label="' + (isWishlisted ? 'Remove from shelf' : 'Save to shelf') + '" title="' + (isWishlisted ? 'On your shelf' : 'Save to shelf') + '" onclick="CRData.moveBookOnShelf(\'' + id + '\', \'wishlist\'); this.classList.toggle(\'is-active\');">' +
           '<svg viewBox="0 0 24 24" width="16" height="16" fill="' + (isWishlisted ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>' +
         '</button>' +
         coverMarkup +
@@ -219,16 +228,19 @@ window.CRComponents = (function () {
         '<div class="cr-book-card__meta-top">' +
           '<span class="cr-chip" title="' + difficultyNote + '">' + difficulty + '</span>' +
           '<span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary);">' + readingTime + '</span>' +
+          dailyBadge +
         '</div>' +
         '<h3 class="cr-book-card__title"><a href="' + bookPath + '">' + title + '</a></h3>' +
         '<p class="cr-book-card__author">by ' + author + '</p>' +
         '<p class="cr-book-card__desc">' + desc + '</p>' +
         '<div class="cr-book-card__footer">' +
           '<span style="font-style:italic; font-size:var(--cr-text-xs); color:var(--cr-text-secondary);">' + difficultyNote + '</span>' +
-          '<a href="' + bookPath + '" class="btn" style="padding:0.45rem 0.9rem; font-size:var(--cr-text-xs);">' +
-            '<span><span class="btn__label-full">Read Chapter 1</span><span class="btn__label-short">Start</span></span>' +
-            '<span class="arrow">&rarr;</span>' +
-          '</a>' +
+          '<div style="display:flex; gap:0.5rem; align-items:center;">' +
+            '<a href="' + bookPath + '" class="btn" style="padding:0.45rem 0.9rem; font-size:var(--cr-text-xs);">' +
+              '<span><span class="btn__label-full">Read Book</span><span class="btn__label-short">Read</span></span>' +
+              '<span class="arrow">&rarr;</span>' +
+            '</a>' +
+          '</div>' +
         '</div>' +
       '</div>' +
     '</article>';
@@ -285,9 +297,7 @@ window.CRComponents = (function () {
   }
 
   /**
-   * 6. Conversational Reaction Set Component
-   * Strictly line SVGs + text labels (no emoji chrome)
-   * Reactions: Interesting / Made me think / Excellent point / I disagree
+   * 6. Conversational Reaction Set Component (Interesting / Made me think / Excellent point / I disagree)
    */
   function renderReactions(opts) {
     if (!opts) opts = {};
@@ -302,7 +312,7 @@ window.CRComponents = (function () {
         id: 'interesting',
         label: 'Interesting',
         count: interesting,
-        svg: '<svg class="cr-reaction-btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 18h6"></path><path d="M10 22h4"></path><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7z"></path></svg>'
+        svg: '<svg class="cr-reaction-btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>'
       },
       {
         id: 'madeMeThink',
@@ -314,7 +324,7 @@ window.CRComponents = (function () {
         id: 'excellentPoint',
         label: 'Excellent point',
         count: excellentPoint,
-        svg: '<svg class="cr-reaction-btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path></svg>'
+        svg: '<svg class="cr-reaction-btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>'
       },
       {
         id: 'iDisagree',
@@ -373,13 +383,84 @@ window.CRComponents = (function () {
       '<div class="cr-comment__content">' + bodyHtml + '</div>' +
       '<div class="cr-comment__footer">' +
         renderReactions(reactions) +
-        '<div class="cr-comment__actions"><button type="button" class="cr-link" style="font-size:var(--cr-text-xs); background:none; border:none; cursor:pointer;">Reply to thread</button></div>' +
+        '<div class="cr-comment__actions"><button type="button" class="cr-link" style="font-size:var(--cr-text-xs); background:none; border:none; cursor:pointer;" onclick="window.location.href=\'thread.html?id=' + id + '\';">Reply in Thread</button></div>' +
       '</div>' +
     '</article>';
   }
 
   /**
-   * 8. Progress Indicator Component
+   * 8. Interactive Discovery Prompts Component (Section 28)
+   */
+  function renderDiscoveryPrompts(activeTheme) {
+    if (!activeTheme) activeTheme = 'all';
+    var themes = [
+      'Meaning',
+      'Faith',
+      'Love',
+      'Power',
+      'Death',
+      'Freedom',
+      'Identity',
+      'Human Nature',
+      'History'
+    ];
+
+    var pills = themes.map(function(t) {
+      var active = activeTheme.toLowerCase() === t.toLowerCase() ? 'is-active' : '';
+      return '<button type="button" class="cr-chip ' + active + '" data-theme-filter="' + escapeHTML(t) + '">' +
+        escapeHTML(t) +
+      '</button>';
+    }).join('');
+
+    return '<div class="cr-discovery-prompts" style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); border-radius:var(--cr-radius-xs, 2px); padding:var(--cr-space-6, 1.5rem); margin:var(--cr-space-6, 1.5rem) 0;">' +
+      '<span class="cr-section-header__label" style="display:block; margin-bottom:0.25rem;">"I DON’T KNOW WHAT TO READ"</span>' +
+      '<h3 class="cr-h3" style="margin-top:0; margin-bottom:0.5rem;">What are you interested in exploring?</h3>' +
+      '<p style="font-size:var(--cr-text-sm); color:var(--cr-text-secondary); margin-bottom:var(--cr-space-4, 1rem);">' +
+        'Choose an existential question or central human theme. We will find enduring books that wrestle with it.' +
+      '</p>' +
+      '<div class="cr-filter-bar" style="margin-bottom:0; flex-wrap:wrap; gap:0.5rem;">' + pills + '</div>' +
+    '</div>';
+  }
+
+  /**
+   * 9. Reader Card Component for Community Discovery (Section 23 & 25)
+   */
+  function renderReaderCard(reader) {
+    if (!reader) return '';
+    var name = escapeHTML(reader.name || 'Reader');
+    var id = escapeHTML(reader.id || 'reader');
+    var joined = escapeHTML(reader.joinedYear ? ('Reading since ' + reader.joinedYear) : 'Active Reader');
+    var bio = escapeHTML(reader.bio || 'Engaging with enduring literature in The Chapter Room.');
+    var avatar = escapeHTML(reader.avatar || name.charAt(0));
+    var completed = reader.completedCount || 0;
+    var currently = reader.currentlyReading ? escapeHTML(reader.currentlyReading.title) : 'Notes from Underground';
+    var genres = (reader.favouriteGenres || ['Philosophy', 'Fiction']).map(function(g) {
+      return '<span class="cr-chip" style="font-size:0.7rem; padding:0.15rem 0.5rem;">' + escapeHTML(g) + '</span>';
+    }).join(' ');
+
+    return '<div class="cr-reader-card" style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); border-radius:var(--cr-radius-xs, 2px); padding:var(--cr-space-4, 1rem); display:flex; flex-direction:column; justify-content:space-between; gap:var(--cr-space-3, 0.75rem);">' +
+      '<div style="display:flex; align-items:center; gap:0.75rem;">' +
+        '<div style="width:44px; height:44px; border-radius:50%; background:var(--cr-bg-card); border:1px solid var(--cr-border-subtle); display:flex; align-items:center; justify-content:center; font-family:var(--cr-font-display); font-size:1.25rem; font-weight:700; color:var(--cr-text-primary); flex-shrink:0;">' + avatar + '</div>' +
+        '<div style="min-width:0; flex:1;">' +
+          '<h4 style="margin:0; font-family:var(--cr-font-sans); font-size:var(--cr-text-base); font-weight:600;"><a href="profile.html?user=' + id + '" style="color:var(--cr-text-primary); text-decoration:none;">' + name + '</a></h4>' +
+          '<span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary);">' + joined + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<p style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); margin:0; line-height:1.5;">' + bio + '</p>' +
+      '<div style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); border-top:1px solid var(--cr-border-subtle); padding-top:0.5rem;">' +
+        '<div>Currently: <strong style="color:var(--cr-text-primary);">' + currently + '</strong></div>' +
+        '<div>Completed: <strong style="color:var(--cr-text-primary);">' + completed + ' works</strong></div>' +
+      '</div>' +
+      '<div style="display:flex; flex-wrap:wrap; gap:0.25rem; align-items:center;">' + genres + '</div>' +
+      '<div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.25rem;">' +
+        '<a href="profile.html?user=' + id + '" class="cr-link" style="font-size:var(--cr-text-xs);">View Shelf &rarr;</a>' +
+        '<button type="button" class="btn btn--outline btn--sm" onclick="CRData.toggleFollowReader(\'' + id + '\'); this.textContent = this.textContent === \'Follow\' ? \'Following\' : \'Follow\';">Follow</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  /**
+   * 10. Progress Indicator Component
    */
   function renderProgress(opts) {
     if (!opts) opts = {};
@@ -400,7 +481,7 @@ window.CRComponents = (function () {
   }
 
   /**
-   * 9. Empty State Component
+   * 11. Empty State Component
    */
   function renderEmptyState(opts) {
     if (!opts) opts = {};
@@ -418,8 +499,7 @@ window.CRComponents = (function () {
   }
 
   /**
-   * 10. Quiet Skeleton Loaders (Book Card, Chapter Row, Comment)
-   * Shimmer is restrained, grey to slightly lighter grey in dark; cream to subtle cream in light.
+   * 12. Skeleton Loaders
    */
   function renderSkeleton(type) {
     if (type === 'chapter') {
@@ -453,31 +533,21 @@ window.CRComponents = (function () {
           '<div class="cr-skeleton cr-skeleton-text cr-skeleton-text--body" style="width:85%;"></div>' +
           '<div class="cr-skeleton cr-skeleton-text cr-skeleton-text--body" style="width:55%;"></div>' +
         '</div>' +
-        '<div class="cr-comment__footer" style="margin-top:1rem; display:flex; gap:0.5rem;">' +
-          '<div class="cr-skeleton cr-skeleton-text--pill"></div>' +
-          '<div class="cr-skeleton cr-skeleton-text--pill"></div>' +
-        '</div>' +
       '</article>';
     }
 
-    // Default: Book Card Skeleton
     return '<article class="cr-book-card cr-skeleton" aria-hidden="true">' +
       '<div class="cr-book-card__cover-wrap cr-skeleton" style="aspect-ratio:2/3; height:220px;"></div>' +
       '<div class="cr-book-card__body">' +
         '<div class="cr-skeleton cr-skeleton-text--pill" style="margin-bottom:0.75rem;"></div>' +
         '<div class="cr-skeleton cr-skeleton-text cr-skeleton-text--title"></div>' +
         '<div class="cr-skeleton cr-skeleton-text cr-skeleton-text--sub"></div>' +
-        '<div class="cr-skeleton cr-skeleton-text cr-skeleton-text--body"></div>' +
-        '<div class="cr-skeleton cr-skeleton-text cr-skeleton-text--body" style="width:75%;"></div>' +
-        '<div style="margin-top:auto; padding-top:1rem;">' +
-          '<div class="cr-skeleton cr-skeleton-text" style="height:36px; width:110px;"></div>' +
-        '</div>' +
       '</div>' +
     '</article>';
   }
 
   /**
-   * 11. Footer Component (Reconciled with The Nebula House)
+   * 13. Footer Component
    */
   function renderFooter(opts) {
     if (!opts) opts = {};
@@ -502,10 +572,11 @@ window.CRComponents = (function () {
             '<a href="' + crPath + 'book-of-the-month.html" class="footer__link">Book of the Month</a>' +
             '<a href="' + crPath + 'my-reading.html" class="footer__link">My Reading Shelf</a>' +
             '<a href="' + crPath + 'community.html" class="footer__link">Community</a>' +
+            '<a href="' + crPath + 'profile.html" class="footer__link">Reader Profile</a>' +
           '</div>' +
           '<div class="footer__col">' +
             '<h4 class="footer__title">Rooms</h4>' +
-            '<a href="' + rootPath + 'the-chapter-room.html" class="footer__link">The Chapter Room</a>' +
+            '<a href="' + crPath + 'index.html" class="footer__link">The Chapter Room</a>' +
             '<a href="' + rootPath + 'the-writers-room.html" class="footer__link">The Writer\'s Room</a>' +
             '<a href="' + rootPath + 'the-publishing-room.html" class="footer__link">The Publishing Room</a>' +
             '<a href="' + rootPath + 'the-opinion-yard.html" class="footer__link">The Opinion Yard</a>' +
@@ -537,6 +608,8 @@ window.CRComponents = (function () {
     renderChapterRow: renderChapterRow,
     renderReactions: renderReactions,
     renderComment: renderComment,
+    renderDiscoveryPrompts: renderDiscoveryPrompts,
+    renderReaderCard: renderReaderCard,
     renderProgress: renderProgress,
     renderEmptyState: renderEmptyState,
     renderSkeleton: renderSkeleton,

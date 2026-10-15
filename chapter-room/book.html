@@ -15,7 +15,7 @@
 
   <main id="main-content" style="padding-bottom:var(--cr-space-16, 4rem);">
 
-    <!-- BOOK HEADER -->
+    <!-- BOOK HEADER (Section 17 of Spec) -->
     <header class="cr-section cr-section--surface" style="border-bottom:1px solid var(--cr-border-subtle); padding:var(--cr-space-8, 2rem) 0;">
       <div class="cr-container">
         
@@ -34,7 +34,7 @@
             <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:var(--cr-space-2, 0.5rem); flex-wrap:wrap;">
               <span class="cr-chip cr-chip--genre" id="book-genre">Genre</span>
               <span class="cr-chip" id="book-diff">Difficulty</span>
-              <span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); italic;" id="book-diff-note">Encouraging note</span>
+              <span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); font-style:italic;" id="book-diff-note">Encouraging note</span>
             </div>
 
             <h1 class="cr-h1" id="book-title" style="margin-top:0.25rem; margin-bottom:0.25rem;">Book Title</h1>
@@ -46,21 +46,28 @@
               Book description.
             </p>
 
-            <!-- Specs Bar -->
-            <div style="display:flex; gap:var(--cr-space-6, 1.5rem); margin-bottom:var(--cr-space-6, 1.5rem); font-family:var(--cr-font-sans); font-size:var(--cr-text-sm); color:var(--cr-text-secondary); border-top:1px solid var(--cr-border-subtle); border-bottom:1px solid var(--cr-border-subtle); padding:var(--cr-space-3, 0.75rem) 0;">
+            <!-- Specs Bar (Reading Time, Daily Cadence, Chapters) -->
+            <div style="display:flex; gap:var(--cr-space-6, 1.5rem); margin-bottom:var(--cr-space-6, 1.5rem); font-family:var(--cr-font-sans); font-size:var(--cr-text-sm); color:var(--cr-text-secondary); border-top:1px solid var(--cr-border-subtle); border-bottom:1px solid var(--cr-border-subtle); padding:var(--cr-space-3, 0.75rem) 0; flex-wrap:wrap;">
               <div>Reading Time: <strong style="color:var(--cr-text-primary);" id="book-time">3.5 hrs</strong></div>
+              <div>Daily Cadence: <strong style="color:var(--cr-text-primary);" id="book-daily">~20 mins/day</strong></div>
               <div>Chapters: <strong style="color:var(--cr-text-primary);" id="book-chapters">6</strong></div>
               <div>Pace: <strong style="color:var(--cr-text-primary);">Sequential Unlocking</strong></div>
             </div>
 
-            <!-- Action CTAs -->
-            <div style="display:flex; align-items:center; gap:var(--cr-space-4, 1rem); flex-wrap:wrap;">
+            <!-- Action CTAs (Section 17: Read, Wishlist, Reading Plan, Mark Reading, Mark Completed) -->
+            <div style="display:flex; align-items:center; gap:var(--cr-space-3, 0.75rem); flex-wrap:wrap;">
               <a href="#" id="book-read-cta" class="btn">
                 <span><span class="btn__label-full">Start Reading Chapter 1</span><span class="btn__label-short">Read Ch. 1</span></span>
                 <span class="arrow">&rarr;</span>
               </a>
-              <button type="button" class="btn btn--outline" id="book-shelf-action">
-                <span>Save to Shelf</span>
+              <button type="button" class="btn btn--outline" id="book-wishlist-action">
+                <span>+ Add to Wishlist</span>
+              </button>
+              <button type="button" class="btn btn--outline" id="book-plan-action">
+                <span>+ Add to Reading Plan</span>
+              </button>
+              <button type="button" class="btn btn--outline" id="book-complete-action">
+                <span>Mark Completed</span>
               </button>
             </div>
           </div>
@@ -70,27 +77,33 @@
       </div>
     </header>
 
-    <!-- EDITORIAL CONTEXT & KEY THEMES -->
+    <!-- GENERAL BOOK SUMMARY (Section 8 & 17 - Spoiler-Free Context) -->
     <section class="cr-section">
       <div class="cr-container" style="max-width:var(--cr-reading-measure, 680px);">
         
         <div class="cr-section-header">
-          <span class="cr-section-header__label">WHY READ THIS BOOK?</span>
-          <h2 class="cr-section-header__title">Editorial Note</h2>
+          <span class="cr-section-header__label">GENERAL BOOK SUMMARY &bull; SPOILER-FREE</span>
+          <h2 class="cr-section-header__title">Context & Overview</h2>
           <div class="cr-section-header__rule"></div>
         </div>
 
-        <p class="cr-reading-text cr-reading-measure" id="book-why" style="margin-bottom:var(--cr-space-6, 1.5rem);">
-          Editorial commentary.
+        <p class="cr-reading-text cr-reading-measure" id="book-summary" style="margin-bottom:var(--cr-space-6, 1.5rem);">
+          Summary text.
         </p>
 
+        <div style="background:var(--cr-bg-surface); padding:var(--cr-space-4, 1rem); border:1px solid var(--cr-border-subtle); border-radius:2px; margin-bottom:var(--cr-space-6, 1.5rem);">
+          <span class="cr-section-header__label" style="display:block; margin-bottom:0.25rem;">EDITORIAL NOTE</span>
+          <h3 class="cr-h3" style="margin-top:0; margin-bottom:0.5rem;">Why Read This Book?</h3>
+          <p class="cr-reading-text" style="font-size:var(--cr-text-sm); margin:0;" id="book-why">Editorial commentary.</p>
+        </div>
+
         <h3 class="cr-h3" style="margin-bottom:var(--cr-space-3, 0.75rem);">Core Themes Explored</h3>
-        <ul id="book-themes" style="list-style:disc; padding-left:1.5rem; color:var(--cr-text-secondary); font-family:var(--cr-font-sans); line-height:1.7; font-size:var(--cr-text-base);"></ul>
+        <ul id="book-themes" style="list-style:disc; padding-left:1.5rem; color:var(--cr-text-secondary); font-family:var(--cr-font-sans); line-height:1.7; font-size:var(--cr-text-sm);"></ul>
 
       </div>
     </section>
 
-    <!-- CHAPTER BREAKDOWN WITH SEQUENTIAL UNLOCKING -->
+    <!-- CHAPTER BREAKDOWN WITH SEQUENTIAL UNLOCKING (Section 17) -->
     <section class="cr-section cr-section--surface">
       <div class="cr-container">
         
@@ -105,6 +118,45 @@
 
         <div id="mount-chapters" style="display:flex; flex-direction:column; gap:var(--cr-space-3, 0.75rem);"></div>
 
+      </div>
+    </section>
+
+    <!-- READER REVIEWS SECTION (No Star Ratings - Section 31 & 32) -->
+    <section class="cr-section">
+      <div class="cr-container" style="max-width:var(--cr-reading-measure, 680px);">
+        <div class="cr-section-header">
+          <span class="cr-section-header__label">READER REFLECTIONS &bull; NO STAR RATINGS</span>
+          <h2 class="cr-section-header__title">What Stayed With Readers?</h2>
+          <p class="cr-section-header__desc">
+            We avoid arbitrary star ratings. We ask what stayed with readers and what this work made them think about.
+          </p>
+          <div class="cr-section-header__rule"></div>
+        </div>
+
+        <div id="mount-reader-reflections" style="display:flex; flex-direction:column; gap:var(--cr-space-4, 1rem);">
+          <div style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); padding:var(--cr-space-4, 1rem); border-radius:2px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:0.25rem;">
+              <strong style="color:var(--cr-text-primary); font-size:var(--cr-text-sm);">Kelechi</strong>
+              <span class="cr-chip" style="font-size:0.7rem;">Would recommend: Yes, absolutely</span>
+            </div>
+            <p style="font-size:var(--cr-text-sm); color:var(--cr-text-secondary); font-style:italic; margin:0 0 0.5rem 0;">
+              "The underground man’s rebellion against mathematical determinism stayed with me for weeks. It completely altered how I understand self-sabotage."
+            </p>
+          </div>
+          <div style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); padding:var(--cr-space-4, 1rem); border-radius:2px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:0.25rem;">
+              <strong style="color:var(--cr-text-primary); font-size:var(--cr-text-sm);">Marcus Vance</strong>
+              <span class="cr-chip" style="font-size:0.7rem;">Would recommend: With caveats (requires patience)</span>
+            </div>
+            <p style="font-size:var(--cr-text-sm); color:var(--cr-text-secondary); font-style:italic; margin:0 0 0.5rem 0;">
+              "Uncomfortable and relentless, but essential reading. Do not rush it. The second part requires patience to see the philosophy applied."
+            </p>
+          </div>
+        </div>
+
+        <div style="text-align:center; margin-top:var(--cr-space-6, 1.5rem);">
+          <a href="finish.html" class="link-btn" id="write-reflection-link">Record Your Reflection on this Work &rarr;</a>
+        </div>
       </div>
     </section>
 
@@ -147,16 +199,20 @@
       document.getElementById('book-diff').textContent = book.difficulty;
       document.getElementById('book-diff-note').textContent = book.difficultyNote;
       document.getElementById('book-desc').textContent = book.description;
+      document.getElementById('book-summary').textContent = book.generalSummary || book.description;
+      document.getElementById('book-why').textContent = book.whyWeAreReading || 'An enduring work selected for reflection and discussion.';
       document.getElementById('book-time').textContent = book.readingTime;
-      document.getElementById('book-chapters').textContent = book.chapterCount + ' chapters';
-      document.getElementById('book-recommend-badge').textContent = (book.recommendRate || 90) + '% of readers recommend this';
-      document.getElementById('book-why').textContent = book.whyWeAreReading || book.description;
+      if (book.dailyEstimate) document.getElementById('book-daily').textContent = book.dailyEstimate;
+      document.getElementById('book-chapters').textContent = book.chapterCount;
+      document.getElementById('book-recommend-badge').textContent = book.recommendRate + '% of readers recommend this';
+      document.getElementById('write-reflection-link').href = 'finish.html?book=' + book.id;
 
       // Populate Themes
       var themesEl = document.getElementById('book-themes');
-      if (themesEl && book.keyThemes) {
-        themesEl.innerHTML = book.keyThemes.map(function (theme) {
-          return '<li>' + theme + '</li>';
+      if (themesEl && (book.keyThemes || book.themes)) {
+        var list = book.keyThemes || book.themes;
+        themesEl.innerHTML = list.map(function (theme) {
+          return '<li>' + CRComponents.escapeHTML(theme) + '</li>';
         }).join('');
       }
 
@@ -203,16 +259,27 @@
 
       document.getElementById('mount-chapters').innerHTML = chaptersHtml.join('');
 
-      // Shelf Action
-      var shelfBtn = document.getElementById('book-shelf-action');
-      if (shelfBtn) {
-        shelfBtn.addEventListener('click', function () {
-          CRData.moveBookOnShelf(book.id, 'currentlyReading');
-          shelfBtn.innerHTML = '<span>&check; On Your Shelf</span>';
-          shelfBtn.classList.remove('btn--outline');
-          shelfBtn.classList.add('btn--filled');
-        });
-      }
+      // Wishlist Button
+      var wishlistBtn = document.getElementById('book-wishlist-action');
+      wishlistBtn.addEventListener('click', function () {
+        CRData.moveBookOnShelf(book.id, 'wishlist');
+        wishlistBtn.textContent = 'Added to Wishlist ✓';
+        wishlistBtn.classList.add('is-active');
+      });
+
+      // Reading Plan Button
+      var planBtn = document.getElementById('book-plan-action');
+      planBtn.addEventListener('click', function () {
+        CRData.saveReadingPlan(book.id, '2027-01-31', '1 ch / 2 days', 'Personal Reading Cadence');
+        planBtn.textContent = 'Added to Reading Plan ✓';
+        planBtn.classList.add('is-active');
+      });
+
+      // Mark Complete Action
+      var completeBtn = document.getElementById('book-complete-action');
+      completeBtn.addEventListener('click', function () {
+        window.location.href = 'finish.html?book=' + book.id;
+      });
     });
   </script>
 </body>

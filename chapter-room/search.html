@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Global Search | The Chapter Room</title>
-  <meta name="description" content="Search across books, chapters, topics, and reader discussions in The Chapter Room.">
+  <meta name="description" content="Search across books, authors, genres, discussions, and readers in The Chapter Room.">
   <link rel="icon" type="image/png" href="../assets/images/favicon.png">
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/chapter-room.css">
@@ -17,38 +17,56 @@
   <main class="cr-container" id="main-content" style="max-width:var(--cr-container, 1200px); padding-top:var(--cr-space-8, 2rem); padding-bottom:var(--cr-space-16, 4rem);">
 
     <header class="cr-section-header" style="text-align:center; max-width:640px; margin:0 auto var(--cr-space-8, 2rem);">
-      <span class="cr-section-header__label">DISCOVERY ENGINE</span>
+      <span class="cr-section-header__label">SECTION 27 &bull; GLOBAL DISCOVERY</span>
       <h1 class="cr-section-header__title">Search The Chapter Room</h1>
       <p class="cr-section-header__desc">
-        Search across books, authors, chapter summaries, and reader conversations.
+        Search across books, authors, genres, chapter discussions, and fellow readers.
       </p>
       
       <!-- Big Search Input -->
       <div style="margin-top:var(--cr-space-4, 1rem); position:relative;">
-        <input type="search" id="global-search-input" class="cr-search-box__input" placeholder="Type a concept, title, or author (e.g., 'free will', 'Dostoevsky', 'suffering')..." style="width:100%; height:48px; font-size:var(--cr-text-base); padding-left:2.5rem; box-sizing:border-box;" aria-label="Global search">
+        <input type="search" id="global-search-input" class="cr-search-box__input" placeholder="Type an author, title, genre, or idea (e.g., 'Dostoevsky', 'free will', 'Philosophy')..." style="width:100%; height:48px; font-size:var(--cr-text-base); padding-left:2.5rem; box-sizing:border-box;" aria-label="Global search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute; left:1rem; top:16px; width:18px; height:18px; color:var(--cr-text-secondary); pointer-events:none;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
       </div>
     </header>
 
-    <!-- SEARCH RESULTS SECTIONS -->
+    <!-- SEARCH RESULTS SECTIONS (Categorized as specified in Section 27) -->
     <div id="search-results-area">
       
       <!-- 1. Books Section -->
       <section id="results-books-sec" style="margin-bottom:var(--cr-space-8, 2rem);">
         <div class="cr-section-header" style="margin-bottom:var(--cr-space-3, 0.75rem);">
-          <span class="cr-section-header__label">MATCHING BOOKS</span>
+          <span class="cr-section-header__label">MATCHING TITLES</span>
           <h2 class="cr-h3" id="books-count-heading">Books (0)</h2>
         </div>
         <div class="cr-book-grid" id="mount-results-books"></div>
       </section>
 
-      <!-- 2. Discussions Section -->
+      <!-- 2. Authors Section -->
+      <section id="results-authors-sec" style="margin-bottom:var(--cr-space-8, 2rem); display:none;">
+        <div class="cr-section-header" style="margin-bottom:var(--cr-space-3, 0.75rem);">
+          <span class="cr-section-header__label">MATCHING AUTHORS</span>
+          <h2 class="cr-h3" id="authors-count-heading">Authors (0)</h2>
+        </div>
+        <div id="mount-results-authors" style="display:flex; flex-wrap:wrap; gap:0.75rem;"></div>
+      </section>
+
+      <!-- 3. Discussions Section -->
       <section id="results-discussions-sec" style="margin-bottom:var(--cr-space-8, 2rem);">
         <div class="cr-section-header" style="margin-bottom:var(--cr-space-3, 0.75rem);">
-          <span class="cr-section-header__label">MATCHING READER THOUGHTS</span>
+          <span class="cr-section-header__label">MATCHING CHAPTER THOUGHTS</span>
           <h2 class="cr-h3" id="discussions-count-heading">Discussions (0)</h2>
         </div>
         <div id="mount-results-discussions" style="display:flex; flex-direction:column; gap:var(--cr-space-3, 0.75rem);"></div>
+      </section>
+
+      <!-- 4. Readers Section -->
+      <section id="results-readers-sec" style="margin-bottom:var(--cr-space-8, 2rem); display:none;">
+        <div class="cr-section-header" style="margin-bottom:var(--cr-space-3, 0.75rem);">
+          <span class="cr-section-header__label">MATCHING READERS</span>
+          <h2 class="cr-h3" id="readers-count-heading">Readers (0)</h2>
+        </div>
+        <div id="mount-results-readers" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:1rem;"></div>
       </section>
 
     </div>
@@ -85,21 +103,34 @@
       function performSearch(q) {
         q = (q || '').trim().toLowerCase();
         var allBooks = CRData.getAllBooks();
+        var allReaders = CRData.getAllReaders();
 
         var matchedBooks = [];
+        var matchedAuthors = [];
         var matchedComments = [];
+        var matchedReaders = [];
 
         if (q) {
-          // Match books
+          // 1. Books
           matchedBooks = allBooks.filter(function (b) {
             return b.title.toLowerCase().indexOf(q) !== -1 ||
               b.author.toLowerCase().indexOf(q) !== -1 ||
               b.genre.toLowerCase().indexOf(q) !== -1 ||
               (b.description || '').toLowerCase().indexOf(q) !== -1 ||
-              (b.keyThemes || []).some(function (t) { return t.toLowerCase().indexOf(q) !== -1; });
+              (b.keyThemes || []).some(function (t) { return t.toLowerCase().indexOf(q) !== -1; }) ||
+              (b.themes || []).some(function (t) { return t.toLowerCase().indexOf(q) !== -1; });
           });
 
-          // Match comments (from unlocked chapters)
+          // 2. Authors
+          var authorMap = {};
+          allBooks.forEach(function (b) {
+            if (b.author.toLowerCase().indexOf(q) !== -1 && !authorMap[b.author]) {
+              authorMap[b.author] = b;
+            }
+          });
+          matchedAuthors = Object.keys(authorMap).map(function (k) { return authorMap[k]; });
+
+          // 3. Comments (from unlocked chapters)
           var ch1 = CRData.getChapterContent('notes-from-underground', 1);
           var ch2 = CRData.getChapterContent('notes-from-underground', 2);
           var pool = (ch1 ? ch1.comments : []).concat(ch2 ? ch2.comments : []);
@@ -107,6 +138,12 @@
           matchedComments = pool.filter(function (c) {
             return c.text.toLowerCase().indexOf(q) !== -1 ||
               c.author.toLowerCase().indexOf(q) !== -1;
+          });
+
+          // 4. Readers
+          matchedReaders = allReaders.filter(function (r) {
+            return r.name.toLowerCase().indexOf(q) !== -1 ||
+              (r.favouriteGenres || []).some(function (g) { return g.toLowerCase().indexOf(q) !== -1; });
           });
         } else {
           matchedBooks = allBooks;
@@ -118,20 +155,20 @@
         var emptyEl = document.getElementById('mount-empty-search');
         var resultsArea = document.getElementById('search-results-area');
 
-        if (matchedBooks.length === 0 && matchedComments.length === 0) {
+        if (q && matchedBooks.length === 0 && matchedComments.length === 0 && matchedReaders.length === 0 && matchedAuthors.length === 0) {
           resultsArea.style.display = 'none';
           emptyEl.style.display = 'block';
           emptyEl.innerHTML = CRComponents.renderEmptyState({
             title: 'No results found for "' + CRComponents.escapeHTML(q) + '"',
             desc: 'Try searching for an author like "Dostoevsky" or a genre like "Philosophy".',
-            actionLabel: 'Browse All Books',
+            actionLabel: 'Browse All Books in Explore',
             actionHref: 'explore.html'
           });
         } else {
           emptyEl.style.display = 'none';
           resultsArea.style.display = 'block';
 
-          // Render Books
+          // Books
           document.getElementById('mount-results-books').innerHTML = matchedBooks.map(function (b) {
             return CRComponents.renderBookCard({
               id: b.id,
@@ -141,25 +178,62 @@
               cover: b.cover,
               desc: b.description,
               readingTime: b.readingTime,
+              dailyEstimate: b.dailyEstimate,
               difficulty: b.difficulty,
               difficultyNote: b.difficultyNote,
-              bookPath: 'book.html?id=' + b.id,
-              fallback: !b.cover
+              fallback: !b.cover,
+              bookPath: 'book.html?id=' + b.id
             });
           }).join('');
 
-          // Render Discussions
-          document.getElementById('results-discussions-sec').style.display = matchedComments.length > 0 ? 'block' : 'none';
-          document.getElementById('mount-results-discussions').innerHTML = matchedComments.map(function (c) {
-            return '<div style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); padding:var(--cr-space-4, 1rem); border-radius:var(--cr-radius-xs, 2px);">' +
-              CRComponents.renderComment(c) +
-            '</div>';
-          }).join('');
+          // Authors
+          var authorsSec = document.getElementById('results-authors-sec');
+          if (matchedAuthors.length > 0) {
+            authorsSec.style.display = 'block';
+            document.getElementById('authors-count-heading').textContent = 'Authors (' + matchedAuthors.length + ')';
+            document.getElementById('mount-results-authors').innerHTML = matchedAuthors.map(function (b) {
+              return '<div style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); padding:0.6rem 1rem; border-radius:2px;">' +
+                '<strong style="color:var(--cr-text-primary); font-size:var(--cr-text-sm);">' + b.author + '</strong> &bull; ' +
+                '<a href="book.html?id=' + b.id + '" class="cr-link" style="font-size:var(--cr-text-xs);">' + b.title + '</a>' +
+              '</div>';
+            }).join('');
+          } else {
+            authorsSec.style.display = 'none';
+          }
+
+          // Discussions
+          document.getElementById('mount-results-discussions').innerHTML = matchedComments.length === 0
+            ? '<p style="color:var(--cr-text-secondary); font-size:var(--cr-text-xs); font-style:italic;">No thoughts matching this query.</p>'
+            : matchedComments.map(function (c) {
+                return '<div style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); border-radius:var(--cr-radius-xs, 2px); padding:var(--cr-space-4, 1rem);">' +
+                  '<div style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); margin-bottom:var(--cr-space-2, 0.5rem); display:flex; justify-content:space-between;">' +
+                    '<span>Thought on <strong>Notes from Underground</strong> &bull; Chapter ' + c.chapterNumber + '</span>' +
+                    '<a href="chapter.html?book=notes-from-underground&chapter=' + c.chapterNumber + '" class="cr-link">Go to Chapter &rarr;</a>' +
+                  '</div>' +
+                  CRComponents.renderComment(c) +
+                '</div>';
+              }).join('');
+
+          // Readers
+          var readersSec = document.getElementById('results-readers-sec');
+          if (matchedReaders.length > 0) {
+            readersSec.style.display = 'block';
+            document.getElementById('readers-count-heading').textContent = 'Readers (' + matchedReaders.length + ')';
+            document.getElementById('mount-results-readers').innerHTML = matchedReaders.map(function (r) {
+              return CRComponents.renderReaderCard(r);
+            }).join('');
+          } else {
+            readersSec.style.display = 'none';
+          }
         }
       }
 
+      var debounce = null;
       input.addEventListener('input', function (e) {
-        performSearch(e.target.value);
+        clearTimeout(debounce);
+        debounce = setTimeout(function () {
+          performSearch(e.target.value);
+        }, 180);
       });
 
       performSearch(query);

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Explore the Library | The Chapter Room</title>
-  <meta name="description" content="Discover curated enduring books across philosophy, literature, classics, and memoirs in The Chapter Room.">
+  <meta name="description" content="Discover curated enduring books across philosophy, religion, fiction, and non-fiction in The Chapter Room.">
   <link rel="icon" type="image/png" href="../assets/images/favicon.png">
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/chapter-room.css">
@@ -20,12 +20,15 @@
       <span class="cr-section-header__label">DISCOVERY & ARCHIVE</span>
       <h1 class="cr-section-header__title">Explore the Library</h1>
       <p class="cr-section-header__desc">
-        Enduring works curated for reflection, conversation, and depth. Every title includes sequential chapter guides and spoiler-protected discussion rooms.
+        Enduring works curated for reflection, conversation, and depth. Every title includes sequential chapter guides, estimated reading times, and spoiler-protected discussion rooms.
       </p>
       <div class="cr-section-header__rule"></div>
     </header>
 
-    <!-- EXPLORE CONTROLS (SEARCH, GENRE, DIFFICULTY, SORT) -->
+    <!-- DISCOVERY PROMPTS: "I DON'T KNOW WHAT TO READ" (Section 28) -->
+    <div id="mount-discovery-prompts"></div>
+
+    <!-- EXPLORE CONTROLS (SEARCH, 4 GENRES, DIFFICULTY, SORT) -->
     <div class="cr-explore-controls" style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); border-radius:var(--cr-radius-xs, 2px); padding:var(--cr-space-4, 1rem); margin-bottom:var(--cr-space-6, 1.5rem);">
       
       <!-- Top Row: Search & Count -->
@@ -41,26 +44,26 @@
 
       <!-- Filters Row -->
       <div style="display:flex; flex-wrap:wrap; align-items:center; gap:var(--cr-space-4, 1rem);">
-        <!-- Genre Filter -->
+        <!-- 4 Primary Genres Filter -->
         <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
           <span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); text-transform:uppercase; letter-spacing:0.05em; font-weight:600;">Genre:</span>
           <div class="cr-filter-bar" id="genre-pills" style="margin:0;">
             <button type="button" class="cr-chip is-active" data-genre="all">All</button>
             <button type="button" class="cr-chip" data-genre="philosophy">Philosophy</button>
+            <button type="button" class="cr-chip" data-genre="religion">Religion</button>
             <button type="button" class="cr-chip" data-genre="fiction">Fiction</button>
-            <button type="button" class="cr-chip" data-genre="classics">Classics</button>
-            <button type="button" class="cr-chip" data-genre="memoir">Memoir</button>
+            <button type="button" class="cr-chip" data-genre="non-fiction">Non-Fiction</button>
           </div>
         </div>
 
-        <!-- Difficulty Filter -->
+        <!-- Difficulty Filter & Sort -->
         <div style="display:flex; align-items:center; gap:0.5rem; margin-left:auto; flex-wrap:wrap;">
           <span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); text-transform:uppercase; letter-spacing:0.05em; font-weight:600;">Difficulty:</span>
           <select id="difficulty-select" class="cr-select" aria-label="Filter by Difficulty">
             <option value="all">All Levels</option>
-            <option value="Getting Started">Getting Started</option>
-            <option value="Intermediate">Intermediate</option>
-            <option value="Challenging">Challenging</option>
+            <option value="Getting Started">Getting Started (Welcoming)</option>
+            <option value="Intermediate">Intermediate (Paced)</option>
+            <option value="Challenging">Challenging (Take your time)</option>
           </select>
 
           <span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); text-transform:uppercase; letter-spacing:0.05em; font-weight:600; margin-left:0.5rem;">Sort:</span>
@@ -80,6 +83,37 @@
     <!-- EMPTY FILTER RESULTS STATE -->
     <div id="mount-empty-filter" style="display:none; margin-top:var(--cr-space-8, 2rem);"></div>
 
+    <!-- EDITORIAL RECOMMENDATIONS ("IF YOU LIKED THIS... YOU MAY ENJOY...") (Section 22 of Spec) -->
+    <section style="margin-top:var(--cr-space-16, 4rem); border-top:1px solid var(--cr-border-subtle); padding-top:var(--cr-space-8, 2rem);">
+      <div class="cr-section-header" style="margin-bottom:var(--cr-space-4, 1rem);">
+        <span class="cr-section-header__label">EDITORIAL RECOMMENDATION ENGINE</span>
+        <h2 class="cr-h3">Connected Reading Journeys</h2>
+        <p class="cr-section-header__desc">
+          Instead of algorithmic clickbait, our editorial team curates paths from one book into the next.
+        </p>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:var(--cr-space-4, 1rem);">
+        <div style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); padding:var(--cr-space-4, 1rem); border-radius:2px;">
+          <span class="cr-chip" style="margin-bottom:0.5rem; display:inline-block;">If you liked Notes from Underground...</span>
+          <h4 style="margin:0 0 0.5rem 0; font-family:var(--cr-font-display); font-size:var(--cr-text-lg); color:var(--cr-text-primary);">You may enjoy:</h4>
+          <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:0.5rem;">
+            <li><a href="book.html?id=the-stranger" class="cr-link"><strong>The Stranger</strong> &bull; Albert Camus</a> &mdash; Confronting social expectations and the absurd.</li>
+            <li><a href="book.html?id=the-brothers-karamazov" class="cr-link"><strong>The Brothers Karamazov</strong> &bull; Fyodor Dostoevsky</a> &mdash; Dostoevsky’s ultimate spiritual drama.</li>
+          </ul>
+        </div>
+
+        <div style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); padding:var(--cr-space-4, 1rem); border-radius:2px;">
+          <span class="cr-chip" style="margin-bottom:0.5rem; display:inline-block;">If you are seeking personal resilience...</span>
+          <h4 style="margin:0 0 0.5rem 0; font-family:var(--cr-font-display); font-size:var(--cr-text-lg); color:var(--cr-text-primary);">You may enjoy:</h4>
+          <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:0.5rem;">
+            <li><a href="book.html?id=mans-search-for-meaning" class="cr-link"><strong>Man’s Search for Meaning</strong> &bull; Viktor Frankl</a> &mdash; Choosing purpose over despair.</li>
+            <li><a href="book.html?id=meditations" class="cr-link"><strong>Meditations</strong> &bull; Marcus Aurelius</a> &mdash; Ancient Stoic inner fortitude.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <!-- CHAPTER ROOM FOOTER -->
@@ -97,25 +131,45 @@
   <script src="../js/chapter-room/components.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      // 1. Mount Navigation, Tabbar, Footer
       document.getElementById('mount-nav').innerHTML = CRComponents.renderNav('explore', { rootPath: '../', crPath: '' });
       document.getElementById('mount-tabbar').innerHTML = CRComponents.renderTabBar('explore', { crPath: '' });
       document.getElementById('mount-footer').innerHTML = CRComponents.renderFooter({ rootPath: '../', crPath: '' });
 
-      if (typeof getCurrentUser === 'function') {
-        var user = getCurrentUser();
-        if (typeof updateNavbarAuth === 'function') updateNavbarAuth(user);
-      }
-
-      // Check URL parameters for genre (e.g., explore.html?genre=philosophy)
       var urlParams = new URLSearchParams(window.location.search);
       var initialGenre = (urlParams.get('genre') || 'all').toLowerCase();
+      var initialTheme = (urlParams.get('theme') || 'all');
+      var initialSearch = (urlParams.get('q') || '');
 
       var allBooks = CRData.getAllBooks();
       var currentGenre = initialGenre;
+      var currentTheme = initialTheme;
       var currentDifficulty = 'all';
       var currentSort = 'recommend';
-      var currentSearch = '';
+      var currentSearch = initialSearch;
+
+      if (initialSearch) {
+        document.getElementById('explore-search').value = initialSearch;
+      }
+
+      // Mount Discovery Prompts
+      var discoveryContainer = document.getElementById('mount-discovery-prompts');
+      if (discoveryContainer) {
+        discoveryContainer.innerHTML = CRComponents.renderDiscoveryPrompts(currentTheme);
+        discoveryContainer.querySelectorAll('[data-theme-filter]').forEach(function (pill) {
+          pill.addEventListener('click', function () {
+            var selected = pill.getAttribute('data-theme-filter');
+            if (currentTheme === selected) {
+              currentTheme = 'all';
+              pill.classList.remove('is-active');
+            } else {
+              currentTheme = selected;
+              discoveryContainer.querySelectorAll('[data-theme-filter]').forEach(function (p) { p.classList.remove('is-active'); });
+              pill.classList.add('is-active');
+            }
+            filterAndRender();
+          });
+        });
+      }
 
       // Set initial active genre button
       document.querySelectorAll('#genre-pills [data-genre]').forEach(function (btn) {
@@ -130,10 +184,17 @@
         var filtered = allBooks.filter(function (book) {
           // Genre check
           if (currentGenre !== 'all') {
-            var matchGenre = book.genres.some(function (g) {
-              return g.toLowerCase() === currentGenre;
-            });
+            var matchGenre = (book.genre || '').toLowerCase() === currentGenre ||
+              (book.genres || []).some(function (g) { return g.toLowerCase() === currentGenre; });
             if (!matchGenre) return false;
+          }
+
+          // Theme check
+          if (currentTheme !== 'all') {
+            var matchTheme = (book.themes || []).some(function (t) {
+              return t.toLowerCase() === currentTheme.toLowerCase();
+            });
+            if (!matchTheme) return false;
           }
 
           // Difficulty check
@@ -157,50 +218,74 @@
         if (currentSort === 'recommend') {
           filtered.sort(function (a, b) { return (b.recommendRate || 0) - (a.recommendRate || 0); });
         } else if (currentSort === 'shortest') {
-          filtered.sort(function (a, b) { return parseFloat(a.readingTime) - parseFloat(b.readingTime); });
+          filtered.sort(function (a, b) {
+            var timeA = parseFloat(a.readingTime) || 10;
+            var timeB = parseFloat(b.readingTime) || 10;
+            return timeA - timeB;
+          });
         } else if (currentSort === 'title') {
           filtered.sort(function (a, b) { return a.title.localeCompare(b.title); });
         }
 
-        // Count display
+        // Render Count
         var countEl = document.getElementById('results-count');
-        if (countEl) {
-          countEl.textContent = 'Showing ' + filtered.length + ' ' + (filtered.length === 1 ? 'book' : 'books');
-        }
+        countEl.textContent = 'Showing ' + filtered.length + ' ' + (filtered.length === 1 ? 'book' : 'books') +
+          (currentTheme !== 'all' ? ' on "' + currentTheme + '"' : '');
 
-        var gridEl = document.getElementById('mount-books');
+        var mountBooks = document.getElementById('mount-books');
         var emptyEl = document.getElementById('mount-empty-filter');
 
         if (filtered.length === 0) {
-          gridEl.innerHTML = '';
+          mountBooks.style.display = 'none';
           emptyEl.style.display = 'block';
           emptyEl.innerHTML = CRComponents.renderEmptyState({
-            title: 'No books match your filters',
-            desc: 'Try broadening your search or resetting the genre and difficulty filters.',
+            title: 'No books match your selection',
+            desc: 'Try broadening your genre or difficulty filter, or reset filters to browse the complete library.',
             actionLabel: 'Reset All Filters',
             actionHref: 'explore.html'
           });
+          var resetBtn = emptyEl.querySelector('a');
+          if (resetBtn) {
+            resetBtn.addEventListener('click', function (e) {
+              e.preventDefault();
+              currentGenre = 'all';
+              currentTheme = 'all';
+              currentDifficulty = 'all';
+              currentSearch = '';
+              document.getElementById('explore-search').value = '';
+              document.getElementById('difficulty-select').value = 'all';
+              document.querySelectorAll('#genre-pills [data-genre]').forEach(function (b) {
+                b.classList.toggle('is-active', b.getAttribute('data-genre') === 'all');
+              });
+              if (discoveryContainer) {
+                discoveryContainer.querySelectorAll('[data-theme-filter]').forEach(function (p) { p.classList.remove('is-active'); });
+              }
+              filterAndRender();
+            });
+          }
         } else {
           emptyEl.style.display = 'none';
-          gridEl.innerHTML = filtered.map(function (book) {
+          mountBooks.style.display = 'grid';
+          mountBooks.innerHTML = filtered.map(function (b) {
             return CRComponents.renderBookCard({
-              id: book.id,
-              title: book.title,
-              author: book.author,
-              genre: book.genre,
-              cover: book.cover,
-              desc: book.description,
-              readingTime: book.readingTime,
-              difficulty: book.difficulty,
-              difficultyNote: book.difficultyNote,
-              bookPath: 'book.html?id=' + book.id,
-              fallback: !book.cover
+              id: b.id,
+              title: b.title,
+              author: b.author,
+              genre: b.genre,
+              cover: b.cover,
+              desc: b.description,
+              readingTime: b.readingTime,
+              dailyEstimate: b.dailyEstimate,
+              difficulty: b.difficulty,
+              difficultyNote: b.difficultyNote,
+              fallback: !b.cover,
+              bookPath: 'book.html?id=' + b.id
             });
           }).join('');
         }
       }
 
-      // Event Listeners
+      // Genre pills listeners
       document.querySelectorAll('#genre-pills [data-genre]').forEach(function (btn) {
         btn.addEventListener('click', function () {
           document.querySelectorAll('#genre-pills [data-genre]').forEach(function (b) { b.classList.remove('is-active'); });
@@ -210,31 +295,28 @@
         });
       });
 
-      var diffSelect = document.getElementById('difficulty-select');
-      if (diffSelect) {
-        diffSelect.addEventListener('change', function (e) {
-          currentDifficulty = e.target.value;
-          filterAndRender();
-        });
-      }
+      // Difficulty select listener
+      document.getElementById('difficulty-select').addEventListener('change', function (e) {
+        currentDifficulty = e.target.value;
+        filterAndRender();
+      });
 
-      var sortSelect = document.getElementById('sort-select');
-      if (sortSelect) {
-        sortSelect.addEventListener('change', function (e) {
-          currentSort = e.target.value;
-          filterAndRender();
-        });
-      }
+      // Sort select listener
+      document.getElementById('sort-select').addEventListener('change', function (e) {
+        currentSort = e.target.value;
+        filterAndRender();
+      });
 
-      var searchInput = document.getElementById('explore-search');
-      if (searchInput) {
-        searchInput.addEventListener('input', function (e) {
+      // Search input with debounce
+      var searchDebounceTimer = null;
+      document.getElementById('explore-search').addEventListener('input', function (e) {
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(function () {
           currentSearch = e.target.value.trim();
           filterAndRender();
-        });
-      }
+        }, 180);
+      });
 
-      // Initial execution
       filterAndRender();
     });
   </script>

@@ -16,27 +16,30 @@
 
   <main id="main-content">
 
-    <!-- LOCKED CHAPTER VIEW (STRICT SPOILER PROTECTION ENFORCEMENT) -->
-    <div id="locked-chapter-view" style="display:none; padding:var(--cr-space-16, 4rem) var(--cr-space-4, 1rem); text-align:center;">
-      <div class="cr-container" style="max-width:560px;">
-        <div style="width:56px; height:56px; margin:0 auto var(--cr-space-4, 1rem); border-radius:50%; background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); display:flex; align-items:center; justify-content:center;">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+    <!-- LOCKED CHAPTER VIEW (Curiosity-preserving spoiler protection - Section 12) -->
+    <div id="locked-chapter-view" style="display:none; padding:var(--cr-space-12, 3rem) var(--cr-space-4, 1rem);">
+      <div class="cr-container" style="max-width:640px; background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); border-radius:2px; padding:var(--cr-space-8, 2rem); text-align:center;">
+        <div style="width:52px; height:52px; margin:0 auto var(--cr-space-3, 0.75rem); border-radius:50%; background:var(--cr-bg-card); border:1px solid var(--cr-border-subtle); display:flex; align-items:center; justify-content:center;">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
         </div>
         <span class="cr-chip cr-chip--accent" style="margin-bottom:0.5rem; display:inline-block;">SPOILER PROTECTION ACTIVE</span>
-        <h1 class="cr-h2" id="locked-title" style="margin-top:0.5rem;">Chapter Locked</h1>
-        <p class="cr-reading-text" style="color:var(--cr-text-secondary); margin-bottom:var(--cr-space-6, 1.5rem);">
-          To protect your reading experience and preserve genuine discovery, detailed summaries, key ideas, and community thoughts for this chapter are locked until you finish the preceding chapter.
+        <h1 class="cr-h2" id="locked-title" style="margin-top:0.25rem; margin-bottom:0.5rem;">Chapter Locked</h1>
+        <p style="font-family:var(--cr-font-display); font-style:italic; font-size:var(--cr-text-base); color:var(--cr-text-secondary); margin-bottom:1rem;" id="locked-book-subtitle">
+          Notes from Underground
+        </p>
+        <p class="cr-reading-text" style="color:var(--cr-text-secondary); font-size:var(--cr-text-sm); max-width:520px; margin:0 auto 1.5rem auto; line-height:1.6;">
+          You can see that this chapter exists, but its detailed summary, key ideas, and reader discussions remain locked until you complete the preceding chapters. This preserves genuine discovery without unnecessary frustration.
         </p>
         <div style="display:flex; justify-content:center; gap:var(--cr-space-4, 1rem); flex-wrap:wrap;">
           <a href="#" id="locked-prev-btn" class="btn">
             <span>&larr; Read Previous Chapter</span>
           </a>
-          <a href="#" id="locked-overview-btn" class="link-btn">Book Overview</a>
+          <a href="#" id="locked-overview-btn" class="link-btn">Book Overview & Chapters</a>
         </div>
       </div>
     </div>
 
-    <!-- UNLOCKED CHAPTER 3-COLUMN LAYOUT -->
+    <!-- UNLOCKED CHAPTER 3-COLUMN LAYOUT (Section 10 of Spec) -->
     <div id="unlocked-chapter-view" class="cr-chapter-layout" style="display:none;">
 
       <!-- 1. LEFT COLUMN: STICKY CHAPTER NAVIGATOR -->
@@ -47,10 +50,10 @@
         </nav>
       </aside>
 
-      <!-- 2. CENTER COLUMN: EDITORIAL READING MEASURE (60-75ch, Cormorant Garamond >=20px) -->
+      <!-- 2. CENTER COLUMN: EDITORIAL READING MEASURE (Section 10) -->
       <article class="cr-reading-column">
         
-        <!-- Breadcrumb & Reading Header -->
+        <!-- Breadcrumb & Header -->
         <header style="margin-bottom:var(--cr-space-6, 1.5rem);">
           <div style="display:flex; align-items:center; gap:0.5rem; font-size:var(--cr-text-xs); color:var(--cr-text-secondary); margin-bottom:0.5rem; flex-wrap:wrap;">
             <a href="explore.html" class="cr-link">Library</a>
@@ -60,6 +63,7 @@
             <span id="crumb-ch-num">Chapter 1</span>
           </div>
 
+          <!-- Section 10 Header: Chapter X Notes from Underground -->
           <h1 class="cr-h1" id="ch-title" style="margin-top:0; margin-bottom:var(--cr-space-2, 0.5rem);">Chapter Title</h1>
           <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
             <span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary);" id="ch-time">22 min read</span>
@@ -83,27 +87,31 @@
           </div>
         </section>
 
-        <!-- EDITORIAL SUMMARY & KEY IDEAS -->
+        <!-- EDITORIAL SUMMARY & KEY IDEAS (Section 10 of Spec) -->
         <section style="margin-bottom:var(--cr-space-8, 2rem);">
           <div class="cr-section-header" style="margin-bottom:var(--cr-space-4, 1rem);">
-            <span class="cr-section-header__label">EDITORIAL SUMMARY</span>
-            <h2 class="cr-h3">Chapter Overview</h2>
+            <span class="cr-section-header__label">CHAPTER OVERVIEW</span>
+            <h2 class="cr-h3" id="ch-summary-heading">Chapter Summary</h2>
           </div>
           <p class="cr-reading-text" id="ch-summary">
             Chapter summary text.
           </p>
 
-          <div style="margin-top:var(--cr-space-6, 1.5rem);">
-            <h3 class="cr-h3" style="margin-bottom:var(--cr-space-3, 0.75rem);">Key Philosophical Ideas</h3>
-            <ul id="ch-key-ideas" style="list-style:disc; padding-left:1.5rem; color:var(--cr-text-secondary); font-family:var(--cr-font-sans); line-height:1.75; font-size:var(--cr-text-base);"></ul>
+          <div style="margin-top:var(--cr-space-6, 1.5rem); background:var(--cr-bg-surface); padding:var(--cr-space-4, 1rem); border:1px solid var(--cr-border-subtle); border-radius:2px;">
+            <span class="cr-section-header__label" style="display:block; margin-bottom:0.25rem;">SECTION 10 &bull; CORE INSIGHTS</span>
+            <h3 class="cr-h3" style="margin-top:0; margin-bottom:var(--cr-space-3, 0.75rem);">Key Philosophical Ideas</h3>
+            <ul id="ch-key-ideas" style="list-style:disc; padding-left:1.5rem; color:var(--cr-text-secondary); font-family:var(--cr-font-sans); line-height:1.75; font-size:var(--cr-text-sm); margin:0;"></ul>
           </div>
         </section>
 
-        <!-- CHAPTER DISCUSSION PROMPT -->
-        <section style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); padding:var(--cr-space-6, 1.5rem); border-radius:var(--cr-radius-xs, 2px); margin-bottom:var(--cr-space-8, 2rem);">
+        <!-- CHAPTER DISCUSSION PROMPT (Section 10 of Spec) -->
+        <section id="discussion" style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); padding:var(--cr-space-6, 1.5rem); border-radius:var(--cr-radius-xs, 2px); margin-bottom:var(--cr-space-8, 2rem);">
           <span class="cr-chip" style="margin-bottom:0.5rem; display:inline-block;">Discussion Prompt</span>
-          <p style="font-family:var(--cr-font-display); font-size:var(--cr-text-lg); font-style:italic; color:var(--cr-text-primary); margin:0;" id="ch-prompt">
-            Prompt text.
+          <h3 style="font-family:var(--cr-font-display); font-size:var(--cr-text-lg); font-style:italic; color:var(--cr-text-primary); margin:0 0 0.5rem 0;" id="ch-prompt">
+            What did you think of this chapter?
+          </h3>
+          <p style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); margin:0;">
+            Share your reflection below. Every thought is anchored strictly to this chapter.
           </p>
         </section>
 
@@ -118,7 +126,7 @@
 
       </article>
 
-      <!-- 3. RIGHT COLUMN: QUIET DISCUSSION ASIDE -->
+      <!-- 3. RIGHT COLUMN: QUIET DISCUSSION ASIDE (Section 13, 14, 15, 16) -->
       <aside class="cr-chapter-aside" aria-label="Chapter Discussion">
         <h3 class="cr-chapter-aside__title">Reader Thoughts</h3>
         <p style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); margin-top:0; margin-bottom:var(--cr-space-3, 0.75rem);">
@@ -131,62 +139,36 @@
           
           <div style="margin:var(--cr-space-2, 0.5rem) 0; display:flex; align-items:center; gap:0.4rem;">
             <input type="checkbox" id="spoiler-checkbox" style="cursor:pointer;">
-            <label for="spoiler-checkbox" style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); cursor:pointer;">Contains spoiler</label>
+            <label for="spoiler-checkbox" style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); cursor:pointer;">⚠️ Contains spoiler</label>
           </div>
 
           <div id="spoiler-summary-wrap" style="display:none; margin-bottom:var(--cr-space-2, 0.5rem);">
-            <input type="text" id="spoiler-summary-input" placeholder="Brief spoiler warning (e.g. mentions ending)" class="cr-search-box__input" style="width:100%; box-sizing:border-box;">
+            <input type="text" id="spoiler-summary-input" placeholder="Brief spoiler warning (e.g. references Part II ending)" class="cr-search-box__input" style="width:100%; box-sizing:border-box;">
           </div>
 
-          <div style="display:flex; justify-content:flex-end;">
-            <button type="button" class="btn btn--sm" id="post-thought-btn">
-              <span>Post Thought</span>
-            </button>
-          </div>
+          <button type="button" class="btn btn--sm" id="post-comment-btn" style="width:100%;">
+            <span>Post Reflection</span>
+            <span class="arrow">&rarr;</span>
+          </button>
         </div>
 
-        <!-- Comments Feed -->
-        <div id="mount-aside-comments" style="display:flex; flex-direction:column; gap:var(--cr-space-4, 1rem);"></div>
+        <!-- Threaded Comments List -->
+        <div id="mount-chapter-comments" style="display:flex; flex-direction:column; gap:var(--cr-space-3, 0.75rem); margin-top:var(--cr-space-4, 1rem);"></div>
       </aside>
 
     </div>
 
+    <!-- MOBILE STICKY BOTTOM ACTION BAR -->
+    <div id="mobile-action-bar" class="cr-mobile-action-bar" style="display:none;">
+      <button type="button" class="btn btn--sm" id="mobile-complete-btn" style="flex:1;">
+        <span>Mark Complete</span>
+      </button>
+      <a href="#discussion" class="btn btn--outline btn--sm" style="flex:1;">
+        <span>Thoughts</span>
+      </a>
+    </div>
+
   </main>
-
-  <!-- MOBILE STICKY BOTTOM ACTION BAR -->
-  <div class="cr-mobile-action-bar" id="mobile-action-bar">
-    <button type="button" class="btn btn--sm" id="mobile-chapters-btn">
-      <span>Chapters</span>
-    </button>
-    <button type="button" class="btn btn--sm" id="mobile-complete-btn">
-      <span>Mark Complete</span>
-    </button>
-    <button type="button" class="link-btn" id="mobile-discuss-btn" style="font-size:var(--cr-text-xs);">
-      Discuss (<span id="mobile-comment-count">0</span>)
-    </button>
-  </div>
-
-  <!-- MOBILE BOTTOM SHEET MODAL (DISCUSSIONS) -->
-  <div class="cr-bottom-sheet" id="mobile-discuss-sheet" role="dialog" aria-modal="true" aria-label="Mobile Discussion Drawer">
-    <div class="cr-bottom-sheet__content">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom:1px solid var(--cr-border-subtle); padding-bottom:0.5rem;">
-        <h3 class="cr-h3" style="margin:0;">Chapter Discussion</h3>
-        <button type="button" id="close-discuss-sheet" class="cr-btn cr-btn--ghost cr-btn--sm">Close &times;</button>
-      </div>
-      <div id="mount-mobile-comments"></div>
-    </div>
-  </div>
-
-  <!-- MOBILE BOTTOM SHEET MODAL (CHAPTERS NAVIGATOR) -->
-  <div class="cr-bottom-sheet" id="mobile-chapters-sheet" role="dialog" aria-modal="true" aria-label="Mobile Chapter Navigator Drawer">
-    <div class="cr-bottom-sheet__content">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom:1px solid var(--cr-border-subtle); padding-bottom:0.5rem;">
-        <h3 class="cr-h3" style="margin:0;">Select Chapter</h3>
-        <button type="button" id="close-chapters-sheet" class="cr-btn cr-btn--ghost cr-btn--sm">Close &times;</button>
-      </div>
-      <ul class="cr-chapter-nav__list" id="mount-mobile-chapters"></ul>
-    </div>
-  </div>
 
   <!-- CHAPTER ROOM FOOTER -->
   <div id="mount-footer"></div>
@@ -226,15 +208,17 @@
         document.getElementById('unlocked-chapter-view').style.display = 'none';
         document.getElementById('mobile-action-bar').style.display = 'none';
 
-        document.getElementById('locked-title').textContent = 'Chapter ' + content.number + ' is Locked';
+        document.getElementById('locked-title').textContent = 'Chapter ' + content.number + ' \u2014 Discussion Locked';
+        document.getElementById('locked-book-subtitle').textContent = book.title + ' \u2022 by ' + book.author;
         document.getElementById('locked-prev-btn').href = 'chapter.html?book=' + book.id + '&chapter=' + (chapterNum - 1);
         document.getElementById('locked-overview-btn').href = 'book.html?id=' + book.id;
         return;
       }
 
-      // Chapter is unlocked: display 3-column reading experience
+      // Chapter is unlocked
       document.getElementById('locked-chapter-view').style.display = 'none';
       document.getElementById('unlocked-chapter-view').style.display = 'grid';
+      document.getElementById('mobile-action-bar').style.display = 'flex';
 
       // Title & Breadcrumbs
       document.title = 'Ch. ' + content.number + ': ' + content.title + ' | ' + book.title;
@@ -242,55 +226,80 @@
       document.getElementById('crumb-book-link').textContent = book.title;
       document.getElementById('crumb-book-link').href = 'book.html?id=' + book.id;
       document.getElementById('crumb-ch-num').textContent = 'Chapter ' + content.number;
-      document.getElementById('ch-title').textContent = content.title;
+      document.getElementById('ch-title').textContent = 'Chapter ' + content.number + ' \u2022 ' + book.title;
       document.getElementById('ch-time').textContent = content.readingTime;
 
-      // Reading text & summary
-      document.getElementById('ch-panel-text').textContent = content.readingPanelText || 'No reading excerpt provided for this chapter.';
+      // Labelled Chapter Summary (Section 10 of Spec)
+      document.getElementById('ch-summary-heading').textContent = 'Chapter ' + content.number + ' Summary';
       document.getElementById('ch-summary').textContent = content.summary || 'Summary unavailable.';
 
-      // Key ideas list
-      var ideasEl = document.getElementById('ch-key-ideas');
-      if (ideasEl) {
-        ideasEl.innerHTML = (content.keyIdeas || []).map(function (idea) {
-          return '<li>' + idea + '</li>';
-        }).join('');
-      }
+      // Key ideas
+      var keyIdeasEl = document.getElementById('ch-key-ideas');
+      keyIdeasEl.innerHTML = (content.keyIdeas || []).map(function (idea) {
+        return '<li>' + CRComponents.escapeHTML(idea) + '</li>';
+      }).join('');
+
+      // Prose text slot
+      document.getElementById('ch-panel-text').textContent = content.readingPanelText || 'No reading excerpt provided for this chapter.';
 
       // Discussion prompt
-      document.getElementById('ch-prompt').textContent = content.discussionPrompt || 'Reflect on the narrator’s arguments in this chapter.';
-
-      // Chapter Navigator items (Left desktop aside & mobile drawer)
-      function renderNavigatorList(targetId) {
-        var el = document.getElementById(targetId);
-        if (!el) return;
-        var html = [];
-        for (var i = 1; i <= book.chapterCount; i++) {
-          var chContent = CRData.getChapterContent(book.id, i);
-          var isCur = i === chapterNum;
-          var isLocked = chContent ? chContent.locked : true;
-          var isComp = chContent ? chContent.completed : false;
-
-          var icon = isComp
-            ? '<span style="color:#ffffff;">&check;</span>'
-            : (isLocked
-              ? '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>'
-              : '<span style="opacity:0.6;">&bull;</span>');
-
-          var href = isLocked ? '#' : ('chapter.html?book=' + book.id + '&chapter=' + i);
-          var cls = 'cr-chapter-nav__item ' + (isCur ? 'is-active ' : '') + (isLocked ? 'is-locked ' : '');
-
-          html.push('<li><a href="' + href + '" class="' + cls + '">' +
-            icon + ' <span>Ch. ' + i + '</span>' +
-          '</a></li>');
-        }
-        el.innerHTML = html.join('');
+      if (content.discussionPrompt) {
+        document.getElementById('ch-prompt').textContent = content.discussionPrompt;
       }
 
-      renderNavigatorList('mount-nav-chapters');
-      renderNavigatorList('mount-mobile-chapters');
+      // Left Column Chapters list
+      var navChapters = [];
+      for (var i = 1; i <= book.chapterCount; i++) {
+        var isCurrent = i === chapterNum;
+        var isUnlocked = CRData.isChapterUnlocked(book.id, i);
+        var prog = CRData.getReaderProgress(book.id);
+        var isCompleted = (prog.completedChapters || []).indexOf(i) !== -1;
 
-      // Next / Previous Chapter buttons
+        var statusIcon = isCompleted ? '✓ ' : (isUnlocked ? '' : '🔒 ');
+        var itemClass = isCurrent ? 'cr-chapter-nav__item is-active' : 'cr-chapter-nav__item';
+        if (!isUnlocked) itemClass += ' is-locked';
+
+        navChapters.push('<li class="' + itemClass + '">' +
+          '<a href="chapter.html?book=' + book.id + '&chapter=' + i + '">' +
+            statusIcon + 'Ch. ' + i +
+          '</a>' +
+        '</li>');
+      }
+      document.getElementById('mount-nav-chapters').innerHTML = navChapters.join('');
+
+      // Complete button status
+      function updateCompleteButtons() {
+        var currentProg = CRData.getReaderProgress(book.id);
+        var isDone = (currentProg.completedChapters || []).indexOf(chapterNum) !== -1;
+        var btnCenter = document.getElementById('complete-ch-btn');
+        var btnMob = document.getElementById('mobile-complete-btn');
+
+        if (isDone) {
+          btnCenter.classList.add('btn--outline');
+          btnCenter.innerHTML = '<span>Completed ✓</span>';
+          btnMob.innerHTML = '<span>Completed ✓</span>';
+        } else {
+          btnCenter.classList.remove('btn--outline');
+          btnCenter.innerHTML = '<span>Mark Complete</span> <span class="arrow">&rarr;</span>';
+          btnMob.innerHTML = '<span>Mark Complete &rarr;</span>';
+        }
+      }
+      updateCompleteButtons();
+
+      function handleComplete() {
+        CRData.markChapterComplete(book.id, chapterNum);
+        updateCompleteButtons();
+        if (chapterNum >= book.chapterCount) {
+          window.location.href = 'finish.html?book=' + book.id;
+        } else {
+          window.location.href = 'chapter.html?book=' + book.id + '&chapter=' + (chapterNum + 1);
+        }
+      }
+
+      document.getElementById('complete-ch-btn').addEventListener('click', handleComplete);
+      document.getElementById('mobile-complete-btn').addEventListener('click', handleComplete);
+
+      // Prev / Next Chapter Buttons
       var prevBtn = document.getElementById('prev-ch-btn');
       if (chapterNum > 1) {
         prevBtn.style.visibility = 'visible';
@@ -302,101 +311,68 @@
         nextBtn.href = 'chapter.html?book=' + book.id + '&chapter=' + (chapterNum + 1);
       } else {
         nextBtn.href = 'finish.html?book=' + book.id;
-        nextBtn.querySelector('span').textContent = 'Finish Book & Reflect';
+        nextBtn.querySelector('span').textContent = 'Finish Book';
       }
 
-      // Mark Complete button state & logic
-      function updateCompleteButtons(isDone) {
-        var desktopBtn = document.getElementById('complete-ch-btn');
-        var mobileBtn = document.getElementById('mobile-complete-btn');
-        if (isDone) {
-          desktopBtn.innerHTML = '<span>&check; Completed</span>';
-          desktopBtn.classList.add('btn--filled');
-          mobileBtn.innerHTML = '<span>&check; Done</span>';
-        } else {
-          desktopBtn.innerHTML = '<span>Mark Complete</span> <span class="arrow">&rarr;</span>';
-          mobileBtn.innerHTML = '<span>Mark Complete</span>';
-        }
-      }
-
-      updateCompleteButtons(content.completed);
-
-      function handleCompleteClick() {
-        CRData.markChapterComplete(book.id, chapterNum);
-        updateCompleteButtons(true);
-        renderNavigatorList('mount-nav-chapters');
-        renderNavigatorList('mount-mobile-chapters');
-
-        if (chapterNum === book.chapterCount) {
-          window.location.href = 'finish.html?book=' + book.id;
-        } else {
-          // If next chapter was just unlocked, inform user cleanly
-          alert('Chapter ' + chapterNum + ' marked complete! Chapter ' + (chapterNum + 1) + ' is now unlocked.');
-          window.location.href = 'chapter.html?book=' + book.id + '&chapter=' + (chapterNum + 1);
-        }
-      }
-
-      document.getElementById('complete-ch-btn').addEventListener('click', handleCompleteClick);
-      document.getElementById('mobile-complete-btn').addEventListener('click', handleCompleteClick);
-
-      // Render Comments (Desktop Aside & Mobile Bottom Sheet)
+      // Render Comments (strictly chapter-anchored)
       function renderComments() {
-        var freshContent = CRData.getChapterContent(book.id, chapterNum);
-        var comments = freshContent.comments || [];
-        document.getElementById('mobile-comment-count').textContent = comments.length;
+        var chContent = CRData.getChapterContent(book.id, chapterNum);
+        var comments = (chContent && chContent.comments) || [];
+        var commentsEl = document.getElementById('mount-chapter-comments');
+        if (comments.length === 0) {
+          commentsEl.innerHTML = '<p style="color:var(--cr-text-secondary); font-size:var(--cr-text-xs); font-style:italic;">No thoughts shared yet. Be the first to start the conversation.</p>';
+          return;
+        }
+        commentsEl.innerHTML = comments.map(function (c) {
+          return CRComponents.renderComment(c);
+        }).join('');
 
-        var html = comments.length === 0
-          ? '<p style="font-size:var(--cr-text-sm); color:var(--cr-text-secondary); text-align:center; padding:1rem;">Be the first to share a thought on this chapter.</p>'
-          : comments.map(function (c) {
-              return CRComponents.renderComment(c);
-            }).join('');
+        // Wire up reactions
+        commentsEl.querySelectorAll('[data-reaction]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var reactionType = btn.getAttribute('data-reaction');
+            var commentArticle = btn.closest('.cr-comment');
+            if (!commentArticle) return;
+            var cId = commentArticle.id;
+            var updated = CRData.toggleReaction(book.id, chapterNum, cId, reactionType);
+            if (updated) renderComments();
+          });
+        });
 
-        document.getElementById('mount-aside-comments').innerHTML = html;
-        document.getElementById('mount-mobile-comments').innerHTML = html;
+        // Wire up reveal spoiler
+        commentsEl.querySelectorAll('[data-cr-reveal-spoiler]').forEach(function (revealBtn) {
+          revealBtn.addEventListener('click', function () {
+            var box = revealBtn.closest('.cr-spoiler-box');
+            if (box) {
+              box.querySelector('.cr-spoiler-box__guard').style.display = 'none';
+              box.querySelector('.cr-spoiler-box__hidden-content').style.display = 'block';
+            }
+          });
+        });
       }
-
       renderComments();
 
-      // Spoiler checkbox toggle
+      // Spoiler checkbox toggles summary input
       var spoilerCheck = document.getElementById('spoiler-checkbox');
-      var spoilerWrap = document.getElementById('spoiler-summary-wrap');
+      var spoilerSummaryWrap = document.getElementById('spoiler-summary-wrap');
       spoilerCheck.addEventListener('change', function () {
-        spoilerWrap.style.display = spoilerCheck.checked ? 'block' : 'none';
+        spoilerSummaryWrap.style.display = spoilerCheck.checked ? 'block' : 'none';
       });
 
-      // Post Thought
-      document.getElementById('post-thought-btn').addEventListener('click', function () {
+      // Post Comment
+      document.getElementById('post-comment-btn').addEventListener('click', function () {
         var input = document.getElementById('comment-input');
         var text = (input.value || '').trim();
         if (!text) return;
 
         var isSpoiler = spoilerCheck.checked;
-        var spoilerSummary = document.getElementById('spoiler-summary-input').value.trim();
+        var summary = (document.getElementById('spoiler-summary-input').value || '').trim();
 
-        CRData.addComment(book.id, chapterNum, text, isSpoiler, spoilerSummary);
+        CRData.addComment(book.id, chapterNum, text, isSpoiler, summary);
         input.value = '';
         spoilerCheck.checked = false;
-        spoilerWrap.style.display = 'none';
-        document.getElementById('spoiler-summary-input').value = '';
-
+        spoilerSummaryWrap.style.display = 'none';
         renderComments();
-      });
-
-      // Mobile Bottom Sheet Handlers
-      var discussSheet = document.getElementById('mobile-discuss-sheet');
-      document.getElementById('mobile-discuss-btn').addEventListener('click', function () {
-        discussSheet.classList.add('is-open');
-      });
-      document.getElementById('close-discuss-sheet').addEventListener('click', function () {
-        discussSheet.classList.remove('is-open');
-      });
-
-      var chaptersSheet = document.getElementById('mobile-chapters-sheet');
-      document.getElementById('mobile-chapters-btn').addEventListener('click', function () {
-        chaptersSheet.classList.add('is-open');
-      });
-      document.getElementById('close-chapters-sheet').addEventListener('click', function () {
-        chaptersSheet.classList.remove('is-open');
       });
     });
   </script>

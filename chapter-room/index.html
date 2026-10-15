@@ -17,13 +17,13 @@
 
   <main id="main-content">
 
-    <!-- 1. EDITORIAL HERO -->
+    <!-- 1. EDITORIAL HERO (Section 4 of Spec) -->
     <header class="cr-hero" role="region" aria-label="Welcome to The Chapter Room">
       <div class="cr-hero__inner">
         <span class="cr-eyebrow">THE CHAPTER ROOM</span>
         <h1 class="cr-hero__title">Read. Think. Discuss.</h1>
         <p class="cr-hero__desc">
-          A place to discover enduring books, read together without guilt or vanity metrics, and make deep reading a lasting part of your life.
+          A place to discover books, read together and make reading part of your life.
         </p>
         <div class="cr-hero__actions">
           <a href="book-of-the-month.html" class="btn">
@@ -35,7 +35,12 @@
       </div>
     </header>
 
-    <!-- 2. WHAT ARE WE READING: BOOK OF THE MONTH -->
+    <!-- DISCOVERY PROMPTS: "I DON'T KNOW WHAT TO READ" (Section 28 of Spec) -->
+    <section class="cr-container" aria-label="Discovery Prompts" style="margin-top:calc(var(--cr-space-6, 1.5rem) * -1); position:relative; z-index:2;">
+      <div id="mount-discovery-prompts"></div>
+    </section>
+
+    <!-- 2. WHAT ARE WE READING: BOOK OF THE MONTH (Section 4 & 7 of Spec) -->
     <section class="cr-section" id="botm-section" aria-labelledby="botm-heading">
       <div class="cr-container">
         <div class="cr-section-header">
@@ -48,25 +53,30 @@
       </div>
     </section>
 
-    <!-- 3. WHAT CAN I READ NEXT: DISCOVERY & RECOMMENDATIONS -->
+    <!-- 3. WHAT CAN I READ NEXT: 4 INITIAL GENRES & COLLECTIONS (Section 4, 5, 6 of Spec) -->
     <section class="cr-section cr-section--surface" id="explore-section" aria-labelledby="explore-heading">
       <div class="cr-container">
         <div class="cr-section-header">
           <span class="cr-section-header__label">02 / WHAT CAN I READ NEXT?</span>
           <h2 class="cr-section-header__title" id="explore-heading">Curated Enduring Works</h2>
           <p class="cr-section-header__desc">
-            Carefully curated books chosen for depth and staying power. Difficulty labels are encouraging, and every work supports sequential chapter unlocking.
+            Carefully curated books chosen for depth, stay power, and existential weight. Divided into four primary literary compartments: Philosophy, Religion, Fiction, and Non-Fiction.
           </p>
           <div class="cr-section-header__rule"></div>
         </div>
 
-        <!-- Filter Pills -->
-        <div class="cr-filter-bar" role="toolbar" aria-label="Genre Filter">
-          <button type="button" class="cr-chip is-active" data-genre-filter="all">All Books</button>
-          <button type="button" class="cr-chip" data-genre-filter="Philosophy">Philosophy</button>
-          <button type="button" class="cr-chip" data-genre-filter="Fiction">Fiction</button>
-          <button type="button" class="cr-chip" data-genre-filter="Classics">Classics</button>
-          <button type="button" class="cr-chip" data-genre-filter="Memoir">Memoir</button>
+        <!-- 4 Primary Genres Filter Pills + View Genre Landing Page Link -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+          <div class="cr-filter-bar" role="toolbar" aria-label="Genre Filter" style="margin:0;">
+            <button type="button" class="cr-chip is-active" data-genre-filter="all">All Books</button>
+            <button type="button" class="cr-chip" data-genre-filter="Philosophy">Philosophy</button>
+            <button type="button" class="cr-chip" data-genre-filter="Religion">Religion</button>
+            <button type="button" class="cr-chip" data-genre-filter="Fiction">Fiction</button>
+            <button type="button" class="cr-chip" data-genre-filter="Non-Fiction">Non-Fiction</button>
+          </div>
+          <div id="active-genre-portal">
+            <a href="genre.html?genre=philosophy" id="genre-portal-link" class="cr-link" style="font-size:var(--cr-text-xs); text-transform:uppercase; letter-spacing:0.05em; font-weight:600;">Explore Genre Landing Page &rarr;</a>
+          </div>
         </div>
 
         <!-- Book Grid -->
@@ -78,7 +88,7 @@
       </div>
     </section>
 
-    <!-- 4. WHAT ARE READERS TALKING ABOUT: RECENT DISCUSSIONS -->
+    <!-- 4. WHAT ARE READERS TALKING ABOUT: RECENT DISCUSSIONS (Section 4 & 13 of Spec) -->
     <section class="cr-section" id="community-section" aria-labelledby="discussions-heading">
       <div class="cr-container">
         <div class="cr-section-header">
@@ -146,6 +156,18 @@
       document.getElementById('mount-tabbar').innerHTML = CRComponents.renderTabBar('home', { crPath: '' });
       document.getElementById('mount-footer').innerHTML = CRComponents.renderFooter({ rootPath: '../', crPath: '' });
 
+      // Mount Discovery Prompts
+      var discoveryEl = document.getElementById('mount-discovery-prompts');
+      if (discoveryEl) {
+        discoveryEl.innerHTML = CRComponents.renderDiscoveryPrompts('all');
+        discoveryEl.querySelectorAll('[data-theme-filter]').forEach(function (pill) {
+          pill.addEventListener('click', function () {
+            var theme = pill.getAttribute('data-theme-filter');
+            window.location.href = 'explore.html?theme=' + encodeURIComponent(theme);
+          });
+        });
+      }
+
       // Check user session for navbar account icon
       if (typeof getCurrentUser === 'function') {
         var user = getCurrentUser();
@@ -189,7 +211,7 @@
                   '<span><span class="btn__label-full">Start Reading Chapter ' + currentCh + '</span><span class="btn__label-short">Read Ch. ' + currentCh + '</span></span>' +
                   '<span class="arrow">&rarr;</span>' +
                 '</a>' +
-                '<a href="book.html?id=' + botm.id + '" class="link-btn">Overview & Chapters <span class="arrow">&rarr;</span></a>' +
+                '<a href="book-of-the-month.html" class="link-btn">Book of the Month Details <span class="arrow">&rarr;</span></a>' +
                 '<span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); margin-left:auto;">' +
                   botm.recommendRate + '% of readers recommend this' +
                 '</span>' +
@@ -201,7 +223,9 @@
       }
 
       // 3. Render Books Grid with Live Genre Filter
+      var currentGenre = 'all';
       function renderBooks(genre) {
+        currentGenre = genre;
         var books = CRData.getBooksByGenre(genre);
         var container = document.getElementById('mount-books-grid');
         if (!container) return;
@@ -214,12 +238,20 @@
             cover: book.cover,
             desc: book.description,
             readingTime: book.readingTime,
+            dailyEstimate: book.dailyEstimate,
             difficulty: book.difficulty,
             difficultyNote: book.difficultyNote,
             bookPath: 'book.html?id=' + book.id,
             fallback: !book.cover
           });
         }).join('');
+
+        var portalLink = document.getElementById('genre-portal-link');
+        if (portalLink) {
+          var targetGenre = genre === 'all' ? 'philosophy' : genre.toLowerCase();
+          portalLink.href = 'genre.html?genre=' + encodeURIComponent(targetGenre);
+          portalLink.textContent = (genre === 'all' ? 'Explore Philosophy' : 'Explore ' + genre) + ' Landing Page \u2192';
+        }
       }
 
       renderBooks('all');

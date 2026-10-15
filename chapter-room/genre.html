@@ -15,28 +15,100 @@
 
   <main class="cr-container" id="main-content" style="padding-top:var(--cr-space-8, 2rem); padding-bottom:var(--cr-space-16, 4rem);">
 
+    <!-- GENRE NAVIGATION TABS (SWITCH BETWEEN 4 PRIMARY GENRES) -->
+    <div class="cr-filter-bar" id="genre-selector" role="tablist" style="margin-bottom:var(--cr-space-6, 1.5rem);">
+      <a href="genre.html?genre=philosophy" class="cr-chip" data-genre-tab="philosophy">Philosophy</a>
+      <a href="genre.html?genre=religion" class="cr-chip" data-genre-tab="religion">Religion</a>
+      <a href="genre.html?genre=fiction" class="cr-chip" data-genre-tab="fiction">Fiction</a>
+      <a href="genre.html?genre=non-fiction" class="cr-chip" data-genre-tab="non-fiction">Non-Fiction</a>
+    </div>
+
+    <!-- 1. GENRE INTRODUCTION (Section 6, Part 1) -->
     <header class="cr-section-header" id="genre-header">
-      <span class="cr-section-header__label">GENRE COLLECTION</span>
-      <h1 class="cr-section-header__title" id="genre-title">Curated Genre</h1>
-      <p class="cr-section-header__desc" id="genre-desc">
-        Enduring works selected for literary merit, philosophical weight, and discussion value.
+      <span class="cr-section-header__label" id="genre-label">GENRE COMPARTMENT</span>
+      <h1 class="cr-section-header__title" id="genre-title">Philosophy</h1>
+      <p class="cr-section-header__desc" id="genre-desc" style="font-size:var(--cr-text-lg); line-height:1.7;">
+        Books that ask difficult questions about what it means to be human.
       </p>
+      <div id="genre-topics" style="display:flex; flex-wrap:wrap; gap:0.4rem; margin-top:0.75rem;"></div>
       <div class="cr-section-header__rule"></div>
     </header>
 
-    <!-- FEATURED BOOK IN GENRE -->
-    <div id="mount-featured" style="margin-bottom:var(--cr-space-8, 2rem);"></div>
+    <!-- 2. CURRENT FEATURED / BOOK OF THE MONTH IN GENRE (Section 6, Part 2) -->
+    <section style="margin-bottom:var(--cr-space-12, 3rem);">
+      <div class="cr-section-header" style="margin-bottom:var(--cr-space-4, 1rem);">
+        <span class="cr-section-header__label">01 / FEATURED COMMUNITY READ</span>
+        <h2 class="cr-h3">Current Feature in this Genre</h2>
+      </div>
+      <div id="mount-featured"></div>
+    </section>
 
-    <!-- ALL BOOKS IN GENRE -->
-    <div class="cr-section-header" style="margin-top:var(--cr-space-8, 2rem);">
-      <span class="cr-section-header__label">ALL TITLES IN THIS GENRE</span>
-      <h2 class="cr-h3">The Collection</h2>
-    </div>
+    <!-- 3. RECOMMENDED READS IN THIS GENRE (Section 6, Part 3) -->
+    <section style="margin-bottom:var(--cr-space-12, 3rem);">
+      <div class="cr-section-header" style="margin-bottom:var(--cr-space-4, 1rem);">
+        <span class="cr-section-header__label">02 / RECOMMENDED READS</span>
+        <h2 class="cr-h3" id="collection-heading">Curated Works</h2>
+        <p class="cr-section-header__desc">
+          Essential titles selected for discussion depth, encouraging difficulty, and estimated reading time.
+        </p>
+      </div>
+      <div class="cr-book-grid" id="mount-genre-books"></div>
+    </section>
 
-    <div class="cr-book-grid" id="mount-genre-books"></div>
+    <!-- 4. POPULAR DISCUSSIONS IN THIS GENRE (Section 6, Part 4) -->
+    <section style="margin-bottom:var(--cr-space-12, 3rem);">
+      <div class="cr-section-header" style="margin-bottom:var(--cr-space-4, 1rem);">
+        <span class="cr-section-header__label">03 / POPULAR DISCUSSIONS</span>
+        <h2 class="cr-h3">Conversations Happening in this Genre</h2>
+        <p class="cr-section-header__desc">
+          Active conversations and philosophical debates taking place right now among readers.
+        </p>
+        <div class="cr-section-header__rule"></div>
+      </div>
+      <div id="mount-genre-discussions" style="display:flex; flex-direction:column; gap:var(--cr-space-3, 0.75rem);"></div>
+    </section>
 
+    <!-- 5. READER LISTS (Section 6, Part 5) -->
+    <section style="margin-bottom:var(--cr-space-12, 3rem);">
+      <div class="cr-section-header" style="margin-bottom:var(--cr-space-4, 1rem);">
+        <span class="cr-section-header__label">04 / READER LISTS</span>
+        <h2 class="cr-h3">How Our Community Reads</h2>
+        <p class="cr-section-header__desc">
+          Books our readers are currently reading, wishlisting, and recommending in this genre.
+        </p>
+        <div class="cr-section-header__rule"></div>
+      </div>
+      
+      <div class="cr-philosophy-grid">
+        <!-- List A: Currently Reading -->
+        <div class="cr-philosophy-col" style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); padding:var(--cr-space-4, 1rem); border-radius:2px;">
+          <h4 style="font-family:var(--cr-font-sans); font-size:var(--cr-text-sm); text-transform:uppercase; letter-spacing:0.05em; margin-top:0; margin-bottom:0.75rem; color:var(--cr-text-primary);">
+            Currently Reading
+          </h4>
+          <ul id="list-currently-reading" style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:0.6rem;"></ul>
+        </div>
+
+        <!-- List B: Most Wishlisted -->
+        <div class="cr-philosophy-col" style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); padding:var(--cr-space-4, 1rem); border-radius:2px;">
+          <h4 style="font-family:var(--cr-font-sans); font-size:var(--cr-text-sm); text-transform:uppercase; letter-spacing:0.05em; margin-top:0; margin-bottom:0.75rem; color:var(--cr-text-primary);">
+            Most Wishlisted
+          </h4>
+          <ul id="list-most-wishlisted" style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:0.6rem;"></ul>
+        </div>
+
+        <!-- List C: Reader Recommendations -->
+        <div class="cr-philosophy-col" style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); padding:var(--cr-space-4, 1rem); border-radius:2px;">
+          <h4 style="font-family:var(--cr-font-sans); font-size:var(--cr-text-sm); text-transform:uppercase; letter-spacing:0.05em; margin-top:0; margin-bottom:0.75rem; color:var(--cr-text-primary);">
+            Reader Recommended
+          </h4>
+          <ul id="list-recommended" style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:0.6rem;"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- BACK TO EXPLORE -->
     <div style="text-align:center; margin-top:var(--cr-space-8, 2rem);">
-      <a href="explore.html" class="link-btn">&larr; Back to All Genres in Explore</a>
+      <a href="explore.html" class="link-btn">&larr; Back to Full Library in Explore</a>
     </div>
 
   </main>
@@ -60,58 +132,107 @@
       document.getElementById('mount-tabbar').innerHTML = CRComponents.renderTabBar('explore', { crPath: '' });
       document.getElementById('mount-footer').innerHTML = CRComponents.renderFooter({ rootPath: '../', crPath: '' });
 
+      // 4 Initial Primary Genres strictly adhering to Section 5 of Requirements Document
       var GENRE_DATA = {
         'philosophy': {
           title: 'Philosophy',
-          desc: 'Works examining truth, free will, suffering, ethics, and consciousness. Books that refuse superficial answers and force us to confront existence directly.'
+          tagline: 'PHILOSOPHY &bull; COMPARTMENT',
+          desc: 'Books that ask difficult questions about what it means to be human.',
+          topics: ['Meaning', 'Existence', 'Ethics', 'Human Nature', 'Knowledge', 'Free Will']
+        },
+        'religion': {
+          title: 'Religion & Theology',
+          tagline: 'RELIGION &bull; COMPARTMENT',
+          desc: 'Books dealing with faith, suffering, spirituality, theology, and religious philosophy.',
+          topics: ['Faith', 'Christianity', 'Spirituality', 'Theology', 'Suffering', 'Divine Justice']
         },
         'fiction': {
-          title: 'Literary Fiction',
-          desc: 'Profound narratives capturing the psychological depth, moral struggle, and tragic beauty of human relationships.'
+          title: 'Fiction & Literature',
+          tagline: 'FICTION &bull; COMPARTMENT',
+          desc: 'Works that reveal the psychological complexity, moral struggle, and beauty of human lives.',
+          topics: ['Literary Fiction', 'Classics', 'Novels', 'Short Stories', 'Psychological Realism']
         },
-        'classics': {
-          title: 'Enduring Classics',
-          desc: 'Works that have survived centuries of cultural upheaval because their insights into human nature remain irrevocably true.'
-        },
-        'memoir': {
-          title: 'Memoir & Lived Experience',
-          desc: 'First-person accounts of endurance, grief, survival, and transcendence written by those who walked through the fire.'
+        'non-fiction': {
+          title: 'Non-Fiction',
+          tagline: 'NON-FICTION &bull; COMPARTMENT',
+          desc: 'Investigations into history, biography, human psychology, statecraft, and ideas.',
+          topics: ['History', 'Biography', 'Psychology', 'Politics', 'Science', 'Culture', 'Essays']
         }
       };
 
       var params = new URLSearchParams(window.location.search);
-      var genreKey = (params.get('genre') || 'philosophy').toLowerCase();
-      var meta = GENRE_DATA[genreKey] || {
-        title: genreKey.charAt(0).toUpperCase() + genreKey.slice(1),
-        desc: 'Curated books exploring deep questions and enduring literary themes.'
-      };
+      var rawKey = (params.get('genre') || 'philosophy').toLowerCase().replace(/[^a-z]/g, '');
+      if (rawKey === 'nonfiction') rawKey = 'non-fiction';
+
+      var meta = GENRE_DATA[rawKey] || GENRE_DATA['philosophy'];
+      var activeTabKey = rawKey in GENRE_DATA ? rawKey : 'philosophy';
 
       document.title = meta.title + ' | The Chapter Room';
+      document.getElementById('genre-label').textContent = meta.tagline;
       document.getElementById('genre-title').textContent = meta.title;
       document.getElementById('genre-desc').textContent = meta.desc;
 
-      var books = CRData.getBooksByGenre(genreKey);
-      if (books.length > 0) {
-        var featured = books[0];
-        document.getElementById('mount-featured').innerHTML = '<div style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); padding:var(--cr-space-6, 1.5rem); border-radius:var(--cr-radius-xs, 2px);">' +
-          '<span class="cr-chip cr-chip--genre" style="margin-bottom:0.5rem; display:inline-block;">Featured in ' + meta.title + '</span>' +
-          CRComponents.renderBookCard({
-            id: featured.id,
+      // Active genre tab pill
+      document.querySelectorAll('#genre-selector [data-genre-tab]').forEach(function (tab) {
+        if (tab.getAttribute('data-genre-tab') === activeTabKey) {
+          tab.classList.add('is-active');
+        } else {
+          tab.classList.remove('is-active');
+        }
+      });
+
+      // Render topics
+      document.getElementById('genre-topics').innerHTML = meta.topics.map(function (t) {
+        return '<span class="cr-chip" style="font-size:0.75rem;">' + CRComponents.escapeHTML(t) + '</span>';
+      }).join(' ');
+
+      // 1. Books in this Genre
+      var books = CRData.getBooksByGenre(activeTabKey);
+      if (books.length === 0) books = CRData.getAllBooks();
+
+      // 2. Feature Card (Section 6, Part 2)
+      var featured = books[0];
+      var prog = CRData.getReaderProgress(featured.id);
+      var currentCh = prog.currentChapter || 1;
+      var percent = Math.min(100, Math.round((prog.completedChapters.length / featured.chapterCount) * 100));
+
+      document.getElementById('mount-featured').innerHTML = '<div style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); padding:var(--cr-space-6, 1.5rem); border-radius:var(--cr-radius-xs, 2px);">' +
+        '<div style="display:grid; grid-template-columns:minmax(180px, 240px) 1fr; gap:var(--cr-space-6, 1.5rem); align-items:start;">' +
+          CRComponents.renderBookCover({
             title: featured.title,
             author: featured.author,
             genre: featured.genre,
             cover: featured.cover,
-            desc: featured.description,
-            readingTime: featured.readingTime,
-            difficulty: featured.difficulty,
-            difficultyNote: featured.difficultyNote,
-            horizontal: true,
-            fallback: !featured.cover,
-            bookPath: 'book.html?id=' + featured.id
+            fallback: !featured.cover
           }) +
-        '</div>';
-      }
+          '<div>' +
+            '<div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem; flex-wrap:wrap;">' +
+              '<span class="cr-chip cr-chip--accent" style="font-weight:700;">Featured ' + meta.title + '</span>' +
+              '<span class="cr-chip">' + featured.difficulty + '</span>' +
+              '<span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary);">' + featured.readingTime + '</span>' +
+            '</div>' +
+            '<h3 class="cr-h2" style="margin:0.25rem 0;"><a href="book.html?id=' + featured.id + '">' + featured.title + '</a></h3>' +
+            '<p style="font-style:italic; font-family:var(--cr-font-display); color:var(--cr-text-secondary); margin-bottom:0.75rem;">by ' + featured.author + ' (' + featured.year + ')</p>' +
+            '<p class="cr-reading-text" style="font-size:var(--cr-text-sm); margin-bottom:1rem;">' + featured.description + '</p>' +
+            '<div style="background:var(--cr-bg-card); border-left:2px solid var(--cr-border-strong); padding:0.6rem 0.9rem; margin-bottom:1rem; font-size:var(--cr-text-xs); color:var(--cr-text-secondary);">' +
+              '<strong>Why we\'re reading it:</strong> ' + featured.whyWeAreReading +
+            '</div>' +
+            '<div style="display:flex; gap:1.5rem; margin-bottom:1rem; font-size:var(--cr-text-xs); color:var(--cr-text-secondary); flex-wrap:wrap;">' +
+              '<div>Reading Progress: <strong style="color:var(--cr-text-primary);">' + percent + '% (Ch. ' + currentCh + '/' + featured.chapterCount + ')</strong></div>' +
+              '<div>Community Readers: <strong style="color:var(--cr-text-primary);">148 reading</strong></div>' +
+              '<div>Discussion Activity: <strong style="color:var(--cr-text-primary);">Active &bull; 86 notes</strong></div>' +
+            '</div>' +
+            '<div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">' +
+              '<a href="chapter.html?book=' + featured.id + '&chapter=' + currentCh + '" class="btn">' +
+                '<span>Enter the Book</span> <span class="arrow">&rarr;</span>' +
+              '</a>' +
+              '<a href="book.html?id=' + featured.id + '" class="link-btn">Overview & Chapters &rarr;</a>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
 
+      // 3. Recommended Reads (Section 6, Part 3)
       document.getElementById('mount-genre-books').innerHTML = books.map(function (b) {
         return CRComponents.renderBookCard({
           id: b.id,
@@ -121,12 +242,45 @@
           cover: b.cover,
           desc: b.description,
           readingTime: b.readingTime,
+          dailyEstimate: b.dailyEstimate,
           difficulty: b.difficulty,
           difficultyNote: b.difficultyNote,
           fallback: !b.cover,
           bookPath: 'book.html?id=' + b.id
         });
       }).join('');
+
+      // 4. Popular Discussions (Section 6, Part 4)
+      var discussions = CRData.getPopularDiscussionsByGenre(activeTabKey);
+      document.getElementById('mount-genre-discussions').innerHTML = discussions.map(function (d) {
+        return '<div style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); border-radius:2px; padding:var(--cr-space-4, 1rem); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">' +
+          '<div>' +
+            '<h4 style="margin:0 0 0.25rem 0; font-family:var(--cr-font-display); font-size:var(--cr-text-lg);"><a href="' + d.href + '" style="color:var(--cr-text-primary); text-decoration:none;">' + d.title + '</a></h4>' +
+            '<span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary);">From <strong>' + d.bookTitle + '</strong></span>' +
+          '</div>' +
+          '<div style="display:flex; align-items:center; gap:1rem;">' +
+            '<span class="cr-chip">' + d.commentCount + ' comments</span>' +
+            '<a href="' + d.href + '" class="btn btn--sm"><span>Join &rarr;</span></a>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      // 5. Reader Lists (Section 6, Part 5)
+      var lists = CRData.getGenreReaderLists(activeTabKey);
+
+      function renderListItem(b) {
+        return '<li style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--cr-border-subtle); padding-bottom:0.4rem;">' +
+          '<div>' +
+            '<a href="book.html?id=' + b.id + '" style="color:var(--cr-text-primary); font-size:var(--cr-text-sm); font-weight:600; text-decoration:none;">' + b.title + '</a>' +
+            '<div style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary);">' + b.author + '</div>' +
+          '</div>' +
+          '<span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary);">' + b.readingTime + '</span>' +
+        '</li>';
+      }
+
+      document.getElementById('list-currently-reading').innerHTML = lists.currentlyReading.map(renderListItem).join('');
+      document.getElementById('list-most-wishlisted').innerHTML = lists.mostWishlisted.map(renderListItem).join('');
+      document.getElementById('list-recommended').innerHTML = lists.readerRecommendations.map(renderListItem).join('');
     });
   </script>
 </body>

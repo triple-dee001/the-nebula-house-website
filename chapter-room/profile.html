@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" data-cr-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reader Profile | The Chapter Room</title>
+  <meta name="description" content="Reader profile, reading activity, completed books, and virtual shelf in The Chapter Room.">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/chapter-room.css">
+</head>
+<body class="cr-page" data-cr-theme="dark">
+
+  <!-- TOP NAVIGATION -->
+  <div id="mount-nav"></div>
+
+  <main class="cr-container" id="main-content" style="max-width:var(--cr-container-narrow, 760px); padding-top:var(--cr-space-8, 2rem); padding-bottom:var(--cr-space-16, 4rem);">
+
+    <!-- READER PROFILE HEADER (Section 23 of Spec) -->
+    <header class="cr-component-box" style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); border-radius:2px; padding:var(--cr-space-8, 2rem); margin-bottom:var(--cr-space-8, 2rem);">
+      
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:1.5rem;">
+        
+        <div style="display:flex; align-items:center; gap:1.25rem;">
+          <div style="width:72px; height:72px; border-radius:50%; background:var(--cr-bg-card); border:1px solid var(--cr-border-subtle); display:flex; align-items:center; justify-content:center; font-family:var(--cr-font-display); font-size:2rem; font-weight:700; color:var(--cr-text-primary);" id="profile-avatar">
+            K
+          </div>
+          <div>
+            <h1 class="cr-h2" id="profile-name" style="margin:0 0 0.25rem 0;">Kelechi</h1>
+            <p style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); margin:0;" id="profile-joined">
+              Reading since 2025 &bull; Chapter Room Member
+            </p>
+            <p style="font-size:var(--cr-text-sm); color:var(--cr-text-secondary); margin:0.5rem 0 0 0;" id="profile-bio">
+              Reading philosophy and Russian literature to figure out how we ought to live.
+            </p>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          <button type="button" class="btn btn--outline btn--sm" id="follow-btn">
+            <span>Follow Reader</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- STATS BAR (Section 23: Currently reading, Books completed, Wishlist) -->
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:1rem; margin-top:var(--cr-space-6, 1.5rem); border-top:1px solid var(--cr-border-subtle); padding-top:var(--cr-space-6, 1.5rem); text-align:center;">
+        <div>
+          <span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); text-transform:uppercase; letter-spacing:0.05em; display:block;">Books Completed</span>
+          <strong style="font-size:1.75rem; color:var(--cr-text-primary); font-family:var(--cr-font-display);" id="stat-completed">17</strong>
+        </div>
+        <div>
+          <span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); text-transform:uppercase; letter-spacing:0.05em; display:block;">Wishlist</span>
+          <strong style="font-size:1.75rem; color:var(--cr-text-primary); font-family:var(--cr-font-display);" id="stat-wishlist">12</strong>
+        </div>
+        <div>
+          <span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); text-transform:uppercase; letter-spacing:0.05em; display:block;">Days Read (Month)</span>
+          <strong style="font-size:1.75rem; color:var(--cr-text-primary); font-family:var(--cr-font-display);">12</strong>
+        </div>
+      </div>
+
+      <!-- FAVOURITE GENRES -->
+      <div style="margin-top:var(--cr-space-4, 1rem); display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+        <span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">Favourite Genres:</span>
+        <div id="mount-profile-genres" style="display:flex; gap:0.35rem; flex-wrap:wrap;"></div>
+      </div>
+
+    </header>
+
+    <!-- CURRENTLY READING CARD -->
+    <section class="cr-component-box" style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); border-radius:2px; padding:var(--cr-space-6, 1.5rem); margin-bottom:var(--cr-space-8, 2rem);">
+      <span class="cr-section-header__label" style="display:block; margin-bottom:0.25rem;">CURRENTLY READING</span>
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+        <div>
+          <h3 class="cr-h3" style="margin:0 0 0.25rem 0;" id="current-book-title">Notes from Underground</h3>
+          <p style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); margin:0;" id="current-book-ch">Chapter 4 of 6 (66% completed)</p>
+        </div>
+        <div>
+          <a href="#" id="continue-reading-link" class="btn btn--sm">
+            <span>Keep Reading &rarr;</span>
+          </a>
+        </div>
+      </div>
+      <div style="margin-top:0.75rem;">
+        <div id="current-book-progress"></div>
+      </div>
+    </section>
+
+    <!-- READING ACTIVITY & PRIVACY CONTROLS (Section 23 of Spec) -->
+    <section class="cr-component-box" style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); border-radius:2px; padding:var(--cr-space-6, 1.5rem);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:var(--cr-space-4, 1rem); flex-wrap:wrap; gap:0.5rem;">
+        <div>
+          <span class="cr-section-header__label">READING TIMELINE</span>
+          <h3 class="cr-h3" style="margin:0;">Recent Activity</h3>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <input type="checkbox" id="privacy-toggle" checked style="cursor:pointer;">
+          <label for="privacy-toggle" style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); cursor:pointer;">Public Reading Activity</label>
+        </div>
+      </div>
+
+      <div id="mount-activity-log" style="display:flex; flex-direction:column; gap:0.6rem;"></div>
+    </section>
+
+  </main>
+
+  <!-- CHAPTER ROOM FOOTER -->
+  <div id="mount-footer"></div>
+
+  <!-- MOBILE BOTTOM TAB BAR -->
+  <div id="mount-tabbar"></div>
+
+  <!-- SCRIPTS -->
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/chapter-room-config.js"></script>
+  <script src="../js/chapter-room/tokens.js"></script>
+  <script src="../js/chapter-room/data.js"></script>
+  <script src="../js/chapter-room/components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('mount-nav').innerHTML = CRComponents.renderNav('profile', { rootPath: '../', crPath: '' });
+      document.getElementById('mount-tabbar').innerHTML = CRComponents.renderTabBar('community', { crPath: '' });
+      document.getElementById('mount-footer').innerHTML = CRComponents.renderFooter({ rootPath: '../', crPath: '' });
+
+      var params = new URLSearchParams(window.location.search);
+      var userId = params.get('user');
+
+      var profile = userId ? CRData.getReaderProfile(userId) : CRData.getCurrentReaderProfile();
+
+      document.title = profile.name + ' | Reader Profile | The Chapter Room';
+
+      document.getElementById('profile-avatar').textContent = profile.avatar || profile.name.charAt(0);
+      document.getElementById('profile-name').textContent = profile.name;
+      document.getElementById('profile-joined').textContent = 'Reading since ' + (profile.joinedYear || 2025) + ' \u2022 Chapter Room Member';
+      document.getElementById('profile-bio').textContent = profile.bio;
+      document.getElementById('stat-completed').textContent = profile.completedCount;
+      document.getElementById('stat-wishlist').textContent = profile.wishlistCount;
+
+      // Genres
+      var genresEl = document.getElementById('mount-profile-genres');
+      genresEl.innerHTML = (profile.favouriteGenres || ['Philosophy', 'Fiction']).map(function (g) {
+        return '<span class="cr-chip" style="font-size:0.75rem;">' + CRComponents.escapeHTML(g) + '</span>';
+      }).join(' ');
+
+      // Currently reading
+      if (profile.currentlyReading) {
+        var cr = profile.currentlyReading;
+        document.getElementById('current-book-title').textContent = cr.title;
+        document.getElementById('current-book-ch').textContent = 'Chapter ' + cr.chapter + ' of ' + cr.totalChapters + ' (' + cr.percent + '% complete)';
+        document.getElementById('continue-reading-link').href = 'chapter.html?book=' + cr.bookId + '&chapter=' + cr.chapter;
+        document.getElementById('current-book-progress').innerHTML = CRComponents.renderProgress({
+          current: cr.chapter,
+          total: cr.totalChapters,
+          label: 'Reading Progress'
+        });
+      }
+
+      // Activity
+      var activityEl = document.getElementById('mount-activity-log');
+      activityEl.innerHTML = (profile.activity || []).map(function (act) {
+        return '<div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--cr-border-subtle); padding-bottom:0.4rem; font-size:var(--cr-text-sm);">' +
+          '<span style="color:var(--cr-text-primary);">' + CRComponents.escapeHTML(act.text) + '</span>' +
+          '<span style="color:var(--cr-text-secondary); font-size:var(--cr-text-xs);">' + CRComponents.escapeHTML(act.date) + '</span>' +
+        '</div>';
+      }).join('');
+
+      // Follow Button
+      var followBtn = document.getElementById('follow-btn');
+      followBtn.addEventListener('click', function () {
+        var isFollowing = CRData.toggleFollowReader(profile.id);
+        followBtn.textContent = isFollowing ? 'Following ✓' : 'Follow Reader';
+      });
+
+      // Privacy toggle
+      var privacyToggle = document.getElementById('privacy-toggle');
+      privacyToggle.addEventListener('change', function () {
+        CRData.updateReaderPrivacy(privacyToggle.checked);
+        activityEl.style.display = privacyToggle.checked ? 'flex' : 'none';
+      });
+    });
+  </script>
+</body>
+</html>

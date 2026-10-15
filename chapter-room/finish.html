@@ -16,7 +16,7 @@
 
   <main class="cr-container" id="main-content" style="max-width:var(--cr-container-narrow, 760px); padding-top:var(--cr-space-8, 2rem); padding-bottom:var(--cr-space-16, 4rem);">
 
-    <!-- CELEBRATORY LITERARY HEADER -->
+    <!-- CELEBRATORY LITERARY HEADER (Section 40 of Spec) -->
     <header style="text-align:center; margin-bottom:var(--cr-space-8, 2rem);">
       <div style="width:52px; height:52px; margin:0 auto var(--cr-space-3, 0.75rem); border-radius:50%; background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); display:flex; align-items:center; justify-content:center;">
         <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -28,13 +28,13 @@
       </p>
     </header>
 
-    <!-- REFLECTION FORM (NO STAR RATINGS) -->
+    <!-- REFLECTION FORM (NO STAR RATINGS - Section 31 & 32 of Spec) -->
     <section class="cr-component-box" style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); border-radius:var(--cr-radius-xs, 2px); padding:var(--cr-space-6, 1.5rem); margin-bottom:var(--cr-space-12, 3rem);">
       <div class="cr-section-header" style="margin-bottom:var(--cr-space-4, 1rem);">
-        <span class="cr-section-header__label">LITERARY REFLECTION</span>
-        <h2 class="cr-h3" style="margin:0;">What Stayed With You?</h2>
+        <span class="cr-section-header__label">SECTION 32 &bull; LITERARY REFLECTION</span>
+        <h2 class="cr-h3" style="margin:0;">Reflecting Without Star Ratings</h2>
         <p class="cr-section-header__desc">
-          No superficial stars or algorithm ratings. Take a moment to capture what this work left behind in you.
+          A book should not be reduced to superficial stars. Take a moment to record how this work affected you.
         </p>
       </div>
 
@@ -62,10 +62,18 @@
 
         <!-- Question 2: What stayed with you? -->
         <div style="margin-bottom:var(--cr-space-6, 1.5rem);">
-          <label for="reflection-input" style="display:block; font-size:var(--cr-text-sm); font-weight:600; color:var(--cr-text-primary); margin-bottom:0.5rem;">
-            What idea, scene, or sentence will remain with you?
+          <label for="reflection-stayed" style="display:block; font-size:var(--cr-text-sm); font-weight:600; color:var(--cr-text-primary); margin-bottom:0.5rem;">
+            What idea, scene, or sentence will stay with you?
           </label>
-          <textarea id="reflection-input" class="cr-chapter-aside__textarea" placeholder="The narrator's rebellion against the crystal palace..." style="background:var(--cr-bg-card); padding:var(--cr-space-3, 0.75rem); border:1px solid var(--cr-border-subtle); border-radius:2px; box-sizing:border-box; width:100%; min-height:100px;" required></textarea>
+          <textarea id="reflection-stayed" class="cr-chapter-aside__textarea" placeholder="The narrator's rebellion against the crystal palace and mathematical determinism..." style="background:var(--cr-bg-card); padding:var(--cr-space-3, 0.75rem); border:1px solid var(--cr-border-subtle); border-radius:2px; box-sizing:border-box; width:100%; min-height:80px;" required></textarea>
+        </div>
+
+        <!-- Question 3: What did this book make you think about? -->
+        <div style="margin-bottom:var(--cr-space-6, 1.5rem);">
+          <label for="reflection-think" style="display:block; font-size:var(--cr-text-sm); font-weight:600; color:var(--cr-text-primary); margin-bottom:0.5rem;">
+            What did this book make you think about?
+          </label>
+          <textarea id="reflection-think" class="cr-chapter-aside__textarea" placeholder="It made me examine why I sometimes sabotage my own well-being..." style="background:var(--cr-bg-card); padding:var(--cr-space-3, 0.75rem); border:1px solid var(--cr-border-subtle); border-radius:2px; box-sizing:border-box; width:100%; min-height:80px;"></textarea>
         </div>
 
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
@@ -85,13 +93,13 @@
       </div>
     </section>
 
-    <!-- WHAT WILL YOU READ NEXT? THREE HAND-PICKED RECOMMENDATIONS -->
+    <!-- WHAT WILL YOU READ NEXT? THREE HAND-PICKED RECOMMENDATIONS (Section 40: The Product Loop) -->
     <section>
       <div class="cr-section-header">
-        <span class="cr-section-header__label">THE PRODUCT LOOP</span>
+        <span class="cr-section-header__label">THE PRODUCT LOOP &bull; SECTION 40</span>
         <h2 class="cr-h2">What Will You Read Next?</h2>
         <p class="cr-section-header__desc">
-          Three works connected by philosophical DNA, depth of thought, and literary power.
+          The Chapter Room continuously moves readers from Book &rarr; Book &rarr; Book. Choose your next journey:
         </p>
         <div class="cr-section-header__rule"></div>
       </div>
@@ -128,41 +136,47 @@
       document.getElementById('finish-title').textContent = 'You Finished ' + book.title;
       document.getElementById('finish-author').textContent = 'by ' + book.author;
 
-      // Render 3 Recommendations
+      // Handle Reflection Form
+      document.getElementById('reflection-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var recVal = document.querySelector('input[name="recommend"]:checked').value;
+        var stayedText = document.getElementById('reflection-stayed').value;
+        var thinkText = document.getElementById('reflection-think').value;
+
+        CRData.finishBook(book.id, {
+          recommend: recVal,
+          whatStayedWithYou: stayedText,
+          whatMadeYouThink: thinkText
+        });
+
+        document.getElementById('reflection-form').style.display = 'none';
+        document.getElementById('reflection-success').style.display = 'block';
+      });
+
+      // Render 3 Recommendations (Section 40: What Will You Read Next?)
       var allBooks = CRData.getAllBooks();
       var recs = allBooks.filter(function (b) { return b.id !== book.id; }).slice(0, 3);
 
       var recsHtml = recs.map(function (recBook) {
-        return CRComponents.renderBookCard({
-          id: recBook.id,
-          title: recBook.title,
-          author: recBook.author,
-          genre: recBook.genre,
-          cover: recBook.cover,
-          desc: recBook.description,
-          readingTime: recBook.readingTime,
-          difficulty: recBook.difficulty,
-          difficultyNote: recBook.difficultyNote,
-          horizontal: true,
-          fallback: !recBook.cover,
-          bookPath: 'book.html?id=' + recBook.id
-        });
+        return '<div style="background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); border-radius:2px; padding:var(--cr-space-4, 1rem); display:grid; grid-template-columns:100px 1fr; gap:var(--cr-space-4, 1rem); align-items:start;">' +
+          CRComponents.renderBookCover({ title: recBook.title, author: recBook.author, genre: recBook.genre, cover: recBook.cover, fallback: !recBook.cover }) +
+          '<div>' +
+            '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.25rem;">' +
+              '<span class="cr-chip cr-chip--genre">' + recBook.genre + '</span>' +
+              '<span style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary);">' + recBook.readingTime + ' &bull; ' + recBook.difficulty + '</span>' +
+            '</div>' +
+            '<h3 class="cr-h3" style="margin:0.25rem 0;"><a href="book.html?id=' + recBook.id + '">' + recBook.title + '</a></h3>' +
+            '<p style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); margin:0 0 0.5rem 0;">by ' + recBook.author + '</p>' +
+            '<p style="font-size:var(--cr-text-sm); color:var(--cr-text-secondary); margin:0 0 0.75rem 0;">' + recBook.description + '</p>' +
+            '<div style="display:flex; gap:0.5rem; align-items:center;">' +
+              '<a href="chapter.html?book=' + recBook.id + '&chapter=1" class="btn btn--sm"><span>Start Reading Chapter 1 &rarr;</span></a>' +
+              '<button type="button" class="btn btn--outline btn--sm" onclick="CRData.moveBookOnShelf(\'' + recBook.id + '\', \'nextUp\'); this.textContent=\'Added to Next Up ✓\';">Add to Next Up</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
       }).join('');
 
       document.getElementById('mount-recommendations').innerHTML = recsHtml;
-
-      // Handle Form Submit
-      var form = document.getElementById('reflection-form');
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        var recVal = form.querySelector('input[name="recommend"]:checked').value;
-        var reflectionText = document.getElementById('reflection-input').value.trim();
-
-        CRData.finishBook(book.id, recVal === 'yes' || recVal === 'caveats', reflectionText);
-
-        form.style.display = 'none';
-        document.getElementById('reflection-success').style.display = 'block';
-      });
     });
   </script>
 </body>

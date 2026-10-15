@@ -16,7 +16,7 @@
 
   <main id="main-content" style="padding-bottom:var(--cr-space-16, 4rem);">
 
-    <!-- BOTM HERO BANNER -->
+    <!-- BOTM HERO BANNER (Section 7 of Spec) -->
     <section class="cr-section cr-section--surface" style="border-bottom:1px solid var(--cr-border-subtle); padding:var(--cr-space-8, 2rem) 0;">
       <div class="cr-container">
         
@@ -46,18 +46,22 @@
               A dark, introspective novella exploring the mind of a bitter, isolated man in conflict with society and himself. Through sharp irony and psychological depth, it questions rationality, free will, and human consciousness.
             </p>
 
-            <!-- Quick Specs -->
-            <div style="display:flex; gap:var(--cr-space-6, 1.5rem); margin-bottom:var(--cr-space-6, 1.5rem); font-family:var(--cr-font-sans); font-size:var(--cr-text-sm); color:var(--cr-text-secondary); border-top:1px solid var(--cr-border-subtle); border-bottom:1px solid var(--cr-border-subtle); padding:var(--cr-space-3, 0.75rem) 0;">
+            <!-- Quick Specs (Reading Time, Daily Estimate, Chapters, Pace) -->
+            <div style="display:flex; gap:var(--cr-space-6, 1.5rem); margin-bottom:var(--cr-space-6, 1.5rem); font-family:var(--cr-font-sans); font-size:var(--cr-text-sm); color:var(--cr-text-secondary); border-top:1px solid var(--cr-border-subtle); border-bottom:1px solid var(--cr-border-subtle); padding:var(--cr-space-3, 0.75rem) 0; flex-wrap:wrap;">
               <div>Reading Time: <strong style="color:var(--cr-text-primary);" id="botm-time">3.5 hrs</strong></div>
+              <div>Daily Cadence: <strong style="color:var(--cr-text-primary);" id="botm-daily">~20 mins/day for 10 days</strong></div>
               <div>Chapters: <strong style="color:var(--cr-text-primary);" id="botm-chapters">6 chapters</strong></div>
-              <div>Pace: <strong style="color:var(--cr-text-primary);">2 weeks (3 ch/week)</strong></div>
+              <div>Difficulty: <strong style="color:var(--cr-text-primary);">Challenging &bull; Unhurried</strong></div>
             </div>
 
-            <!-- Action Buttons -->
+            <!-- Action Buttons (Section 7: Start Reading / Join Discussion) -->
             <div style="display:flex; align-items:center; gap:var(--cr-space-4, 1rem); flex-wrap:wrap;">
               <a href="chapter.html?book=notes-from-underground&chapter=1" id="start-reading-btn" class="btn">
                 <span><span class="btn__label-full">Start Reading Chapter 1</span><span class="btn__label-short">Read Ch. 1</span></span>
                 <span class="arrow">&rarr;</span>
+              </a>
+              <a href="chapter.html?book=notes-from-underground&chapter=1#comments" class="btn btn--outline" id="join-discussion-btn">
+                <span>Join the Discussion</span>
               </a>
               <button type="button" class="btn btn--outline" id="shelf-toggle-btn">
                 <span>Add to My Shelf</span>
@@ -69,12 +73,32 @@
       </div>
     </section>
 
-    <!-- EDITORIAL ESSAY: WHY THIS BOOK, WHY NOW -->
+    <!-- 8. GENERAL BOOK SUMMARY (SPOILER-FREE CONTEXTUAL ESSAY - Section 8 of Spec) -->
     <section class="cr-section">
       <div class="cr-container" style="max-width:var(--cr-reading-measure, 680px);">
         <div class="cr-section-header">
-          <span class="cr-section-header__label">EDITORIAL ESSAY</span>
-          <h2 class="cr-section-header__title">Why We’re Reading It</h2>
+          <span class="cr-section-header__label">GENERAL BOOK SUMMARY &bull; SPOILER-FREE</span>
+          <h2 class="cr-section-header__title">Overview of the Work</h2>
+          <div class="cr-section-header__rule"></div>
+        </div>
+
+        <div class="cr-reading-text cr-reading-measure" id="general-summary">
+          <p>
+            <em>Notes from Underground</em> is a psychological exploration of isolation, consciousness, freedom, and self-contradiction. Written in 1864, it introduces readers to the "underground man"—a bitter, hyper-conscious former civil servant living in a squalid basement in nineteenth-century St. Petersburg.
+          </p>
+          <p>
+            Rather than offering a comfortable story with tidy moral lessons, Dostoevsky crafts a radical polemic against the tidy intellectual currents of his era. He challenges the belief that human nature can be fully calculated, enlightened, or governed by scientific self-interest. This general summary provides the philosophical context you need without revealing detailed plot events or arguments that could compromise the surprise of later chapters.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- EDITORIAL ESSAY: WHY WE CHOSE THIS BOOK (Section 7 of Spec) -->
+    <section class="cr-section cr-section--surface">
+      <div class="cr-container" style="max-width:var(--cr-reading-measure, 680px);">
+        <div class="cr-section-header">
+          <span class="cr-section-header__label">EDITORIAL NOTE</span>
+          <h2 class="cr-section-header__title">Why We Chose This Book</h2>
           <div class="cr-section-header__rule"></div>
         </div>
 
@@ -83,14 +107,14 @@
             In an age dominated by algorithmic optimization, social metrics, and the relentless pressure toward productive self-improvement, Dostoevsky’s underground man reminds us of something deeply uncomfortable: human consciousness is stubbornly irrational, fiercely protective of free choice, and impossible to reduce to mathematical equations.
           </p>
           <p>
-            Written in 1864 after the death of his first wife and brother, <em>Notes from Underground</em> is Dostoevsky’s explosive polemic against the utopian socialist dreams of nineteenth-century Europe—represented by the legendary "Crystal Palace". The underground man does not oppose utopia because he loves suffering; he opposes it because a perfected, calculated society leaves no room for human volition. If 2 + 2 always equals 4, what is left for the human soul to decide?
+            Written following personal tragedy and cultural upheaval, the book is an explosive rebuttal of the utopian socialist dream of the "Crystal Palace". The underground man does not oppose utopia because he loves misery; he opposes it because a mathematically perfected society leaves no room for human volition. If 2 + 2 always equals 4, what is left for the human soul to decide?
           </p>
         </div>
       </div>
     </section>
 
-    <!-- READING SCHEDULE & TIMELINE -->
-    <section class="cr-section cr-section--surface">
+    <!-- READING SCHEDULE & TIMELINE (Section 7 & 9) -->
+    <section class="cr-section">
       <div class="cr-container">
         <div class="cr-section-header">
           <span class="cr-section-header__label">PACE GUIDE</span>
@@ -111,26 +135,36 @@
             <span class="cr-chip" style="margin-bottom:0.5rem; display:inline-block;">Week 2 &bull; Oct 16–31</span>
             <h3 class="cr-h3" style="margin-top:0;">Part II: A Propos of the Wet Snow (Ch. 4–6)</h3>
             <p style="font-size:var(--cr-text-sm); color:var(--cr-text-secondary); margin:0;">
-              The psychological drama. Watch what happens when theory crashes into the dinner party and Liza.
+              The psychological drama. Watch what happens when theory crashes into real human beings and Liza.
             </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- SEQUENTIAL CHAPTER BREAKDOWN -->
-    <section class="cr-section">
+    <!-- 9. CHAPTER STRUCTURE & SEQUENTIAL UNLOCKING (Section 9, 10, 11 of Spec) -->
+    <section class="cr-section cr-section--surface">
       <div class="cr-container">
         <div class="cr-section-header">
           <span class="cr-section-header__label">SEQUENTIAL CHAPTER BREAKDOWN</span>
-          <h2 class="cr-section-header__title">Chapters & Unlocking</h2>
+          <h2 class="cr-section-header__title">Reading Sections & Unlocking</h2>
           <p class="cr-section-header__desc">
-            Complete each chapter to unlock subsequent discussion notes and key ideas. Strict spoiler protection applies.
+            Divided into two distinct parts. Mark each chapter complete to unlock subsequent discussions and detailed notes.
           </p>
           <div class="cr-section-header__rule"></div>
         </div>
 
-        <div id="mount-chapters-list" style="display:flex; flex-direction:column; gap:var(--cr-space-3, 0.75rem);"></div>
+        <!-- Part I Section -->
+        <div style="margin-bottom:var(--cr-space-8, 2rem);">
+          <h3 class="cr-h3" style="margin-bottom:0.75rem;">Part I: The Underground</h3>
+          <div id="mount-part1-chapters" style="display:flex; flex-direction:column; gap:var(--cr-space-3, 0.75rem);"></div>
+        </div>
+
+        <!-- Part II Section -->
+        <div>
+          <h3 class="cr-h3" style="margin-bottom:0.75rem;">Part II: A Propos of the Wet Snow</h3>
+          <div id="mount-part2-chapters" style="display:flex; flex-direction:column; gap:var(--cr-space-3, 0.75rem);"></div>
+        </div>
       </div>
     </section>
 
@@ -156,18 +190,7 @@
       document.getElementById('mount-footer').innerHTML = CRComponents.renderFooter({ rootPath: '../', crPath: '' });
 
       var botm = CRData.getBookOfTheMonth();
-      if (!botm) return;
-
-      var prog = CRData.getReaderProgress(botm.id);
-      var currentCh = prog.currentChapter || 1;
-
-      // Update Start button
-      var startBtn = document.getElementById('start-reading-btn');
-      if (startBtn) {
-        startBtn.href = 'chapter.html?book=' + botm.id + '&chapter=' + currentCh;
-        startBtn.querySelector('.btn__label-full').textContent = (prog.completedChapters.length > 0 ? 'Continue Chapter ' : 'Start Reading Chapter ') + currentCh;
-        startBtn.querySelector('.btn__label-short').textContent = 'Ch. ' + currentCh;
-      }
+      if (!botm) botm = CRData.getAllBooks()[0];
 
       // Render Cover
       document.getElementById('mount-botm-cover').innerHTML = CRComponents.renderBookCover({
@@ -178,8 +201,49 @@
         fallback: !botm.cover
       });
 
-      // Render Chapters
-      var chaptersHtml = [];
+      // Populate Metadata
+      document.getElementById('botm-title').textContent = botm.title;
+      document.getElementById('botm-author').textContent = botm.author;
+      document.getElementById('botm-genre').textContent = botm.genre;
+      document.getElementById('botm-diff').textContent = botm.difficulty;
+      document.getElementById('botm-desc').textContent = botm.description;
+      document.getElementById('botm-time').textContent = botm.readingTime;
+      if (botm.dailyEstimate) document.getElementById('botm-daily').textContent = botm.dailyEstimate;
+      document.getElementById('botm-chapters').textContent = botm.chapterCount + ' chapters';
+      document.getElementById('recommend-pill').textContent = botm.recommendRate + '% of readers recommend this';
+
+      // General Summary (Section 8)
+      if (botm.generalSummary) {
+        document.getElementById('general-summary').innerHTML = '<p>' + botm.generalSummary + '</p>';
+      }
+
+      // Progress and Start Reading CTA
+      var prog = CRData.getReaderProgress(botm.id);
+      var currentCh = prog.currentChapter || 1;
+      var startBtn = document.getElementById('start-reading-btn');
+      startBtn.href = 'chapter.html?book=' + botm.id + '&chapter=' + currentCh;
+      if (prog.completedChapters && prog.completedChapters.length > 0) {
+        startBtn.querySelector('.btn__label-full').textContent = 'Continue Chapter ' + currentCh;
+        startBtn.querySelector('.btn__label-short').textContent = 'Ch. ' + currentCh;
+      }
+
+      document.getElementById('join-discussion-btn').href = 'chapter.html?book=' + botm.id + '&chapter=' + currentCh + '#discussion';
+
+      // Shelf Toggle Action
+      var shelfBtn = document.getElementById('shelf-toggle-btn');
+      shelfBtn.addEventListener('click', function () {
+        CRData.moveBookOnShelf(botm.id, 'currentlyReading');
+        shelfBtn.textContent = 'Added to Shelf ✓';
+        shelfBtn.classList.add('is-active');
+      });
+
+      // Render Chapters into Part I (Ch 1-3) and Part II (Ch 4-6) (Section 9 of Spec)
+      var part1El = document.getElementById('mount-part1-chapters');
+      var part2El = document.getElementById('mount-part2-chapters');
+
+      var part1Html = [];
+      var part2Html = [];
+
       for (var ch = 1; ch <= botm.chapterCount; ch++) {
         var content = CRData.getChapterContent(botm.id, ch);
         var state = 'locked';
@@ -187,7 +251,7 @@
           state = content.completed ? 'completed' : 'available';
         }
 
-        chaptersHtml.push(CRComponents.renderChapterRow({
+        var rowMarkup = CRComponents.renderChapterRow({
           number: ch,
           title: content ? content.title : ('Chapter ' + ch),
           readingTime: content ? content.readingTime : '20 min read',
@@ -195,21 +259,17 @@
           state: state,
           unlockRequirement: 'Complete Chapter ' + (ch - 1) + ' to unlock',
           href: 'chapter.html?book=' + botm.id + '&chapter=' + ch
-        }));
-      }
-
-      document.getElementById('mount-chapters-list').innerHTML = chaptersHtml.join('');
-
-      // Shelf button interactivity
-      var shelfBtn = document.getElementById('shelf-toggle-btn');
-      if (shelfBtn) {
-        shelfBtn.addEventListener('click', function () {
-          CRData.moveBookOnShelf(botm.id, 'currentlyReading');
-          shelfBtn.innerHTML = '<span>&check; On Your Shelf</span>';
-          shelfBtn.classList.remove('btn--outline');
-          shelfBtn.classList.add('btn--filled');
         });
+
+        if (ch <= 3) {
+          part1Html.push(rowMarkup);
+        } else {
+          part2Html.push(rowMarkup);
+        }
       }
+
+      part1El.innerHTML = part1Html.join('');
+      part2El.innerHTML = part2Html.join('');
     });
   </script>
 </body>

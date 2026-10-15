@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Notifications | The Chapter Room</title>
-  <meta name="description" content="Stay updated on chapter unlocking, discussion replies, and literary community reactions.">
+  <meta name="description" content="Stay updated on chapter unlocking, discussion replies, reading plan reminders, and literary community reactions.">
   <link rel="icon" type="image/png" href="../assets/images/favicon.png">
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/chapter-room.css">
@@ -18,10 +18,10 @@
 
     <header class="cr-section-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem;">
       <div>
-        <span class="cr-section-header__label">UPDATES & ACTIVITY</span>
-        <h1 class="cr-section-header__title">Notifications</h1>
+        <span class="cr-section-header__label">SECTION 26 &bull; NOTIFICATIONS</span>
+        <h1 class="cr-section-header__title">Updates & Activity</h1>
         <p class="cr-section-header__desc">
-          Chapter unlocking, reader replies to your thoughts, and reactions from the community.
+          Chapter unlocking, reader replies to your thoughts, reading plan reminders, and community updates.
         </p>
       </div>
       <div>
@@ -31,7 +31,34 @@
       </div>
     </header>
 
+    <!-- NOTIFICATION CATEGORY FILTERS (Section 26 of Spec) -->
+    <div class="cr-filter-bar" id="notif-filters" role="tablist" style="margin-bottom:var(--cr-space-6, 1.5rem);">
+      <button type="button" class="cr-chip is-active" data-notif-type="all">All Updates</button>
+      <button type="button" class="cr-chip" data-notif-type="reading">Reading & Unlocks</button>
+      <button type="button" class="cr-chip" data-notif-type="community">Community Replies</button>
+      <button type="button" class="cr-chip" data-notif-type="plan">Reading Plan</button>
+      <button type="button" class="cr-chip" data-notif-type="botm">Book of the Month</button>
+    </div>
+
+    <!-- NOTIFICATIONS LIST -->
     <div id="mount-notifications-list" style="display:flex; flex-direction:column; gap:var(--cr-space-3, 0.75rem);"></div>
+
+    <!-- EMAIL PREFERENCES ACCORDION (Section 26: In-website & Email) -->
+    <div style="margin-top:var(--cr-space-8, 2rem); background:var(--cr-bg-surface); border:1px solid var(--cr-border-subtle); padding:var(--cr-space-4, 1rem); border-radius:2px;">
+      <h4 style="margin:0 0 0.5rem 0; font-family:var(--cr-font-sans); font-size:var(--cr-text-sm); font-weight:600; color:var(--cr-text-primary);">Email Reading Preferences</h4>
+      <p style="font-size:var(--cr-text-xs); color:var(--cr-text-secondary); margin:0 0 0.75rem 0;">Receive quiet, respectful reminders for your reading plan and chapter unlocks.</p>
+      <div style="display:flex; flex-direction:column; gap:0.4rem; font-size:var(--cr-text-xs); color:var(--cr-text-primary);">
+        <label style="display:flex; align-items:center; gap:0.4rem; cursor:pointer;">
+          <input type="checkbox" checked style="accent-color:var(--cr-text-primary);"> Send reading plan reminders when a scheduled read arrives
+        </label>
+        <label style="display:flex; align-items:center; gap:0.4rem; cursor:pointer;">
+          <input type="checkbox" checked style="accent-color:var(--cr-text-primary);"> Notify me when other readers reply to my chapter thoughts
+        </label>
+        <label style="display:flex; align-items:center; gap:0.4rem; cursor:pointer;">
+          <input type="checkbox" checked style="accent-color:var(--cr-text-primary);"> Send monthly announcement when next Book of the Month is chosen
+        </label>
+      </div>
+    </div>
 
   </main>
 
@@ -54,52 +81,69 @@
       document.getElementById('mount-tabbar').innerHTML = CRComponents.renderTabBar('community', { crPath: '' });
       document.getElementById('mount-footer').innerHTML = CRComponents.renderFooter({ rootPath: '../', crPath: '' });
 
+      // Notifications directly modeled from Section 26 of Spec
       var NOTIFICATIONS = [
         {
           id: 'n1',
-          type: 'unlock',
+          type: 'reading',
           title: 'Chapter 2 Unlocked',
-          desc: 'You completed Chapter 1 of Notes from Underground. Chapter 2: Underground (Sections V to IX) is now ready to read.',
+          desc: 'You completed Chapter 1 of Notes from Underground. Chapter 2: Underground (Sections V to IX) is now available to read.',
           time: '2 hours ago',
           href: 'chapter.html?book=notes-from-underground&chapter=2',
           unread: true,
-          icon: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 11V7a5 5 0 0 1 9.9-1"></path><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect></svg>'
+          icon: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>'
         },
         {
           id: 'n2',
-          type: 'reaction',
-          title: 'Reader Reaction on Your Thought',
-          desc: 'Elena Vance reacted "Made me think" to your note on Chapter 1.',
+          type: 'community',
+          title: 'Sarah Replied to Your Thought',
+          desc: 'Sarah Lin: "The distinction he draws between the man of action and the man of reflection is brilliant..."',
           time: '4 hours ago',
           href: 'chapter.html?book=notes-from-underground&chapter=1',
           unread: true,
-          icon: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>'
+          icon: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>'
         },
         {
           id: 'n3',
-          type: 'reply',
-          title: 'New Reply in Thread',
-          desc: 'Marcus Vance replied to your discussion on the Crystal Palace.',
+          type: 'plan',
+          title: 'Reading Plan Reminder',
+          desc: 'You planned to begin The Prince today as part of your November Statecraft reading schedule.',
           time: 'Yesterday',
-          href: 'thread.html?book=notes-from-underground&chapter=1&id=c101',
+          href: 'chapter.html?book=the-prince&chapter=1',
           unread: false,
-          icon: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>'
+          icon: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>'
+        },
+        {
+          id: 'n4',
+          type: 'botm',
+          title: 'Community Read Notice',
+          desc: 'October’s Book of the Month discussion on Part II of Notes from Underground begins tomorrow.',
+          time: '2 days ago',
+          href: 'book-of-the-month.html',
+          unread: false,
+          icon: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>'
         }
       ];
 
+      var activeType = 'all';
+
       function renderNotifications() {
         var container = document.getElementById('mount-notifications-list');
-        if (NOTIFICATIONS.length === 0) {
+        var filtered = activeType === 'all'
+          ? NOTIFICATIONS
+          : NOTIFICATIONS.filter(function (n) { return n.type === activeType; });
+
+        if (filtered.length === 0) {
           container.innerHTML = CRComponents.renderEmptyState({
-            title: 'No notifications',
-            desc: 'When other readers engage with your thoughts or new chapters unlock, you will see them here.',
+            title: 'No notifications in this category',
+            desc: 'When activity occurs in this area, you will see notifications here.',
             actionLabel: 'Explore Discussions',
             actionHref: 'community.html'
           });
           return;
         }
 
-        container.innerHTML = NOTIFICATIONS.map(function (n) {
+        container.innerHTML = filtered.map(function (n) {
           var unreadDot = n.unread ? '<span style="width:8px; height:8px; border-radius:50%; background:#ffffff; display:inline-block;"></span>' : '';
           return '<a href="' + n.href + '" style="text-decoration:none; display:flex; align-items:start; gap:var(--cr-space-3, 0.75rem); background:var(--cr-bg-surface); border:1px solid ' + (n.unread ? 'var(--cr-border-strong)' : 'var(--cr-border-subtle)') + '; border-radius:var(--cr-radius-xs, 2px); padding:var(--cr-space-4, 1rem); transition:all 0.2s;">' +
             '<div style="width:36px; height:36px; border-radius:50%; background:var(--cr-bg-card); display:flex; align-items:center; justify-content:center; color:var(--cr-text-primary); flex-shrink:0;">' +
@@ -115,6 +159,15 @@
           '</a>';
         }).join('');
       }
+
+      document.querySelectorAll('#notif-filters [data-notif-type]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          document.querySelectorAll('#notif-filters [data-notif-type]').forEach(function (b) { b.classList.remove('is-active'); });
+          btn.classList.add('is-active');
+          activeType = btn.getAttribute('data-notif-type');
+          renderNotifications();
+        });
+      });
 
       document.getElementById('mark-all-read-btn').addEventListener('click', function () {
         NOTIFICATIONS.forEach(function (n) { n.unread = false; });
