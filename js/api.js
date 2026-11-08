@@ -251,11 +251,11 @@ async function nebulaDeletePost(postId) {
 }
 
 // ─── NEWSLETTER ───────────────────────────────
-async function nebulaSubscribeNewsletter(email, firstName = '', lastName = '', name = '') {
+async function nebulaSubscribeNewsletter(email, firstName = '', lastName = '', name = '', website_hp = '', formLoadedAt = null) {
   const fullName = name || `${firstName} ${lastName}`.trim();
   return apiRequest('/newsletter/subscribe', {
     method: 'POST',
-    body: JSON.stringify({ email, firstName, lastName, name: fullName }),
+    body: JSON.stringify({ email, firstName, lastName, name: fullName, website_hp, formLoadedAt }),
   });
 }
 
@@ -355,6 +355,7 @@ async function adminDeletePost(postId) {
   return apiRequest(`/admin/posts/${postId}`, { method: 'DELETE' });
 }
 async function adminGetNewsletter() { return apiRequest('/admin/newsletter'); }
+async function adminDeleteNewsletter(id) { return apiRequest(`/admin/newsletter/${id}`, { method: 'DELETE' }); }
 async function adminGetNominations() { return apiRequest('/admin/nominations'); }
 
 // ─── NOTIFICATIONS ───────────────────────────

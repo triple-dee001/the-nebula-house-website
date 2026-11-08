@@ -197,6 +197,7 @@ function injectNewsletterPopup() {
   `;
   document.head.appendChild(style);
 
+  const popupRenderedTime = Date.now();
   const overlay = document.createElement('div');
   overlay.id = 'nebula-popup-overlay';
   overlay.innerHTML = `
@@ -205,6 +206,10 @@ function injectNewsletterPopup() {
       <div class="popup-icon">✦</div>
       <h2 class="popup-title">Join The Nebula House</h2>
       <p class="popup-sub">Stories, essays, book discussions and creative insights — delivered straight to your inbox.</p>
+      <!-- Anti-bot Honeypot Trap (invisible to humans, filled by scraping bots) -->
+      <div style="display:none!important; position:absolute; left:-9999px; opacity:0;" aria-hidden="true">
+        <input type="text" id="popup-website-hp" name="website_trap" tabindex="-1" autocomplete="off">
+      </div>
       <input type="text" class="popup-input" id="popup-firstname" placeholder="First Name" autocomplete="given-name">
       <input type="text" class="popup-input" id="popup-lastname" placeholder="Last Name" autocomplete="family-name">
       <input type="email" class="popup-input" id="popup-email" placeholder="Your email address" autocomplete="email">
@@ -230,6 +235,7 @@ function injectNewsletterPopup() {
     const firstName = document.getElementById('popup-firstname').value.trim();
     const lastName = document.getElementById('popup-lastname').value.trim();
     const email = document.getElementById('popup-email').value.trim();
+    const website_hp = document.getElementById('popup-website-hp')?.value.trim() || '';
     const btn = document.getElementById('popup-submit-btn');
     const successEl = document.getElementById('popup-success');
     const errorEl = document.getElementById('popup-error');
@@ -241,7 +247,7 @@ function injectNewsletterPopup() {
 
     try {
       if (typeof nebulaSubscribeNewsletter === 'function') {
-        await nebulaSubscribeNewsletter(email, firstName, lastName);
+        await nebulaSubscribeNewsletter(email, firstName, lastName, '', website_hp, popupRenderedTime);
       }
       localStorage.setItem('nebula_newsletter_subscribed', 'true');
       successEl.style.display = 'block';

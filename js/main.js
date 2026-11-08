@@ -144,26 +144,39 @@ function initStarField() {
 /* --- Newsletter Form --- */
 function initNewsletterForm() {
   const forms = document.querySelectorAll('.newsletter__form, .coming-soon__form');
+  const formPageLoad = Date.now();
 
   forms.forEach(form => {
+    // Inject hidden honeypot if not present
+    if (!form.querySelector('.nh-hp-trap')) {
+      const hp = document.createElement('div');
+      hp.className = 'nh-hp-trap';
+      hp.style.cssText = 'display:none!important;position:absolute;left:-9999px;opacity:0;';
+      hp.setAttribute('aria-hidden', 'true');
+      hp.innerHTML = '<input type="text" name="b_hp_field" tabindex="-1" autocomplete="off">';
+      form.appendChild(hp);
+    }
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const emailInput = form.querySelector('input[type="email"]');
       const firstNameInput = form.querySelector('input[name="firstName"], input[placeholder*="First"]');
       const lastNameInput = form.querySelector('input[name="lastName"], input[placeholder*="Last"]');
+      const hpInput = form.querySelector('.nh-hp-trap input');
       const btn = form.querySelector('button[type="submit"], .newsletter__submit');
       const successMsg = form.parentElement.querySelector('.newsletter__success');
 
       const email = emailInput ? emailInput.value.trim() : '';
       const firstName = firstNameInput ? firstNameInput.value.trim() : '';
       const lastName = lastNameInput ? lastNameInput.value.trim() : '';
+      const website_hp = hpInput ? hpInput.value.trim() : '';
 
       if (!email) return;
 
       if (btn) { btn.disabled = true; btn.textContent = 'Subscribing...'; }
 
       try {
-        await nebulaSubscribeNewsletter(email, firstName, lastName);
+        await nebulaSubscribeNewsletter(email, firstName, lastName, '', website_hp, formPageLoad);
         if (emailInput) emailInput.value = '';
         if (firstNameInput) firstNameInput.value = '';
         if (lastNameInput) lastNameInput.value = '';

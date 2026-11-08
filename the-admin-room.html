@@ -491,7 +491,7 @@
             <button class="panel__action" onclick="exportNewsletter()">Export CSV</button>
           </div>
           <table class="data-table">
-            <thead><tr><th>Email</th><th>Subscribed</th></tr></thead>
+            <thead><tr><th>Email</th><th>Subscribed</th><th>Action</th></tr></thead>
             <tbody id="newsletter-list"></tbody>
           </table>
           <div class="empty-state" id="newsletter-empty" style="display:none;">No subscribers yet.</div>
@@ -1116,10 +1116,28 @@
     const tbody = document.getElementById('newsletter-list');
     document.getElementById('newsletter-empty').style.display = subs.length ? 'none' : 'block';
     tbody.innerHTML = subs.map(s => `
-      <tr>
+      <tr id="sub-row-${s.id}">
         <td>${s.email}</td>
         <td>${s.subscribedAt ? new Date(s.subscribedAt).toLocaleDateString() : '—'}</td>
+        <td>
+          <button class="btn btn--danger" style="padding:0.25rem 0.65rem; font-size:0.75rem; border-radius:4px; background:#ef4444; color:#fff; border:none; cursor:pointer;" onclick="deleteSubscriber('${s.id}', '${s.email}')">Delete</button>
+        </td>
       </tr>`).join('');
+  }
+
+  async function deleteSubscriber(id, email) {
+    if (!confirm(`Remove "${email}" from subscribers?`)) return;
+    try {
+      if (typeof adminDeleteNewsletter === 'function') {
+        await adminDeleteNewsletter(id);
+      }
+      const row = document.getElementById(`sub-row-${id}`);
+      if (row) row.remove();
+      const currentStat = document.getElementById('stat-newsletter');
+      if (currentStat) currentStat.textContent = Math.max(0, parseInt(currentStat.textContent || '1') - 1);
+    } catch (e) {
+      alert('Failed to delete subscriber: ' + (e.message || e));
+    }
   }
 
   function renderNominationsTable(noms) {
